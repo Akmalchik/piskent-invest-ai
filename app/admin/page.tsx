@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -13,7 +12,16 @@ const MyInvestmentMap = dynamic(() => import('../components/MyInvestmentMap'), {
 export default function AdminPage() {
     // Внутренняя языковая переменная проекта
     const lang = 'uz';
-
+    const [inputPassword, setInputPassword] = useState('');
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (inputPassword === 'Piskent2026!') {
+            setIsAuthenticated(true);
+        } else {
+            alert('Секретный код неверный!');
+        }
+    };
 
     // Стейты для управления массивом лотов и выбранным ID лота
     const [plots, setPlots] = useState<any[]>([]);
@@ -221,7 +229,34 @@ export default function AdminPage() {
             alert(`Ошибка при добавлении нового лота: ${err.message}`);
         }
     };
+    // 1. Добавляем проверку условия перед твоим новым кодом:
+    if (!isAuthenticated) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-slate-900 p-4 font-sans">
+                <form onSubmit={handleLogin} className="bg-slate-800 p-8 rounded-2xl shadow-xl max-w-sm w-full border border-slate-700">
+                    <div className="flex items-center gap-2 mb-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <h2 className="text-xl font-bold text-white tracking-tight">Piskent Invest AI</h2>
+                    </div>
+                    <p className="text-xs text-slate-400 mb-6 font-medium">Вход в панель управления хокимията</p>
 
+                    <input
+                        type="password"
+                        placeholder="Секретный код доступа"
+                        value={inputPassword}
+                        onChange={(e) => setInputPassword(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition mb-4 text-black"
+                    />
+
+                    <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-emerald-900/20">
+                        Войти в систему
+                    </button>
+                </form>
+            </div>
+        );
+    } // <-- Обязательно закрываем фигурную скобку условия здесь!
+
+    // 2. Дальше идет твой главный нетронутый return страницы:
     return (
         <div className="flex h-screen w-full bg-[#030712] text-slate-100 font-sans overflow-hidden">
 
