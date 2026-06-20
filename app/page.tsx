@@ -100,7 +100,7 @@ export default function Home() {
     ta: "TA"
   };
 
-  const handleShowOnMap = (plot) => {
+  const handleShowOnMap = (plot: any) => {
     if (plot && plot.polygonCoordinates && plot.polygonCoordinates[0]) {
       setMapViewport({ center: plot.polygonCoordinates[0], zoom: 15 });
       setSelectedPlot(plot);
@@ -108,7 +108,7 @@ export default function Home() {
     }
   };
 
-  const handleTabChange = (tabName) => {
+  const handleTabChange = (tabName: any) => {
     setActiveTab(tabName);
     setIsMobileMenuOpen(false);
   };
@@ -165,8 +165,8 @@ export default function Home() {
               setAdminMarkerCoords(null);
             }}
             className={`w-full py-2.5 px-3 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all border text-center ${isAdminMode
-                ? 'bg-amber-500/10 text-amber-400 border-amber-500/30 shadow-inner'
-                : 'bg-slate-900/40 text-slate-500 border-slate-800/60 hover:text-slate-300 hover:border-slate-700'
+              ? 'bg-amber-500/10 text-amber-400 border-amber-500/30 shadow-inner'
+              : 'bg-slate-900/40 text-slate-500 border-slate-800/60 hover:text-slate-300 hover:border-slate-700'
               }`}
           >
             {isAdminMode ? localLabels.adminOff : localLabels.adminOn}

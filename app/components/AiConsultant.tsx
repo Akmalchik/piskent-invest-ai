@@ -3,9 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { translations } from './translations';
 
-export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout = false }: { onSelectPlot: any, lang: string, isChatLayout: boolean }) {
-    const t = translations[lang] || translations['uz'];
-
+export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout = false }: any) {
+    // Явно указываем тип ключа для объекта переводов
+    const t = (translations as any)[lang] || translations['uz'];
     // Твой бесплатный API Ключ от Google AI Studio (Вставь сюда свой рабочий токен AIzaSy...)
     const GEMINI_API_KEY = "";
 
@@ -123,7 +123,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
         `;
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY || ''}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -273,7 +273,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     };
 
     // СВЕРХНАДЁЖНЫЙ ЛОКАЛЬНЫЙ СЛОВАРЬ ДЛЯ ВНУТРЕННЕГО ИНТЕРФЕЙСА ЧАТА (НА ВСЕ ЯЗЫКИ)
-    const chatLabels = {
+    const chatLabels: Record<string, any> = {
         uz: {
             title: "AI Investitsiya Maslahatchisi",
             sync: "E-Auksion Sync Active",
@@ -314,16 +314,10 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             mapBtn: "在地图上查看",
             pageBtn: "拍卖官方页面"
         }
-    }[lang] || {
-        title: "AI Investitsiya Maslahatchisi",
-        sync: "E-Auksion Sync Active",
-        online: "E-Auksion AI Online",
-        desc: "Biznes g'oyangizni...",
-        p1: "Sanoat zonalari",
-        p2: "To'qimachilik lotlari",
-        mapBtn: "Xaritada ko‘rsatish",
-        pageBtn: "Auksion sahifasi"
     };
+
+    // Правильное извлечение языка в переменную labels
+    const labels = chatLabels[lang] || chatLabels['uz'];
 
     if (isChatLayout) {
         return (
