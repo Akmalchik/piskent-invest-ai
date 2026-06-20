@@ -200,15 +200,18 @@ export default function Home() {
           <div className="hidden lg:flex items-center gap-6 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-l border-r border-slate-800/80 px-6 mx-4">
             <div className="flex items-center gap-1.5">
               <span>{lang === 'zh' ? '总规划面积' : lang === 'ru' ? 'Площадь' : 'Maydonlar'}:</span>
-              <AnimatedNumber value={521} /> <span className="text-[10px] text-slate-500">{localLabels.ga}</span>
+              {/* Ставим заглушку 0, пока база пустая */}
+              <AnimatedNumber value={0} />
+              <span className="text-[10px] text-slate-500">{localLabels.ga}</span>
             </div>
             <span className="text-slate-800">•</span>
             <div className="flex items-center gap-1.5">
               <span>{lang === 'zh' ? '空闲投资土地' : lang === 'ru' ? 'Свободные лоты' : 'Bo\'sh lotlar'}:</span>
-              <AnimatedNumber value={12} /> <span className="text-[10px] text-slate-500">{localLabels.ta}</span>
+              {/* Ставим заглушку 0 лотов */}
+              <AnimatedNumber value={0} />
+              <span className="text-[10px] text-slate-500">{localLabels.ta}</span>
             </div>
           </div>
-
           {/* Переключатель языков */}
           <div className="flex items-center gap-1 bg-[#040814] p-0.5 rounded-lg border border-slate-800">
             {(['uz', 'ru', 'en', 'zh'] as const).map((l) => (
@@ -248,10 +251,7 @@ export default function Home() {
           )}
         </div>
 
-        {/* Демо-дисклеймер */}
-        <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 z-[1000] bg-red-950/90 border border-red-800 px-2 py-1 rounded text-[8px] md:text-[10px] uppercase font-bold pointer-events-none max-w-[90%] truncate">
-          ⚠️ Demo Purposes / Taqdimot uchun
-        </div>
+
       </div>
     </div>
   );
