@@ -82,13 +82,9 @@ export default function MyInvestmentMap({
 
         // ЗАМЕНИ ТАКУЮ ФУНКЦИЮ НА ЭТУ:
         function loadFallbackPlots() {
-            const saved = localStorage.getItem('piskent_plots');
-            if (saved) {
-                setPlots(JSON.parse(saved));
-            } else {
-                // УБИРАЕМ "стартовый лот" И ОСТАВЛЯЕМ МАССИВ ПУСТЫМ
-                setPlots([]);
-            }
+            // Просто ничего не делаем или задаем пустой массив, 
+            // не глядя на localStorage
+            setPlots([]);
         }
     }, [lang]);
 
