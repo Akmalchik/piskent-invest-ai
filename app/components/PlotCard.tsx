@@ -170,17 +170,16 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                 })()}
 
                 {/* Параметры: Площадь и Рабочие места */}
-                <div className="grid grid-cols-2 gap-3 mb-3">
-                    <div className="bg-[#101f42]/40 p-3 rounded-xl border border-slate-800/60">
-                        <span className="text-[9px] text-slate-400 block font-bold tracking-wide">{d.area}</span>
-                        <span className="text-xs md:text-sm font-black text-white">{plot.area} {lang === 'zh' ? d.ga : 'ga'}</span>
-                    </div>
-                    <div className="bg-[#101f42]/40 p-3 rounded-xl border border-slate-800/60">
-                        <span className="text-[9px] text-slate-400 block font-bold tracking-wide">{d.jobs}</span>
-                        <span className="text-xs md:text-sm font-black text-white">{plot.jobs || 0} {d.ta}</span>
+                <div className="mb-3">
+                    <div className="bg-[#101f42]/40 p-4 rounded-xl border border-slate-800/60">
+                        <span className="text-[9px] text-slate-400 block font-bold tracking-wide uppercase mb-1">
+                            {lang === 'zh' ? '面积' : lang === 'ru' ? 'Площадь участка' : 'Yer maydoni'}
+                        </span>
+                        <span className="text-sm font-black text-white">
+                            {plot.area || 0} {lang === 'zh' ? '公顷' : 'га'}
+                        </span>
                     </div>
                 </div>
-
                 {/* Сфера бизнеса */}
                 <div className="bg-[#101f42]/40 p-3 rounded-xl border border-slate-800/60 mb-5">
                     <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">{d.industry}</span>
@@ -222,14 +221,20 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
 
             {/* Главная кнопка перехода к торгам */}
             <div className="mt-4">
-                <a
-                    href={plot.auksionUrl || "https://e-auksion.uz"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-center text-[10px] md:text-xs uppercase tracking-wider rounded-xl block transition-all shadow-lg shadow-amber-950/20 active:scale-[0.98]"
-                >
-                    {d.btn}
-                </a>
+                {plot.auksionUrl ? (
+                    <a
+                        href={plot.auksionUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-center text-[10px] md:text-xs uppercase tracking-wider rounded-xl block transition-all shadow-lg shadow-amber-950/20 active:scale-[0.98]"
+                    >
+                        {d.btn}
+                    </a>
+                ) : (
+                    <div className="w-full py-3 bg-slate-800 text-slate-500 font-bold text-center text-[10px] md:text-xs uppercase tracking-wider rounded-xl border border-slate-700 cursor-not-allowed">
+                        {lang === 'zh' ? '暂无拍卖链接' : lang === 'ru' ? 'Ссылка пока не добавлена' : 'Havola hozircha yo\'q'}
+                    </div>
+                )}
             </div>
         </div>
     );
