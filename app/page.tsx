@@ -156,7 +156,7 @@ export default function Home() {
         <div className="p-4 border-t border-slate-800">
           <div className="text-[10px] text-slate-500 text-center font-medium">
             v1.1 • Piskent tumani
-          </div>
+          </div>f
         </div>
       </div>
 
