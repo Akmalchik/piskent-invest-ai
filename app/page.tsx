@@ -56,8 +56,7 @@ export default function Home() {
   const localLabels = {
     uz: {
       portalInfo: "📍 Piskent tuman investitsiya portali",
-      adminOn: "🔒 Admin rejimini yoqish",
-      adminOff: "🔓 Admin: Foydalanuvchi rejimi",
+
       mapTab: "🗺️ Investitsiya xaritasi",
       aiTab: "🤖 AI Maslahatchi",
       ga: "GA",
@@ -65,8 +64,7 @@ export default function Home() {
     },
     ru: {
       portalInfo: "📍 Инвестиционный портал Пискентского района",
-      adminOn: "🔒 Включить режим админа",
-      adminOff: "🔓 Админ: Режим инвестора",
+
       mapTab: "🗺️ Инвестиционная карта",
       aiTab: "🤖 AI Консультант",
       ga: "ГА",
@@ -74,8 +72,7 @@ export default function Home() {
     },
     en: {
       portalInfo: "📍 Piskent District Investment Portal",
-      adminOn: "🔒 Enable Admin Mode",
-      adminOff: "🔓 Admin: User Mode",
+
       mapTab: "🗺️ Investment Map",
       aiTab: "🤖 AI Consultant",
       ga: "HA",
@@ -83,8 +80,7 @@ export default function Home() {
     },
     zh: {
       portalInfo: "📍 皮斯肯特地区投资门户网站",
-      adminOn: "🔒 开启管理员模式",
-      adminOff: "🔓 管理员：投资者模式",
+
       mapTab: "🗺️ 投资地图",
       aiTab: "🤖 AI 投资顾问",
       ga: "公顷",
@@ -92,8 +88,7 @@ export default function Home() {
     }
   }[lang] || {
     portalInfo: "📍 Piskent tuman investitsiya portali",
-    adminOn: "🔒 Admin rejimini yoqish",
-    adminOff: "🔓 Admin: Foydalanuvchi rejimi",
+
     mapTab: "🗺️ Investitsiya xaritasi",
     aiTab: "🤖 AI Maslahatchi",
     ga: "GA",
@@ -157,21 +152,11 @@ export default function Home() {
           </nav>
         </div>
 
-        {/* УПРАВЛЯЕМАЯ СЕКРЕТНАЯ АДМИНКА ДЛЯ ПРЕЗЕНТАЦИИ ХОКИМУ */}
-        <div className="p-4 border-t border-slate-800 space-y-2">
-          <button
-            onClick={() => {
-              setIsAdminMode(!isAdminMode);
-              setAdminMarkerCoords(null);
-            }}
-            className={`w-full py-2.5 px-3 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all border text-center ${isAdminMode
-              ? 'bg-amber-500/10 text-amber-400 border-amber-500/30 shadow-inner'
-              : 'bg-slate-900/40 text-slate-500 border-slate-800/60 hover:text-slate-300 hover:border-slate-700'
-              }`}
-          >
-            {isAdminMode ? localLabels.adminOff : localLabels.adminOn}
-          </button>
-          <div className="text-[10px] text-slate-500 text-center font-medium">v1.1 • Piskent tumani</div>
+        {/* Финальный вид подвала: только версия, никакой кнопки админки */}
+        <div className="p-4 border-t border-slate-800">
+          <div className="text-[10px] text-slate-500 text-center font-medium">
+            v1.1 • Piskent tumani
+          </div>
         </div>
       </div>
 

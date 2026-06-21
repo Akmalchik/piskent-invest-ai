@@ -344,14 +344,16 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
 
                 <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gradient-to-b from-[#040814] to-[#060c1f]">
                     {chatMessages.length === 0 ? (
-                        <div className="text-center my-auto flex flex-col items-center justify-center h-full pt-4 animate-fade-in">
-                            <div className="w-12 h-12 bg-gradient-to-b from-cyan-500/10 to-blue-500/5 text-cyan-400 border border-cyan-500/20 rounded-2xl flex items-center justify-center text-xl mb-4 shadow-xl shadow-cyan-950/50">📊</div>
-                            <h4 className="text-xs md:text-sm font-bold text-white mb-2 tracking-wide px-4">{chatLabels.online}</h4>
-                            <p className="text-[11px] text-slate-400 max-w-xs mb-6 leading-relaxed px-4">{chatLabels.desc}</p>
+                        <div className="text-center my-auto flex flex-col items-center justify-center h-full pt-4 animate-fade-in px-4">
+                            <div className="w-12 h-12 bg-gradient-to-b from-cyan-500/10 to-blue-500/5 text-cyan-400 border border-cyan-500/20 rounded-2xl flex items-center justify-center text-xl mb-4 shadow-xl shadow-cyan-950/50">🤖</div>
+                            <h4 className="text-sm font-bold text-white mb-2 tracking-wide">Piskent Invest AI</h4>
+                            <p className="text-[11px] text-slate-400 max-w-xs mb-6 leading-relaxed">
+                                {lang === 'ru' ? "Привет! Я помощник хокимията. Спросите меня о свободных лотах или инвестиционных площадках." : "Salom! Men hokimlik yordamchisiman. Bo'sh yer maydonlari haqida so'rang."}
+                            </p>
 
-                            <div className="flex flex-col gap-2 w-full max-w-xs px-4">
-                                <button onClick={() => handleSendMessage(lang === 'zh' ? "显示工业园区" : lang === 'ru' ? "Покажи промышленные зоны" : "Sanoat zonalari")} className="p-3 bg-[#0b1329]/80 hover:bg-[#111c3a] border border-slate-900 rounded-xl text-left text-[10px] md:text-[11px] font-medium text-slate-300 transition-all shadow-md flex items-center gap-2">🏭 <span>{chatLabels.p1}</span></button>
-                                <button onClick={() => handleSendMessage(lang === 'zh' ? "显示纺织土地" : lang === 'ru' ? "Покажи текстильные лоты" : "To'qimachilik lotlari")} className="p-3 bg-[#0b1329]/80 hover:bg-[#111c3a] border border-slate-900 rounded-xl text-left text-[10px] md:text-[11px] font-medium text-slate-300 transition-all shadow-md flex items-center gap-2">🧵 <span>{chatLabels.p2}</span></button>
+                            <div className="flex flex-col gap-2 w-full max-w-xs">
+                                <button onClick={() => handleSendMessage(lang === 'ru' ? "Покажи промышленные зоны" : "Sanoat zonalari")} className="p-3 bg-[#0b1329]/80 hover:bg-[#111c3a] border border-slate-900 rounded-xl text-left text-[11px] font-medium text-slate-300 transition-all shadow-md flex items-center gap-2">🏭 <span>{lang === 'ru' ? "Промышленные зоны" : "Sanoat zonalari"}</span></button>
+                                <button onClick={() => handleSendMessage(lang === 'ru' ? "Покажи текстильные лоты" : "To'qimachilik lotlari")} className="p-3 bg-[#0b1329]/80 hover:bg-[#111c3a] border border-slate-900 rounded-xl text-left text-[11px] font-medium text-slate-300 transition-all shadow-md flex items-center gap-2">🧵 <span>{lang === 'ru' ? "Текстильные лоты" : "To'qimachilik lotlari"}</span></button>
                             </div>
                         </div>
                     ) : (
@@ -362,37 +364,23 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                                     : 'bg-[#0b1329]/90 border border-slate-800/80 text-slate-200 rounded-tl-none backdrop-blur-sm relative'
                                     }`}>
                                     <div className="whitespace-pre-line">{msg.text}</div>
-
                                     {msg.sender === 'ai' && msg.recommendedPlot && (
                                         <div className="mt-3.5 pt-3 border-t border-slate-800/60 flex flex-col sm:flex-row gap-2 justify-end">
                                             {msg.recommendedPlot.auksionUrl && (
-                                                <a
-                                                    href={msg.recommendedPlot.auksionUrl}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5"
-                                                >
+                                                <a href={msg.recommendedPlot.auksionUrl} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5">
                                                     <span>{chatLabels.pageBtn}</span> 🌐
                                                 </a>
                                             )}
-                                            <button
-                                                onClick={() => onSelectPlot(msg.recommendedPlot)}
-                                                className="px-3.5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md shadow-cyan-500/20"
-                                            >
+                                            <button onClick={() => onSelectPlot(msg.recommendedPlot)} className="px-3.5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md shadow-cyan-500/20">
                                                 <span>{chatLabels.mapBtn}</span> 📍
                                             </button>
                                         </div>
                                     )}
                                 </div>
-
                                 {msg.sender === 'ai' && msg.suggestions && (
                                     <div className="flex flex-wrap gap-1.5 mt-2 max-w-[85%]">
                                         {msg.suggestions.map((suggestion: string, sIdx: number) => (
-                                            <button
-                                                key={sIdx}
-                                                onClick={() => suggestion.includes('Сбросить') || suggestion.includes('tozalash') || suggestion.includes('Очистить') || suggestion.includes('清空') ? resetChat() : handleSendMessage(suggestion)}
-                                                className="px-3 py-1.5 bg-[#111c3a]/50 hover:bg-[#17264e] border border-cyan-500/10 hover:border-cyan-500/30 rounded-xl text-[10px] font-semibold text-cyan-400 transition-all shadow-sm"
-                                            >
+                                            <button key={sIdx} onClick={() => suggestion.includes('Сбросить') || suggestion.includes('Очистить') ? resetChat() : handleSendMessage(suggestion)} className="px-3 py-1.5 bg-[#111c3a]/50 hover:bg-[#17264e] border border-cyan-500/10 rounded-xl text-[10px] font-semibold text-cyan-400 transition-all shadow-sm">
                                                 {suggestion}
                                             </button>
                                         ))}
@@ -401,7 +389,6 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                             </div>
                         ))
                     )}
-
                     {isTyping && (
                         <div className="flex justify-start animate-fade-in">
                             <div className="bg-[#0b1329]/80 border border-slate-800/60 px-4 py-3 rounded-2xl rounded-tl-none flex items-center gap-1">
