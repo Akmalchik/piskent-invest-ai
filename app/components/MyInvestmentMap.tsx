@@ -80,29 +80,14 @@ export default function MyInvestmentMap({
                 loadFallbackPlots();
             });
 
+        // ЗАМЕНИ ТАКУЮ ФУНКЦИЮ НА ЭТУ:
         function loadFallbackPlots() {
             const saved = localStorage.getItem('piskent_plots');
             if (saved) {
                 setPlots(JSON.parse(saved));
             } else {
-                // Если файла еще нет, показываем стартовый лот
-                setPlots([
-                    {
-                        "id": 500,
-                        "name": "Piskent Sanoat Markazi - LOT №51555",
-                        "area": 15.0,
-                        "budget": 180000000,
-                        "industry": "Production",
-                        "status": "E-auksion",
-                        "color": "#06b6d4",
-                        "polygonCoordinates": [
-                            [40.9110, 69.3410],
-                            [40.9130, 69.3410],
-                            [40.9130, 69.3440],
-                            [40.9110, 69.3440]
-                        ]
-                    }
-                ]);
+                // УБИРАЕМ "стартовый лот" И ОСТАВЛЯЕМ МАССИВ ПУСТЫМ
+                setPlots([]);
             }
         }
     }, [lang]);
