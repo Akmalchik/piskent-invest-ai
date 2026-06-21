@@ -48,24 +48,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             });
 
         function loadFallbackPlots() {
-            const saved = localStorage.getItem('piskent_plots');
-            if (saved) {
-                setPlots(JSON.parse(saved));
-            } else {
-                setPlots([
-                    {
-                        "id": 500,
-                        "name": lang === 'ru' ? "Piskent Sanoat Markazi - LOT №51555" : "Piskent Sanoat Markazi - LOT №51555",
-                        "area": 15.0,
-                        "budget": 180000000,
-                        "industry": "Production",
-                        "status": "E-auksion",
-                        "jobs": 120,
-                        "infrastructure": { "gas": "Mavjud", "power": "400 кВт", "water": "Mavjud", "road": "Asfalt" },
-                        "auksionUrl": "https://e-auksion.uz/yuridik-pages/lots?region_id=11&district_id=1116"
-                    }
-                ]);
-            }
+            setPlots([]); // Принудительно очищаем список
         }
     }, [lang]);
 

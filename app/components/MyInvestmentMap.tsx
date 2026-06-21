@@ -62,31 +62,32 @@ export default function MyInvestmentMap({
     const [plots, setPlots] = useState<any[]>([]);
     const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
 
-    // 1. ИСПРАВЛЕНО: Загружаем живые данные из нашего парсера e-auksion
-    useEffect(() => {
-        fetch('/scraped_plots.json')
-            .then(res => {
-                if (res.ok) return res.json();
-                throw new Error('No scraped data');
-            })
-            .then(data => {
-                if (data && data.length > 0) {
-                    setPlots(data);
-                } else {
-                    loadFallbackPlots();
-                }
-            })
-            .catch(() => {
-                loadFallbackPlots();
-            });
-
-        // ЗАМЕНИ ТАКУЮ ФУНКЦИЮ НА ЭТУ:
-        function loadFallbackPlots() {
-            // Просто ничего не делаем или задаем пустой массив, 
-            // не глядя на localStorage
-            setPlots([]);
-        }
-    }, [lang]);
+    /*  // 1. ИСПРАВЛЕНО: Загружаем живые данные из нашего парсера e-auksion
+      useEffect(() => {
+          fetch('/scraped_plots.json')
+              .then(res => {
+                  if (res.ok) return res.json();
+                  throw new Error('No scraped data');
+              })
+              .then(data => {
+                  if (data && data.length > 0) {
+                      setPlots(data);
+                  } else {
+                      loadFallbackPlots();
+                  }
+              })
+              .catch(() => {
+                  setPlots([]); // Теперь при ошибке карта будет пустой, а не рисовать солдатика
+              });
+  
+          // ЗАМЕНИ ТАКУЮ ФУНКЦИЮ НА ЭТУ:
+          function loadFallbackPlots() {
+              // Просто ничего не делаем или задаем пустой массив, 
+              // не глядя на localStorage
+              setPlots([]);
+          }
+      }, [lang]);
+      */
 
     // Умная нормализация координат лота под формат Leaflet [lat, lng]
     const getPolygonCoords = (plot: any) => {
