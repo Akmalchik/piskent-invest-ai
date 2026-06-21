@@ -106,31 +106,23 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
         `;
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY || ''}`, {
+            const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: systemInstruction + "\n\nИнвестор пишет: " + messageText }] }],
-                    safetySettings: [
-                        { category: "HARM_CATEGORY_HATRED", threshold: "BLOCK_NONE" },
-                        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-                    ]
-                })
+                body: JSON.stringify({ message: messageText, plots, lang }),
             });
 
-            if (!response.ok) throw new Error(`Google API Error: ${response.status}`);
+            if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
             const data = await response.json();
-            let aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-            if (!aiText) throw new Error("Empty response");
+            let aiText = data.text || '';
+            if (!aiText) throw new Error('Empty response');
 
             let finalPlot = null;
             const match = aiText.match(/\[RECOMMEND_ID:\s*(\d+)\]/);
             if (match) {
                 const recommendedId = parseInt(match[1]);
-                finalPlot = plots.find(p => p.id === recommendedId);
+                finalPlot = plots.find((p: any) => p.id === recommendedId);
                 aiText = aiText.replace(/\[RECOMMEND_ID:\s*\d+\]/, '').trim();
             }
 
@@ -141,16 +133,22 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                     sender: 'ai',
                     text: aiText,
                     recommendedPlot: finalPlot || (textToSend ? plots[0] : null),
-                    suggestions: lang === 'ru' ? ["⚡ Инфраструктура", "💼 Рабочие места"] : lang === 'zh' ? ["⚡ 基础设施", "💼 创造就业"] : lang === 'en' ? ["⚡ Infrastructure", "💼 Jobs Created"] : ["⚡ Infratuzilma", "💼 Ish o'rinlari"]
-                }
+                    suggestions:
+                        lang === 'ru' ? ['⚡ Инфраструктура', '💼 Рабочие места'] :
+                            lang === 'zh' ? ['⚡ 基础设施', '💼 创造就业'] :
+                                lang === 'en' ? ['⚡ Infrastructure', '💼 Jobs Created'] :
+                                    ['⚡ Infratuzilma', '💼 Ish o\'rinlari'],
+                },
             ]);
 
-        } catch (error: any) {
+        }
+        catch (error: any) {
             console.log("Gemini API Offline, запуск локального предохранителя.");
 
             let backupText = "";
             let nextSuggestions: string[] = [];
             let includeButtons = false;
+
 
             if (lang === 'ru') {
                 if (isGibberish || (!matchedPlot && !isContextRequest && !isGeneralGreeting)) {
