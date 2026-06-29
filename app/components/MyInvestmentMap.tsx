@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Polygon, Marker, useMap, useMapEvents } from 'react-leaflet';
 import PlotCard from './PlotCard';
 import L from 'leaflet';
+import { useSearchParams } from 'next/navigation';
 
 // Фикс для дефолтных иконок Leaflet, чтобы они не ломались при сборке Next.js
 if (typeof window !== 'undefined') {
@@ -14,7 +15,20 @@ if (typeof window !== 'undefined') {
         shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
     });
 }
+function MapController({ plotId, plots }: { plotId: string | null, plots: any[] }) {
+    const map = useMap();
 
+    useEffect(() => {
+        if (plotId && plots.length > 0) {
+            const targetPlot = plots.find((p) => p.id.toString() === plotId);
+            if (targetPlot) {
+                map.flyTo([targetPlot.lat, targetPlot.lng], 18, { duration: 2 });
+            }
+        }
+    }, [plotId, plots, map]);
+
+    return null;
+}
 // Ловит клики сотрудника отдела инвестиций Пискента
 function MapClickHandler({ isAdminMode, onMapClick }: { isAdminMode: boolean, onMapClick?: (lat: number, lng: number) => void }) {
     useMapEvents({
@@ -23,6 +37,7 @@ function MapClickHandler({ isAdminMode, onMapClick }: { isAdminMode: boolean, on
                 onMapClick(e.latlng.lat, e.latlng.lng);
             }
         },
+    
     });
     return null;
 }
@@ -56,7 +71,8 @@ export default function MyInvestmentMap({
 }) {
     const defaultCenter: [number, number] = [40.8934, 69.3122];
     const defaultZoom = 13;
-
+    const searchParams = useSearchParams();
+    const plotIdFromUrl = searchParams.get('plotId');
     const [statusFilter, setStatusFilter] = useState('Barchasi');
     const [isPanelVisible, setIsPanelVisible] = useState(true);
     const [plots, setPlots] = useState<any[]>([]);
@@ -173,7 +189,11 @@ export default function MyInvestmentMap({
                     attribution='&copy; Google Maps Road'
                     url="https://mt1.google.com/vt/lyrs=m&hl=ru&x={x}&y={y}&z={z}"
                 />
+                {/* 2. Контроллер для ссылок (летит к нужному лоту) */}
+    <MapController plotId={plotIdFromUrl} plots={plots} />
 
+    {/* 3. Контроллер для кликов админа */}
+    <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
                 <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
 
                 {/* Отрисовка цветных полигонов из парсера */}
