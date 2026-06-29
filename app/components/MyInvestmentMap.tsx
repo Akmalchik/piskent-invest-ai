@@ -190,10 +190,10 @@ export default function MyInvestmentMap({
                     url="https://mt1.google.com/vt/lyrs=m&hl=ru&x={x}&y={y}&z={z}"
                 />
                 {/* 2. Контроллер для ссылок (летит к нужному лоту) */}
-    <MapController plotId={plotIdFromUrl} plots={plots} />
+                <MapController plotId={plotIdFromUrl} plots={plots} />
 
-    {/* 3. Контроллер для кликов админа */}
-    <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
+                {/* 3. Контроллер для кликов админа */}
+                <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
                 <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
 
                 {/* Отрисовка цветных полигонов из парсера */}
