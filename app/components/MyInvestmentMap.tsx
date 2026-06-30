@@ -15,20 +15,7 @@ if (typeof window !== 'undefined') {
         shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
     });
 }
-function MapController({ plotId, plots }: { plotId: string | null, plots: any[] }) {
-    const map = useMap();
 
-    useEffect(() => {
-        if (plotId && plots.length > 0) {
-            const targetPlot = plots.find((p) => p.id.toString() === plotId);
-            if (targetPlot) {
-                map.flyTo([targetPlot.lat, targetPlot.lng], 18, { duration: 2 });
-            }
-        }
-    }, [plotId, plots, map]);
-
-    return null;
-}
 // Ловит клики сотрудника отдела инвестиций Пискента
 function MapClickHandler({ isAdminMode, onMapClick }: { isAdminMode: boolean, onMapClick?: (lat: number, lng: number) => void }) {
     useMapEvents({
@@ -42,15 +29,29 @@ function MapClickHandler({ isAdminMode, onMapClick }: { isAdminMode: boolean, on
     return null;
 }
 
-function MapController({ viewport }: { viewport: any }) {
+function MapController({ viewport, plotId, plots }: { viewport?: any, plotId: string | null, plots: any[] }) {
     const map = useMap();
+
+    // 1. Логика зума (твоя старая)
     useEffect(() => {
         if (viewport && viewport.center) {
             map.setView(viewport.center, viewport.zoom, { animate: true });
         }
     }, [viewport, map]);
+
+    // 2. Логика прыжка к участку (новая)
+    useEffect(() => {
+        if (plotId && plots.length > 0) {
+            const targetPlot = plots.find((p) => p.id.toString() === plotId);
+            if (targetPlot) {
+                map.flyTo([targetPlot.lat, targetPlot.lng], 18, { duration: 2 });
+            }
+        }
+    }, [plotId, plots, map]);
+
     return null;
 }
+
 
 export default function MyInvestmentMap({
     viewport,
