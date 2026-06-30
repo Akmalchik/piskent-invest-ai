@@ -37,7 +37,7 @@ function MapClickHandler({ isAdminMode, onMapClick }: { isAdminMode: boolean, on
                 onMapClick(e.latlng.lat, e.latlng.lng);
             }
         },
-    
+
     });
     return null;
 }
@@ -180,7 +180,6 @@ export default function MyInvestmentMap({
         <div className="w-full h-full relative">
 
             <MapContainer center={defaultCenter} zoom={defaultZoom} className="h-full w-full z-0" zoomControl={false}>
-                <MapController viewport={viewport} />
 
                 {/* 2. ИСПРАВЛЕНО: Подключаем чистые тайлы Google Спутник (lyrs=s) БЕЗ точек POI, магазинов и туалетов */}
                 {/* 2. ИСПРАВЛЕНО: Подключаем чистые тайлы Google Спутник */}
@@ -190,8 +189,7 @@ export default function MyInvestmentMap({
                     url="https://mt1.google.com/vt/lyrs=m&hl=ru&x={x}&y={y}&z={z}"
                 />
                 {/* 2. Контроллер для ссылок (летит к нужному лоту) */}
-                <MapController plotId={plotIdFromUrl} plots={plots} />
-
+                <MapController viewport={viewport} plotId={plotIdFromUrl} plots={plots} />
                 {/* 3. Контроллер для кликов админа */}
                 <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
                 <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
