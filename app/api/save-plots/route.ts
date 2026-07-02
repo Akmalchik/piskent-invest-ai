@@ -63,8 +63,8 @@ export async function GET() {
         }
         const normalizedPlots = (plots || []).map((plot: any) => ({
             ...plot,
-            image: plot.image || plot.image_url,
-            auksionUrl: plot.auksionUrl || plot.auksion_url,
+            image: plot.image || plot.image_url || plot.photo_url,
+            auksionUrl: plot.auksionUrl || plot.auksion_url || plot.auction_url,
             polygonCoordinates: plot.polygonCoordinates || plot.polygon_coords,
         }));
         // Если в базе уже есть данные — просто отдаем их фронтенду на карту
