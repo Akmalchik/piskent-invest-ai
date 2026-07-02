@@ -32,6 +32,7 @@ export default function AdminPage() {
     const [area, setArea] = useState('');
     const [industry, setIndustry] = useState('Sanoat / Ishlab chiqarish');
     const [status, setStatus] = useState('Mavjud');
+    const [auksionUrl, setAuksionUrl] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     // Поля инфраструктуры лота
     const [gas, setGas] = useState('Mavjud');
@@ -111,6 +112,7 @@ export default function AdminPage() {
             status,
             jobs: 0,
             image: imageUrl,
+            auksionUrl: auksionUrl || '',
             infrastructure: { gas, power, water, road },
             polygonCoordinates: generatedPolygon
         };
@@ -218,6 +220,18 @@ export default function AdminPage() {
                                 value={imageUrl}
                                 onChange={(e) => setImageUrl(e.target.value)}
                                 placeholder="https://..."
+                                className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="text-[10px] font-bold text-slate-400 block mb-1">
+                                ССЫЛКА НА E-AUKSION / НЕОБЯЗАТЕЛЬНО
+                            </label>
+                            <input
+                                type="url"
+                                value={auksionUrl}
+                                onChange={(e) => setAuksionUrl(e.target.value)}
+                                placeholder="https://e-auksion.uz/..."
                                 className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
                             />
                         </div>
