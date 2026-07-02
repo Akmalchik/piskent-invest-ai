@@ -61,9 +61,14 @@ export async function GET() {
                 }
             }
         }
-
+        const normalizedPlots = (plots || []).map((plot: any) => ({
+            ...plot,
+            image: plot.image || plot.image_url,
+            auksionUrl: plot.auksionUrl || plot.auksion_url,
+            polygonCoordinates: plot.polygonCoordinates || plot.polygon_coords,
+        }));
         // Если в базе уже есть данные — просто отдаем их фронтенду на карту
-        return NextResponse.json(plots || []);
+        return NextResponse.json(normalizedPlots);
     } catch (error: any) {
         return NextResponse.json(
             { success: false, error: `Ошибка бэкенда: ${error.message}` },
