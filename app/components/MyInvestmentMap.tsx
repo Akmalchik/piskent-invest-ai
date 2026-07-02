@@ -105,6 +105,19 @@ export default function MyInvestmentMap({
           }
       }, [lang]);
       */
+    useEffect(() => {
+        fetch('/api/save-plots')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setPlots(data);
+                }
+            })
+            .catch(err => {
+                console.error('Ошибка загрузки лотов:', err);
+                setPlots([]);
+            });
+    }, []);
 
     // Умная нормализация координат лота под формат Leaflet [lat, lng]
     const getPolygonCoords = (plot: any) => {
