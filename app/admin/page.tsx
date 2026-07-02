@@ -30,10 +30,8 @@ export default function AdminPage() {
     // Поля формы для ручного создания нового объекта (оригинальная верстка и стейты Акмаля)
     const [name, setName] = useState('');
     const [area, setArea] = useState('');
-    const [budget, setBudget] = useState('');
     const [industry, setIndustry] = useState('Sanoat / Ishlab chiqarish');
     const [status, setStatus] = useState('Mavjud');
-    const [jobs, setJobs] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     // Поля инфраструктуры лота
     const [gas, setGas] = useState('Mavjud');
@@ -86,8 +84,8 @@ export default function AdminPage() {
     // СПОСОБ №2: СОЗДАНИЕ СОВЕРШЕННО НОВОГО ЛОТА ЧЕРЕЗ ФОРМУ ВРУЧНУЮ
     const handleSavePlot = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name || !area || !markerCoords) {
-            alert('Заполните обязательные поля (Название, Площадь) и кликните на карту!');
+        if (!name || !area || !imageUrl || !markerCoords) {
+            alert('Заполните обязательные поля (Название, Площадь, Фото) и кликните на карту!');
             return;
         }
 
@@ -108,11 +106,11 @@ export default function AdminPage() {
             id: Date.now(), // Уникальный ID на базе времени создания
             name,
             area: parseFloat(area),
-            budget: parseFloat(budget) || 0,
+            budget: 0,
             industry,
             status,
-            jobs: parseInt(jobs) || 0,
-            image: imageUrl || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80",
+            jobs: 0,
+            image: imageUrl,
             infrastructure: { gas, power, water, road },
             polygonCoordinates: generatedPolygon
         };
@@ -138,7 +136,7 @@ export default function AdminPage() {
             if (data.success) {
                 setSuccessMessage(true);
                 // Зачищаем форму после успешной отправки данных
-                setName(''); setArea(''); setBudget(''); setJobs(''); setImageUrl('');
+                setName(''); setArea(''); setImageUrl('');
                 setMarkerCoords(null);
                 setTimeout(() => setSuccessMessage(false), 4000);
             }
@@ -210,17 +208,20 @@ export default function AdminPage() {
                                 <label className="text-[10px] font-bold text-slate-400 block mb-1">ПЛОЩАДЬ (В ГЕКТАРАХ)</label>
                                 <input type="number" step="0.1" value={area} onChange={(e) => setArea(e.target.value)} placeholder="4.5" className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" />
                             </div>
-                            <div>
-                                <label className="text-[10px] font-bold text-slate-400 block mb-1">РАБОЧИЕ МЕСТА (ПЛАН)</label>
-                                <input type="number" value={jobs} onChange={(e) => setJobs(e.target.value)} placeholder="120" className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" />
-                            </div>
                         </div>
-
+                        <div>
+                            <label className="text-[10px] font-bold text-slate-400 block mb-1">
+                                URL ФОТО ОБЪЕКТА
+                            </label>
+                            <input
+                                type="url"
+                                value={imageUrl}
+                                onChange={(e) => setImageUrl(e.target.value)}
+                                placeholder="https://..."
+                                className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
+                            />
+                        </div>
                         <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="text-[10px] font-bold text-slate-400 block mb-1">ОБЪЕМ ИНВЕСТИЦИЙ (USD)</label>
-                                <input type="number" value={budget} onChange={(e) => setBudget(e.target.value)} placeholder="250000" className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" />
-                            </div>
                             <div>
                                 <label className="text-[10px] font-bold text-slate-400 block mb-1">ОТРАСЛЬ БИЗНЕСА</label>
                                 <select value={industry} onChange={(e) => setIndustry(e.target.value)} className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none cursor-pointer">
