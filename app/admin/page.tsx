@@ -1,5 +1,6 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+/// <reference types="react" />
+import React, { useState, useEffect, type FormEvent } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
@@ -14,7 +15,7 @@ export default function AdminPage() {
     const lang = 'uz';
     const [inputPassword, setInputPassword] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (inputPassword === 'Piskent2026!') {
             setIsAuthenticated(true);
@@ -25,7 +26,6 @@ export default function AdminPage() {
 
     // Стейты для управления массивом лотов и выбранным ID лота
     const [plots, setPlots] = useState<any[]>([]);
-    const [targetPlotId, setTargetPlotId] = useState<string>('');
     const [isMounted, setIsMounted] = useState(false);
     // Поля формы для ручного создания нового объекта (оригинальная верстка и стейты Акмаля)
     const [name, setName] = useState('');
@@ -35,8 +35,6 @@ export default function AdminPage() {
     const [status, setStatus] = useState('Mavjud');
     const [jobs, setJobs] = useState('');
     const [imageUrl, setImageUrl] = useState('');
-    const [auksionUrl, setAuksionUrl] = useState('');
-
     // Поля инфраструктуры лота
     const [gas, setGas] = useState('Mavjud');
     const [power, setPower] = useState('100 кВт');
@@ -68,30 +66,6 @@ export default function AdminPage() {
                     console.log('FIRST ID:', data[0]?.id);
                     setPlots(data);
                     console.log('SET PLOTS DONE');
-                } else {
-                    // ЕСЛИ БАЗА СУПЕБЕЙС ПУСТАЯ (вернула []):
-                    console.log('Онлайн-база piskent_plots пуста. Запускаем перенос лотов...');
-
-                    // Читаем локальный файл парсера с твоего Mac
-                    const localRes = await fetch('/scraped_plots.json');
-                    const localPlots = await localRes.json();
-
-                    if (Array.isArray(localPlots) && localPlots.length > 0) {
-                        setPlots(localPlots);
-
-                        // Отправляем массив на сервер для автоматической миграции в Supabase
-                        const saveRes = await fetch('/api/save-plots', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(localPlots)
-                        });
-
-                        if (saveRes.ok) {
-                            console.log('Все лоты успешно перенесены в онлайн-базу Supabase!');
-                        } else {
-                            console.error('Не удалось автоматически сохранить лоты в базу.');
-                        }
-                    }
                 }
             })
             .catch(err => {
@@ -108,62 +82,6 @@ export default function AdminPage() {
         setMarkerCoords([lat, lng]);
     };
 
-    // СПОСОБ №1: БЫСТРЫЙ ПЕРЕНЕС СУЩЕСТВУЮЩЕГО ЛОТА ИЗ СПИСКА 120 ШТУК
-    const handleQuickMove = async () => {
-        // Проверка: если точка не выбрана или лот в списке не определен — прерываем выполнение
-        if (!markerCoords || !targetPlotId) {
-            alert('Пожалуйста, выберите лот из списка и кликните на карту, чтобы поставить маркер!');
-            return;
-        }
-
-        const lat = markerCoords[0];
-        const lng = markerCoords[1];
-
-        // Клонируем массив и пересчитываем координаты полигона для выбранного ID вокруг точки клика
-        const updatedPlots = plots.map(plot => {
-            if (plot.id === parseInt(targetPlotId)) {
-                return {
-                    ...plot,
-                    polygonCoordinates: [
-                        [lat, lng],
-                        [lat + 0.0010, lng],
-                        [lat + 0.0010, lng + 0.0014],
-                        [lat, lng + 0.0014]
-                    ]
-                };
-            }
-            return plot;
-        });
-
-        // Мгновенно обновляем карту на экране для плавной работы интерфейса
-        setPlots(updatedPlots);
-
-        // Отправляем измененную базу на сервер
-        try {
-            const res = await fetch('/api/save-plots', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedPlots)
-            });
-
-            // Если сервер вернул ошибку (например, 404 или 500) — выбрасываем её в блок catch
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Код ответа сервера: ${res.status}`);
-            }
-
-            const data = await res.json();
-            if (data.success) {
-                setSuccessMessage(true);
-                setMarkerCoords(null);
-                setTargetPlotId('');
-                setTimeout(() => setSuccessMessage(false), 4000);
-            }
-        } catch (err: any) {
-            // В случае сбоя выводим точную причину ошибки без скрытия деталей
-            alert(`Ошибка сохранения на бэкенде! Проверьте правильность папок. Текст ошибки: ${err.message}`);
-        }
-    };
 
     // СПОСОБ №2: СОЗДАНИЕ СОВЕРШЕННО НОВОГО ЛОТА ЧЕРЕЗ ФОРМУ ВРУЧНУЮ
     const handleSavePlot = async (e: React.FormEvent) => {
@@ -195,7 +113,6 @@ export default function AdminPage() {
             status,
             jobs: parseInt(jobs) || 0,
             image: imageUrl || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80",
-            auksionUrl,
             infrastructure: { gas, power, water, road },
             polygonCoordinates: generatedPolygon
         };
@@ -221,7 +138,7 @@ export default function AdminPage() {
             if (data.success) {
                 setSuccessMessage(true);
                 // Зачищаем форму после успешной отправки данных
-                setName(''); setArea(''); setBudget(''); setJobs(''); setImageUrl(''); setAuksionUrl('');
+                setName(''); setArea(''); setBudget(''); setJobs(''); setImageUrl('');
                 setMarkerCoords(null);
                 setTimeout(() => setSuccessMessage(false), 4000);
             }
@@ -279,39 +196,7 @@ export default function AdminPage() {
                         </div>
                     )}
 
-                    {/* БЫСТРАЯ ПОСАДКА ЛОТОВ С АУКЦИОНА */}
-                    <div className="bg-[#040814] p-4 rounded-xl border border-cyan-500/30 mb-6 space-y-3">
-                        <h2 className="text-[11px] font-black text-cyan-400 uppercase tracking-wider">⚡ Способ 1: Посадить готовый лот из E-Auksion</h2>
-                        <p className="text-[10px] text-slate-400">Кликните на карту справа, выберите лот из 120 собранных парсером и нажмите кнопку:</p>
 
-                        <div className="flex gap-2">
-                            <select
-                                value={targetPlotId}
-                                onChange={(e) => setTargetPlotId(e.target.value)}
-                                className="flex-1 bg-[#0b1329] border border-slate-800 rounded-xl p-2 text-xs text-white outline-none"
-                            >
-                                <option value="">-- Выберите лот по ID --</option>
-                                {plots.map((p, idx) => (
-                                    // ЗАКРЫВАЕМ ОШИБКУ КЛЮЧЕЙ REACT: склеиваем ID и уникальный индекс цикла, дубликаты исчезнут
-                                    <option key={`${p.id}-${idx}`} value={p.id}>ID: {p.id} | {p.name.substring(0, 30)}...</option>
-                                ))}
-                            </select>
-                            <button
-                                type="button"
-                                onClick={handleQuickMove}
-                                disabled={!targetPlotId || !markerCoords}
-                                className="bg-cyan-600 hover:bg-cyan-500 disabled:bg-slate-800 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all"
-                            >
-                                Привязать к точке
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="relative flex py-2 items-center">
-                        <div className="flex-grow border-t border-slate-800"></div>
-                        <span className="flex-shrink mx-4 text-[9px] text-slate-500 font-bold uppercase font-mono">ИЛИ СОЗДАТЬ НОВЫЙ ВРУЧНУЮ</span>
-                        <div className="flex-grow border-t border-slate-800"></div>
-                    </div>
 
                     {/* ФОРМА ИНСТРУМЕНТА №2 */}
                     <form onSubmit={handleSavePlot} className="space-y-4 mt-4">
@@ -356,10 +241,7 @@ export default function AdminPage() {
                                     <option value="Band">Band (Зарезервирован)</option>
                                 </select>
                             </div>
-                            <div>
-                                <label className="text-[10px] font-bold text-slate-400 block mb-1">ССЫЛКА НА E-AUKSION</label>
-                                <input type="url" value={auksionUrl} onChange={(e) => setAuksionUrl(e.target.value)} placeholder="https://e-auksion.uz/..." className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" />
-                            </div>
+
                         </div>
 
                         <div className="bg-[#040814] p-4 rounded-xl border border-slate-800 space-y-3">
