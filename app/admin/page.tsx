@@ -107,10 +107,8 @@ export default function AdminPage() {
             id: Date.now(), // Уникальный ID на базе времени создания
             name,
             area: parseFloat(area),
-            budget: 0,
             industry,
             status,
-            jobs: 0,
             image: imageUrl,
             auksionUrl: auksionUrl || '',
             infrastructure: { gas, power, water, road },
