@@ -209,7 +209,7 @@ export default function MyInvestmentMap({
                 <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
 
                 {/* Отрисовка цветных полигонов из парсера */}
-                {!isAdminMode && filteredPlots.map((plot: any) => {
+                {filteredPlots.map((plot: any) => {
                     const coords = getPolygonCoords(plot);
                     if (coords.length === 0) return null;
 

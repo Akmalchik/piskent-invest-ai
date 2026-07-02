@@ -64,6 +64,7 @@ export default function AdminPage() {
                     console.log('DATA LENGTH:', data.length);
                     console.log('FIRST ID:', data[0]?.id);
                     setPlots(data);
+                    console.log('PLOTS STATE:', data);
                     console.log('SET PLOTS DONE');
                 }
             })
@@ -285,6 +286,7 @@ export default function AdminPage() {
             <div className="flex-1 h-full relative bg-[#040814]">
                 {isMounted && (
                     <MyInvestmentMap
+                        key="admin-map"
                         viewport={null}
                         selectedPlot={null}
                         onSelectPlot={() => { }}
