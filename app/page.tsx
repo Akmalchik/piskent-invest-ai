@@ -41,7 +41,7 @@ function AnimatedNumber({ value }: { value: number }) {
 export default function Home() {
   const [activeTab, setActiveTab] = useState('ai');
   const [selectedPlot, setSelectedPlot] = useState(null);
-  const [plots, setPlots] = useState<any[]>([]);
+
   const [mapViewport, setMapViewport] = useState({ center: [40.9022, 69.3444], zoom: 13 });
   const [lang, setLang] = useState<'uz' | 'ru' | 'en' | 'zh'>('uz');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
