@@ -227,7 +227,6 @@ export default function MyInvestmentMap({
                 <MapController viewport={viewport} plotId={plotIdFromUrl} plots={plots} />
                 {/* 3. Контроллер для кликов админа */}
                 <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
-                <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
 
                 {/* Отрисовка цветных круговых зон из координат объектов */}
                 {filteredPlots.map((plot: any) => {

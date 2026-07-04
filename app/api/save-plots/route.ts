@@ -3,9 +3,35 @@ import { supabase } from '@/lib/supabase';
 import fs from 'fs';
 import path from 'path';
 
+const PLOTS_CACHE_TTL_MS = 60_000;
+let plotsCache: { data: any[]; expiresAt: number } | null = null;
+
+function jsonWithCache(data: any[]) {
+    return NextResponse.json(data, {
+        headers: {
+            'Cache-Control': 'max-age=0, s-maxage=60, stale-while-revalidate=300',
+        },
+    });
+}
+
+function rememberPlots(data: any[]) {
+    plotsCache = {
+        data,
+        expiresAt: Date.now() + PLOTS_CACHE_TTL_MS,
+    };
+}
+
+function clearPlotsCache() {
+    plotsCache = null;
+}
+
 // 1. МЕТОД GET: Чтение лотов из Supabase, а если пусто — чистка от лишних полей и автозаливка
 export async function GET() {
     try {
+        if (plotsCache && plotsCache.expiresAt > Date.now()) {
+            return jsonWithCache(plotsCache.data);
+        }
+
         // Проверяем, есть ли уже данные в таблице piskent_plots
         const { data: plots, error } = await supabase
             .from('piskent_plots')
@@ -57,7 +83,8 @@ export async function GET() {
                     if (insertError) throw insertError;
 
                     console.log('🎉 Автоматический перенос данных выполнен успешно!');
-                    return NextResponse.json(uniquePlots);
+                    rememberPlots(uniquePlots);
+                    return jsonWithCache(uniquePlots);
                 }
             }
         }
@@ -68,7 +95,8 @@ export async function GET() {
             polygonCoordinates: plot.polygonCoordinates || plot.polygon_coords,
         }));
         // Если в базе уже есть данные — просто отдаем их фронтенду на карту
-        return NextResponse.json(normalizedPlots);
+        rememberPlots(normalizedPlots);
+        return jsonWithCache(normalizedPlots);
     } catch (error: any) {
         return NextResponse.json(
             { success: false, error: `Ошибка бэкенда: ${error.message}` },
@@ -91,6 +119,7 @@ export async function POST(request: Request) {
 
         if (error) throw error;
 
+        clearPlotsCache();
         return NextResponse.json({ success: true, message: 'Координаты лотов успешно обновлены!' });
     } catch (error: any) {
         return NextResponse.json(
@@ -115,6 +144,7 @@ export async function PATCH(request: Request) {
 
         if (error) throw error;
 
+        clearPlotsCache();
         return NextResponse.json({ success: true, message: 'Объект успешно обновлен!' });
     } catch (error: any) {
         return NextResponse.json(
@@ -139,6 +169,7 @@ export async function DELETE(request: Request) {
 
         if (error) throw error;
 
+        clearPlotsCache();
         return NextResponse.json({ success: true, message: 'Объект успешно удален!' });
     } catch (error: any) {
         return NextResponse.json(

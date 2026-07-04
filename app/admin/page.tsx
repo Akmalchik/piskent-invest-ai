@@ -63,6 +63,11 @@ export default function AdminPage() {
 
     // Главный хук инициализации данных ГИС
     useEffect(() => {
+        if (!isAuthenticated) {
+            setIsMounted(false);
+            return;
+        }
+
         // Запрашиваем данные из нашей новой онлайн-базы через API-роут
         fetch('/api/save-plots')
             .then(res => {
@@ -92,7 +97,7 @@ export default function AdminPage() {
                 // Сигнализируем, что клиент готов и можно безопасно рендерить карту Leaflet
                 setIsMounted(true);
             });
-    }, []);
+    }, [isAuthenticated]);
 
     // Функция срабатывает, когда пользователь производит клик по Leaflet-карте справа
     const handleMapClick = (lat: number, lng: number) => {
