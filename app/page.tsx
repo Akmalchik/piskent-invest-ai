@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { translations } from './components/translations';
 
 // Загружаем карту динамически только в браузере
 const MyInvestmentMap = dynamic(() => import('./components/MyInvestmentMap'), {
@@ -20,10 +19,10 @@ function AnimatedNumber({ value }: { value: number }) {
     const end = value;
     if (start === end) return;
 
-    let totalDuration = 1500;
-    let incrementTime = Math.max(Math.floor(totalDuration / end), 15);
+    const totalDuration = 1500;
+    const incrementTime = Math.max(Math.floor(totalDuration / end), 15);
 
-    let timer = setInterval(() => {
+    const timer = setInterval(() => {
       start += Math.ceil(end / 60);
       if (start >= end) {
         clearInterval(timer);
@@ -47,11 +46,8 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Стейты управления скрытым режимом админа
-  const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
+  const [isAdminMode] = useState<boolean>(false);
   const [adminMarkerCoords, setAdminMarkerCoords] = useState<[number, number] | null>(null);
-
-  // Подключаем твой официальный словарь переводов
-  const t = translations[lang] || translations['uz'];
 
   // Дополнительные служебные переводы для каркаса, которых может не быть в translations.ts
   const localLabels = {
@@ -157,7 +153,7 @@ export default function Home() {
         <div className="p-4 border-t border-slate-800">
           <div className="text-[10px] text-slate-500 text-center font-medium">
             v1.1 • Piskent tumani
-          </div>f
+          </div>
         </div>
       </div>
 

@@ -26,6 +26,8 @@ export default function AdminPage() {
 
     // Стейты для управления массивом лотов и выбранным ID лота
     const [plots, setPlots] = useState<any[]>([]);
+    const [editingPlot, setEditingPlot] = useState<any | null>(null);
+    const [mapRefreshKey, setMapRefreshKey] = useState(0);
     const [isMounted, setIsMounted] = useState(false);
     // Поля формы для ручного создания нового объекта (оригинальная верстка и стейты Акмаля)
     const [name, setName] = useState('');
@@ -43,6 +45,21 @@ export default function AdminPage() {
     // Стейты для хранения координат клика и показа успешного баннера
     const [markerCoords, setMarkerCoords] = useState<[number, number] | null>(null);
     const [successMessage, setSuccessMessage] = useState(false);
+
+    const resetForm = () => {
+        setName('');
+        setArea('');
+        setIndustry('Sanoat / Ishlab chiqarish');
+        setStatus('Mavjud');
+        setAuksionUrl('');
+        setImageUrl('');
+        setGas('Mavjud');
+        setPower('100 кВт');
+        setWater('Mavjud');
+        setRoad('Asfalt');
+        setMarkerCoords(null);
+        setEditingPlot(null);
+    };
 
     // Главный хук инициализации данных ГИС
     useEffect(() => {
@@ -82,10 +99,82 @@ export default function AdminPage() {
         setMarkerCoords([lat, lng]);
     };
 
+    const handleSelectPlotForEdit = (plot: any) => {
+        const infrastructure = plot.infrastructure || {};
+        const polygonCoordinates = plot.polygonCoordinates || plot.polygon_coords;
+        const firstPoint = Array.isArray(polygonCoordinates?.[0])
+            ? polygonCoordinates[0]
+            : polygonCoordinates;
+
+        setEditingPlot(plot);
+        setName(plot.name || '');
+        setArea(plot.area !== undefined && plot.area !== null ? String(plot.area) : '');
+        setImageUrl(plot.image || plot.image_url || plot.photo_url || '');
+        setAuksionUrl(plot.auksionUrl || plot.auksion_url || plot.auction_url || '');
+        setIndustry(plot.industry || 'Production');
+        setStatus(plot.status || 'Mavjud');
+        setGas(infrastructure.gas || 'Mavjud');
+        setPower(infrastructure.power || infrastructure.electricity || '100 кВт');
+        setWater(infrastructure.water || 'Mavjud');
+        setRoad(infrastructure.road || 'Asfalt');
+
+        if (Array.isArray(firstPoint) && firstPoint.length >= 2) {
+            setMarkerCoords([Number(firstPoint[0]), Number(firstPoint[1])]);
+        } else {
+            setMarkerCoords(null);
+        }
+    };
+
 
     // СПОСОБ №2: СОЗДАНИЕ СОВЕРШЕННО НОВОГО ЛОТА ЧЕРЕЗ ФОРМУ ВРУЧНУЮ
     const handleSavePlot = async (e: React.FormEvent) => {
         e.preventDefault();
+        const isEditing = Boolean(editingPlot);
+
+        if (isEditing) {
+            if (!name || !area || !imageUrl) {
+                alert('Заполните обязательные поля (Название, Площадь, Фото)!');
+                return;
+            }
+
+            const updatedPlot = {
+                ...editingPlot,
+                name,
+                area: parseFloat(area),
+                industry,
+                status,
+                image: imageUrl,
+                auksionUrl: auksionUrl || '',
+                infrastructure: { gas, power, water, road },
+                polygonCoordinates: editingPlot.polygonCoordinates || editingPlot.polygon_coords || []
+            };
+
+            try {
+                const res = await fetch('/api/save-plots', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedPlot)
+                });
+
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.error || `Код ответа сервера: ${res.status}`);
+                }
+
+                const data = await res.json();
+                if (data.success) {
+                    setPlots(prev => prev.map(plot => plot.id === updatedPlot.id ? updatedPlot : plot));
+                    setSuccessMessage(true);
+                    resetForm();
+                    setMapRefreshKey(prev => prev + 1);
+                    setTimeout(() => setSuccessMessage(false), 4000);
+                }
+            } catch (err: any) {
+                alert(`Ошибка при сохранении изменений: ${err.message}`);
+            }
+            return;
+        }
+
         if (!name || !area || !imageUrl || !markerCoords) {
             alert('Заполните обязательные поля (Название, Площадь, Фото) и кликните на карту!');
             return;
@@ -139,6 +228,7 @@ export default function AdminPage() {
                 // Зачищаем форму после успешной отправки данных
                 setName(''); setArea(''); setImageUrl('');
                 setMarkerCoords(null);
+                setMapRefreshKey(prev => prev + 1);
                 setTimeout(() => setSuccessMessage(false), 4000);
             }
         } catch (err: any) {
@@ -276,7 +366,7 @@ export default function AdminPage() {
                         </div>
 
                         <button type="submit" className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all">
-                            💾 Создать и внедрить в общую базу
+                            {editingPlot ? '💾 Сохранить изменения' : '💾 Создать и внедрить в общую базу'}
                         </button>
                     </form>
                 </div>
@@ -286,10 +376,10 @@ export default function AdminPage() {
             <div className="flex-1 h-full relative bg-[#040814]">
                 {isMounted && (
                     <MyInvestmentMap
-                        key="admin-map"
+                        key={`admin-map-${mapRefreshKey}`}
                         viewport={null}
-                        selectedPlot={null}
-                        onSelectPlot={() => { }}
+                        selectedPlot={editingPlot}
+                        onSelectPlot={handleSelectPlotForEdit}
                         lang={lang}
                         isAdminMode={true}
                         onMapClick={handleMapClick}

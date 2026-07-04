@@ -99,3 +99,27 @@ export async function POST(request: Request) {
         );
     }
 }
+
+export async function PATCH(request: Request) {
+    try {
+        const incomingData = await request.json();
+
+        if (!incomingData || !incomingData.id) {
+            return NextResponse.json({ success: false, error: 'ID объекта обязателен для обновления' }, { status: 400 });
+        }
+
+        const { error } = await supabase
+            .from('piskent_plots')
+            .update(incomingData)
+            .eq('id', incomingData.id);
+
+        if (error) throw error;
+
+        return NextResponse.json({ success: true, message: 'Объект успешно обновлен!' });
+    } catch (error: any) {
+        return NextResponse.json(
+            { success: false, error: `Ошибка обновления в Supabase: ${error.message}` },
+            { status: 500 }
+        );
+    }
+}
