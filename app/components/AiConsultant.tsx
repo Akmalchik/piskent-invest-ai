@@ -9,8 +9,6 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     // Твой бесплатный API Ключ от Google AI Studio (Вставь сюда свой рабочий токен AIzaSy...)
     const GEMINI_API_KEY = "";
 
-    const [budget, setBudget] = useState(25);
-    const [area, setArea] = useState(40);
     const [industry, setIndustry] = useState("Production");
     const [results, setResults] = useState<any[]>([]);
 
@@ -53,7 +51,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     }, [lang]);
 
     const handleAiSearch = () => {
-        const found = plots.filter(plot => plot.area <= area);
+        const found = plots.filter(plot => !industry || plot.industry === industry);
         setResults(found);
     };
 
@@ -409,24 +407,6 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             </div>
 
             <div className="space-y-4 bg-[#0b1329] p-4 md:p-5 rounded-2xl border border-slate-800 shadow-xl">
-                <div>
-                    <div className="flex justify-between text-[11px] font-bold mb-1">
-                        <span className="text-slate-400">💵 {t.budgetLabel}</span>
-                        <span className="text-white">
-                            {lang === 'zh' ? `${budget}百万 美元` : `$${budget}M USD`}
-                        </span>
-                    </div>
-                    <input type="range" min="1" max="80" value={budget} onChange={(e) => setBudget(Number(e.target.value))} className="w-full accent-cyan-400 cursor-pointer h-1 bg-slate-800 rounded-lg" />
-                </div>
-
-                <div>
-                    <div className="flex justify-between text-[11px] font-bold mb-1">
-                        <span className="text-slate-400">📐 {t.areaLabel}</span>
-                        <span className="text-white">{area} ga</span>
-                    </div>
-                    <input type="range" min="1" max="250" value={area} onChange={(e) => setArea(Number(e.target.value))} className="w-full accent-cyan-400 cursor-pointer h-1 bg-slate-800 rounded-lg" />
-                </div>
-
                 <div>
                     <label className="text-[11px] font-bold text-slate-400 block mb-1">💼 {t.industryLabel}</label>
                     <select value={industry} onChange={(e) => setIndustry(e.target.value)} className="w-full bg-[#040814] border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none cursor-pointer">

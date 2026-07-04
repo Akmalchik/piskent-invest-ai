@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Polygon, Marker, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Circle, Marker, useMap, useMapEvents } from 'react-leaflet';
 import PlotCard from './PlotCard';
 import L from 'leaflet';
 import { useSearchParams } from 'next/navigation';
@@ -29,6 +29,45 @@ function MapClickHandler({ isAdminMode, onMapClick }: { isAdminMode: boolean, on
     return null;
 }
 
+function toLatLng(value: any): [number, number] | null {
+    if (!Array.isArray(value) || value.length < 2) return null;
+
+    const lat = Number(value[0]);
+    const lng = Number(value[1]);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    return [lat, lng];
+}
+
+function getPlotCenter(plot: any): [number, number] | null {
+    const lat = Number(plot.lat);
+    const lng = Number(plot.lng);
+
+    if (Number.isFinite(lat) && Number.isFinite(lng)) {
+        return [lat, lng];
+    }
+
+    const rawCoordinates = plot.polygonCoordinates || plot.polygon_coords;
+    if (!Array.isArray(rawCoordinates) || rawCoordinates.length === 0) return null;
+
+    const firstPoint = toLatLng(rawCoordinates);
+    if (firstPoint) return firstPoint;
+
+    const points = rawCoordinates
+        .map((point: any) => toLatLng(point))
+        .filter(Boolean) as [number, number][];
+
+    if (points.length === 0) return null;
+    if (points.length === 1) return points[0];
+
+    const totals = points.reduce(
+        (acc, point) => [acc[0] + point[0], acc[1] + point[1]],
+        [0, 0]
+    );
+
+    return [totals[0] / points.length, totals[1] / points.length];
+}
+
 function MapController({ viewport, plotId, plots }: { viewport?: any, plotId: string | null, plots: any[] }) {
     const map = useMap();
 
@@ -43,8 +82,9 @@ function MapController({ viewport, plotId, plots }: { viewport?: any, plotId: st
     useEffect(() => {
         if (plotId && plots.length > 0) {
             const targetPlot = plots.find((p) => p.id.toString() === plotId);
-            if (targetPlot) {
-                map.flyTo([targetPlot.lat, targetPlot.lng], 18, { duration: 2 });
+            const targetCenter = targetPlot ? getPlotCenter(targetPlot) : null;
+            if (targetCenter) {
+                map.flyTo(targetCenter, 18, { duration: 2 });
             }
         }
     }, [plotId, plots, map]);
@@ -119,25 +159,6 @@ export default function MyInvestmentMap({
             });
     }, []);
 
-    // Умная нормализация координат лота под формат Leaflet [lat, lng]
-    const getPolygonCoords = (plot: any) => {
-        if (!plot.polygonCoordinates || plot.polygonCoordinates.length === 0) return [];
-
-        // Если парсер вернул одну точку, строим вокруг неё квадратный полигон для Leaflet
-        if (plot.polygonCoordinates.length === 1 || !Array.isArray(plot.polygonCoordinates[0])) {
-            const base = plot.polygonCoordinates[0] || [40.9022, 69.3444];
-            const lat = base[0];
-            const lng = base[1];
-            return [
-                [lat - 0.0015, lng - 0.002],
-                [lat + 0.0015, lng - 0.002],
-                [lat + 0.0015, lng + 0.002],
-                [lat - 0.0015, lng + 0.002]
-            ];
-        }
-        return plot.polygonCoordinates;
-    };
-
     // ОБЪЕДИНЕННЫЙ ФИЛЬТР
     const filteredPlots = plots.filter(plot => {
         const matchesStatus = statusFilter === 'Barchasi' || plot.status === statusFilter;
@@ -208,17 +229,18 @@ export default function MyInvestmentMap({
                 <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
                 <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
 
-                {/* Отрисовка цветных полигонов из парсера */}
+                {/* Отрисовка цветных круговых зон из координат объектов */}
                 {filteredPlots.map((plot: any) => {
-                    const coords = getPolygonCoords(plot);
-                    if (coords.length === 0) return null;
+                    const center = getPlotCenter(plot);
+                    if (!center) return null;
 
                     const isSelected = selectedPlot?.id === plot.id;
 
                     return (
-                        <Polygon
+                        <Circle
                             key={plot.id}
-                            positions={coords}
+                            center={center}
+                            radius={150}
                             pathOptions={{
                                 color: isSelected ? '#ffffff' : plot.industry === 'Textile' ? '#ec4899' : '#06b6d4',
                                 fillColor: plot.industry === 'Textile' ? '#ec4899' : '#06b6d4',
