@@ -87,14 +87,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 },
             ]);
         } catch (error) {
-            const errorText =
-                lang === 'ru'
-                    ? 'Не удалось получить ответ AI-консультанта. Проверьте GEMINI_API_KEY и повторите запрос.'
-                    : lang === 'en'
-                        ? 'The AI consultant could not respond. Please check GEMINI_API_KEY and try again.'
-                        : lang === 'zh'
-                            ? 'AI 顾问暂时无法回复。请检查 GEMINI_API_KEY 后重试。'
-                            : 'AI-maslahatchi hozir javob bera olmadi. GEMINI_API_KEY sozlamasini tekshirib, qayta urinib ko‘ring.';
+            const errorText = 'AI maslahatchi vaqtincha mavjud emas. Lekin siz investitsiya xaritasidan obyektlarni ko‘rishingiz mumkin.';
 
             console.error('AI chat request failed:', error);
             setIsTyping(false);
@@ -140,12 +133,33 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     };
 
     const labels = chatLabels[lang] || chatLabels['uz'];
-    const starterPrompts = [
-        '🏭 10 gektar sanoat uchun yer kerak',
-        '⚡ Gaz va elektr bor obyektlar',
-        '🏨 Mehmonxona uchun joy kerak',
-        '🚛 Yo‘lga yaqin logistika obyektlari'
-    ];
+    const starterPromptsByLang: Record<string, string[]> = {
+        uz: [
+            '🏭 10 gektar sanoat uchun yer kerak',
+            '⚡ Gaz va elektr bor obyektlar',
+            '🏨 Mehmonxona uchun joy kerak',
+            '🚛 Yo‘lga yaqin logistika obyektlari'
+        ],
+        ru: [
+            '🏭 Нужен участок 10 гектаров для промышленности',
+            '⚡ Объекты с газом и электричеством',
+            '🏨 Нужна локация для гостиницы',
+            '🚛 Логистические объекты рядом с дорогой'
+        ],
+        en: [
+            '🏭 I need 10 hectares for industrial use',
+            '⚡ Sites with gas and electricity',
+            '🏨 I need a location for a hotel',
+            '🚛 Logistics sites close to the road'
+        ],
+        zh: [
+            '🏭 需要10公顷工业用地',
+            '⚡ 有天然气和电力的地块',
+            '🏨 需要适合酒店的位置',
+            '🚛 靠近道路的物流地块'
+        ],
+    };
+    const starterPrompts = starterPromptsByLang[lang] || starterPromptsByLang.uz;
 
     if (!isChatLayout) return null;
 
@@ -175,9 +189,9 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 {chatMessages.length === 0 ? (
                     <div className="text-center my-auto flex flex-col items-center justify-center h-full pt-4 animate-fade-in px-4">
                         <div className="w-12 h-12 bg-gradient-to-b from-cyan-500/10 to-blue-500/5 text-cyan-400 border border-cyan-500/20 rounded-2xl flex items-center justify-center text-xl mb-4 shadow-xl shadow-cyan-950/50">🤖</div>
-                        <h4 className="text-sm font-bold text-white mb-2 tracking-wide">Piskent Invest AI</h4>
+                        <h4 className="text-sm font-bold text-white mb-2 tracking-wide">AI Investitsiya Maslahatchisi</h4>
                         <p className="text-[11px] text-slate-400 max-w-xs mb-6 leading-relaxed">
-                            {lang === 'ru' ? "Привет! Я помощник хокимията. Спросите меня о свободных лотах или инвестиционных площадках." : "Salom! Men hokimlik yordamchisiman. Bo'sh yer maydonlari haqida so'rang."}
+                            Piskent tumanidagi investitsiya obyektlarini tanlashda yordam beraman.
                         </p>
 
                         <div className="flex flex-col gap-2 w-full max-w-sm">

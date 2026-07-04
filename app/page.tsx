@@ -207,11 +207,8 @@ export default function Home() {
 
           {/* ЭКРАН 1: AI MASLAHATCHI */}
           {activeTab === 'ai' && (
-            <div className="w-full h-full flex flex-col md:flex-row p-4 md:p-6 gap-4 md:gap-6 bg-[#070d1e] overflow-y-auto md:overflow-hidden">
-              <div className="w-full md:w-5/12 h-auto md:h-full shrink-0">
-                <AiConsultant onSelectPlot={handleShowOnMap} lang={lang} isChatLayout={false} />
-              </div>
-              <div className="w-full md:w-7/12 h-[450px] md:h-full min-h-[350px]">
+            <div className="w-full h-full p-4 md:p-6 bg-[#070d1e] overflow-y-auto md:overflow-hidden">
+              <div className="w-full h-[calc(100vh-7rem)] md:h-full min-h-[450px]">
                 <AiConsultant onSelectPlot={handleShowOnMap} lang={lang} isChatLayout={true} />
               </div>
             </div>
