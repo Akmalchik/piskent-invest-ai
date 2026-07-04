@@ -235,6 +235,38 @@ export default function AdminPage() {
             alert(`Ошибка при добавлении нового лота: ${err.message}`);
         }
     };
+
+    const handleDeletePlot = async () => {
+        if (!editingPlot) return;
+
+        const confirmed = window.confirm('Вы действительно хотите удалить этот объект? Это действие нельзя отменить.');
+        if (!confirmed) return;
+
+        try {
+            const res = await fetch('/api/save-plots', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: editingPlot.id })
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || `Код ответа сервера: ${res.status}`);
+            }
+
+            const data = await res.json();
+            if (data.success) {
+                setPlots(prev => prev.filter(plot => plot.id !== editingPlot.id));
+                setSuccessMessage(true);
+                resetForm();
+                setMapRefreshKey(prev => prev + 1);
+                setTimeout(() => setSuccessMessage(false), 4000);
+            }
+        } catch (err: any) {
+            alert(`Ошибка при удалении объекта: ${err.message}`);
+        }
+    };
+
     // 1. Добавляем проверку условия перед твоим новым кодом:
     if (!isAuthenticated) {
         return (
@@ -365,9 +397,20 @@ export default function AdminPage() {
                             </span>
                         </div>
 
-                        <button type="submit" className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all">
-                            {editingPlot ? '💾 Сохранить изменения' : '💾 Создать и внедрить в общую базу'}
-                        </button>
+                        {editingPlot ? (
+                            <div className="grid grid-cols-2 gap-3">
+                                <button type="submit" className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all">
+                                    💾 Сохранить изменения
+                                </button>
+                                <button type="button" onClick={handleDeletePlot} className="w-full py-3 bg-red-700 hover:bg-red-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all">
+                                    Удалить объект
+                                </button>
+                            </div>
+                        ) : (
+                            <button type="submit" className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all">
+                                💾 Создать и внедрить в общую базу
+                            </button>
+                        )}
                     </form>
                 </div>
             </div>
