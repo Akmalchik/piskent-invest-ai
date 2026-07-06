@@ -21,6 +21,12 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
         scrollToBottom();
     }, [chatMessages, isTyping]);
 
+    useEffect(() => {
+        setChatMessages([]);
+        setChatInput("");
+        setIsTyping(false);
+    }, [lang]);
+
     // Загружаем те же нормализованные данные, что использует карта
     useEffect(() => {
         if (!isChatLayout) return;
