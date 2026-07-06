@@ -96,12 +96,6 @@ export async function POST(req: NextRequest) {
                 parts: [{ text: finalPrompt }],
               },
             ],
-            safetySettings: [
-              { category: 'HARM_CATEGORY_HATRED', threshold: 'BLOCK_NONE' },
-              { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
-              { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-              { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
-            ],
           }),
         }
       );
