@@ -21,7 +21,9 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreTitle: "AI Investment Score",
             scoreHigh: "Sanoat va ishlab chiqarish uchun juda yuqori jozibadorlik",
             scoreMid: "O'rtacha jozibadorlik, infratuzilmani rivojlantirish tavsiya etiladi",
-            noPhoto: "Foto yuklanmoqda..."
+            noPhoto: "Foto yuklanmoqda...",
+            loading: "Yuklanmoqda...",
+            noAuctionLink: "Havola hozircha yo'q"
         },
         ru: {
             area: "ПЛОЩАДЬ",
@@ -37,7 +39,9 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreTitle: "Инвестиционный ИИ-Рейтинг",
             scoreHigh: "Очень высокая привлекательность для запуска производства",
             scoreMid: "Средняя привлекательность, рекомендуется развитие сетей",
-            noPhoto: "Фото лота обрабатывается..."
+            noPhoto: "Фото лота обрабатывается...",
+            loading: "Загрузка...",
+            noAuctionLink: "Ссылка пока не добавлена"
         },
         en: {
             area: "TOTAL AREA",
@@ -53,7 +57,9 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreTitle: "AI Investment Score",
             scoreHigh: "Excellent investment appeal for manufacturing launch",
             scoreMid: "Moderate appeal, infrastructure development recommended",
-            noPhoto: "Loading lot image..."
+            noPhoto: "Loading lot image...",
+            loading: "Loading...",
+            noAuctionLink: "No auction link yet"
         },
         zh: {
             area: "规划土地面积",
@@ -69,7 +75,9 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreTitle: "AI 投资综合评估指数",
             scoreHigh: "该土地非常适合启动大型现代工业与生产项目",
             scoreMid: "投资吸引力中等，建议进一步完善配套基础设施",
-            noPhoto: "正在获取拍卖会现场图片..."
+            noPhoto: "正在获取拍卖会现场图片...",
+            loading: "加载中...",
+            noAuctionLink: "暂无拍卖链接"
         }
     };
 
@@ -101,6 +109,70 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
         return ind || "Sanoat va ishlab chiqarish";
     };
     const ownershipType = plot.ownership_type || plot.ownershipType;
+
+    const normalizeValue = (value: unknown) => String(value || '').trim().toLowerCase().replace(/’/g, "'");
+    const formatStatus = (status: unknown) => {
+        const value = normalizeValue(status);
+        const labels: Record<string, Record<string, string>> = {
+            uz: { mavjud: 'Mavjud', band: 'Band', 'e-auksion': 'E-Auksion' },
+            ru: { mavjud: 'Свободен', band: 'Занят', 'e-auksion': 'E-Auksion' },
+            en: { mavjud: 'Available', band: 'Occupied', 'e-auksion': 'E-Auction' },
+            zh: { mavjud: '可用', band: '已 занято', 'e-auksion': '电子拍卖' },
+        };
+
+        return labels[lang]?.[value] || labels.uz[value] || String(status || 'E-Auksion');
+    };
+    const formatOwnershipType = (type: unknown) => {
+        const value = normalizeValue(type);
+        const key = value.includes('davlat') ? 'davlat' : value.includes('auksion') ? 'e-auksion' : value.includes('xususiy') ? 'xususiy' : '';
+        const labels: Record<string, Record<string, string>> = {
+            uz: { davlat: 'Davlat obyekti', 'e-auksion': 'E-Auksion', xususiy: 'Xususiy obyekt' },
+            ru: { davlat: 'Государственный объект', 'e-auksion': 'E-Auksion', xususiy: 'Частный объект' },
+            en: { davlat: 'State-owned property', 'e-auksion': 'E-Auction', xususiy: 'Private property' },
+            zh: { davlat: '国有资产', 'e-auksion': '电子拍卖', xususiy: '私有资产' },
+        };
+
+        return key ? labels[lang]?.[key] || labels.uz[key] : String(type || '');
+    };
+    const formatInfrastructureValue = (value: unknown) => {
+        const normalized = normalizeValue(value);
+        const labels: Record<string, Record<string, string>> = {
+            uz: {
+                mavjud: 'Mavjud',
+                'mavjud emas': 'Mavjud emas',
+                aniqlanmoqda: 'Aniqlanmoqda',
+                asfalt: 'Asfalt',
+                "shag'al": "Shag'al",
+                "tuproq yo'l": "Tuproq yo'l",
+            },
+            ru: {
+                mavjud: 'Доступно',
+                'mavjud emas': 'Недоступно',
+                aniqlanmoqda: 'Уточняется',
+                asfalt: 'Асфальт',
+                "shag'al": 'Щебень',
+                "tuproq yo'l": 'Грунтовая дорога',
+            },
+            en: {
+                mavjud: 'Available',
+                'mavjud emas': 'Not available',
+                aniqlanmoqda: 'Being clarified',
+                asfalt: 'Asphalt',
+                "shag'al": 'Gravel',
+                "tuproq yo'l": 'Dirt road',
+            },
+            zh: {
+                mavjud: '可用',
+                'mavjud emas': '不可用',
+                aniqlanmoqda: '确认中',
+                asfalt: '沥青路',
+                "shag'al": '碎石路',
+                "tuproq yo'l": '土路',
+            },
+        };
+
+        return labels[lang]?.[normalized] || labels.uz[normalized] || String(value || '');
+    };
 
     return (
         <div className="p-4 md:p-6 text-white h-full flex flex-col justify-between select-none">
@@ -134,11 +206,11 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                         </div>
                     )}
                     <div className="absolute top-3 left-3 bg-cyan-600/90 backdrop-blur-sm text-white text-[9px] font-black uppercase px-2 py-0.5 rounded shadow-md tracking-wider">
-                        {plot.status || 'E-Auksion'}
+                        {formatStatus(plot.status)}
                     </div>
                     {ownershipType && (
                         <div className="absolute top-3 right-3 bg-slate-950/80 backdrop-blur-sm text-white text-[9px] font-black px-2 py-0.5 rounded shadow-md">
-                            {ownershipType}
+                            {formatOwnershipType(ownershipType)}
                         </div>
                     )}
                 </div>
@@ -179,7 +251,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                 <div className="mb-3">
                     <div className="bg-[#101f42]/40 p-4 rounded-xl border border-slate-800/60">
                         <span className="text-[9px] text-slate-400 block font-bold tracking-wide uppercase mb-1">
-                            {lang === 'zh' ? '面积' : lang === 'ru' ? 'Площадь участка' : 'Yer maydoni'}
+                            {lang === 'zh' ? '面积' : lang === 'ru' ? 'Площадь участка' : lang === 'en' ? 'Land area' : 'Yer maydoni'}
                         </span>
                         <span className="text-sm font-black text-white">
                             {plot.area || 0} {lang === 'zh' ? '公顷' : 'га'}
@@ -204,11 +276,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                             if (key === 'water') label = d.water;
                             if (key === 'road') label = d.road;
 
-                            // Локализация значений коммуникаций
-                            let valDisplay = value;
-                            if (value === 'Mavjud' && lang === 'zh') valDisplay = '已连通 (可用)';
-                            if (value === 'Mavjud' && lang === 'ru') valDisplay = 'Доступно';
-                            if (value === 'Mavjud' && lang === 'en') valDisplay = 'Available';
+                            const valDisplay = formatInfrastructureValue(value);
 
                             return (
                                 <div key={key} className="flex justify-between items-center text-xs bg-[#101f42]/30 px-3 py-2 rounded-lg border border-slate-800/40">
@@ -219,7 +287,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                         })
                     ) : (
                         <div className="text-[11px] text-slate-500 italic p-2 bg-[#101f42]/10 rounded-lg text-center">
-                            Loading...
+                            {d.loading}
                         </div>
                     )}
                 </div>
@@ -238,7 +306,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                     </a>
                 ) : (
                     <div className="w-full py-3 bg-slate-800 text-slate-500 font-bold text-center text-[10px] md:text-xs uppercase tracking-wider rounded-xl border border-slate-700 cursor-not-allowed">
-                        {lang === 'zh' ? '暂无拍卖链接' : lang === 'ru' ? 'Ссылка пока не добавлена' : 'Havola hozircha yo\'q'}
+                        {d.noAuctionLink}
                     </div>
                 )}
             </div>
