@@ -100,6 +100,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
         if (ind === 'Logistics') return "📦 Logistika va transport";
         return ind || "Sanoat va ishlab chiqarish";
     };
+    const ownershipType = plot.ownership_type || plot.ownershipType;
 
     return (
         <div className="p-4 md:p-6 text-white h-full flex flex-col justify-between select-none">
@@ -135,6 +136,11 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                     <div className="absolute top-3 left-3 bg-cyan-600/90 backdrop-blur-sm text-white text-[9px] font-black uppercase px-2 py-0.5 rounded shadow-md tracking-wider">
                         {plot.status || 'E-Auksion'}
                     </div>
+                    {ownershipType && (
+                        <div className="absolute top-3 right-3 bg-slate-950/80 backdrop-blur-sm text-white text-[9px] font-black px-2 py-0.5 rounded shadow-md">
+                            {ownershipType}
+                        </div>
+                    )}
                 </div>
 
                 {/* ========================================================= */}

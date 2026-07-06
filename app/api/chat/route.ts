@@ -9,6 +9,7 @@ function normalizePlots(plots: any[]) {
       area: plot.area,
       industry: plot.industry,
       status: plot.status,
+      ownership_type: plot.ownership_type || plot.ownershipType || '',
       infrastructure: plot.infrastructure || {},
       image: plot.image || plot.image_url || plot.photo_url || '',
       auksionUrl: plot.auksionUrl || plot.auksion_url || plot.auction_url || '',
@@ -23,6 +24,7 @@ function toCompactPlot(plot: any) {
     area: plot.area,
     industry: plot.industry,
     status: plot.status,
+    ownership_type: plot.ownership_type || '',
     infrastructure: plot.infrastructure || {},
     auksionUrl: plot.auksionUrl || '',
   };
@@ -223,6 +225,14 @@ function formatInfrastructure(infrastructure: any, lang: string) {
   return items.join('\n');
 }
 
+function formatOwnershipType(ownershipType: string) {
+  if (!ownershipType) return '';
+  if (ownershipType.includes('Davlat')) return 'Bu davlat obyekti.';
+  if (ownershipType.includes('E-Auksion')) return 'Obyekt E-Auksion orqali realizatsiya qilinadi.';
+  if (ownershipType.includes('Xususiy')) return 'Bu xususiy investitsiya obyekti.';
+  return ownershipType;
+}
+
 function getIdea(plot: any, lang: string) {
   const text = `${plot.industry || ''} ${plot.name || ''}`.toLowerCase();
 
@@ -264,10 +274,11 @@ function buildTemplateResponse(plots: any[], lang: string) {
     const items = plots.map((plot, index) => [
       `${index + 1}. ${plot.name}`,
       `- Площадь: ${plot.area} га`,
+      formatOwnershipType(plot.ownership_type) ? `- Тип объекта: ${formatOwnershipType(plot.ownership_type)}` : '',
       `- Инфраструктура:\n${formatInfrastructure(plot.infrastructure, lang)}`,
       '- Почему подходит: это один из ближайших реальных вариантов по вашему запросу.',
       `- Идея проекта: ${getIdea(plot, lang)}`,
-    ].join('\n')).join('\n\n');
+    ].filter(Boolean).join('\n')).join('\n\n');
 
     return `Здравствуйте! По вашему запросу рекомендую следующие объекты:\n\n${items}\n\nОбъект можно посмотреть на карте.\n[RECOMMEND_ID:${firstPlotId}]`;
   }
@@ -276,10 +287,11 @@ function buildTemplateResponse(plots: any[], lang: string) {
     const items = plots.map((plot, index) => [
       `${index + 1}. ${plot.name}`,
       `- Area: ${plot.area} ha`,
+      formatOwnershipType(plot.ownership_type) ? `- Property type: ${formatOwnershipType(plot.ownership_type)}` : '',
       `- Infrastructure:\n${formatInfrastructure(plot.infrastructure, lang)}`,
       '- Why suitable: this is one of the closest real options for your request.',
       `- Project idea: ${getIdea(plot, lang)}`,
-    ].join('\n')).join('\n\n');
+    ].filter(Boolean).join('\n')).join('\n\n');
 
     return `Hello! Based on your request, I recommend these properties:\n\n${items}\n\nYou can view the property on the map.\n[RECOMMEND_ID:${firstPlotId}]`;
   }
@@ -288,10 +300,11 @@ function buildTemplateResponse(plots: any[], lang: string) {
     const items = plots.map((plot, index) => [
       `${index + 1}. ${plot.name}`,
       `- 面积：${plot.area} 公顷`,
+      formatOwnershipType(plot.ownership_type) ? `- 对象类型：${formatOwnershipType(plot.ownership_type)}` : '',
       `- 基础设施：\n${formatInfrastructure(plot.infrastructure, lang)}`,
       '- 适合原因：这是最接近您需求的真实地块之一。',
       `- 项目想法：${getIdea(plot, lang)}`,
-    ].join('\n')).join('\n\n');
+    ].filter(Boolean).join('\n')).join('\n\n');
 
     return `您好！根据您的需求，我推荐以下地块：\n\n${items}\n\n您可以在地图上查看该地块。\n[RECOMMEND_ID:${firstPlotId}]`;
   }
@@ -299,10 +312,11 @@ function buildTemplateResponse(plots: any[], lang: string) {
   const items = plots.map((plot, index) => [
     `${index + 1}. ${plot.name}`,
     `- Maydoni: ${plot.area} ga`,
+    formatOwnershipType(plot.ownership_type) ? `- Obyekt turi: ${formatOwnershipType(plot.ownership_type)}` : '',
     `- Infratuzilma:\n${formatInfrastructure(plot.infrastructure, lang)}`,
     '- Nega mos keladi: so‘rovingizga eng yaqin real variantlardan biri.',
     `- Loyiha g‘oyasi: ${getIdea(plot, lang)}`,
-  ].join('\n')).join('\n\n');
+  ].filter(Boolean).join('\n')).join('\n\n');
 
   return `Salom! Sizning so‘rovingiz bo‘yicha quyidagi obyektlarni tavsiya qilaman:\n\n${items}\n\nObyektni xaritada ko‘rishingiz mumkin.\n[RECOMMEND_ID:${firstPlotId}]`;
 }

@@ -10,6 +10,12 @@ const MyInvestmentMap = dynamic(() => import('../components/MyInvestmentMap'), {
     loading: () => <div className="w-full h-full bg-[#0b1329] flex items-center justify-center text-xs text-slate-400">Xarita yuklanmoqda...</div>
 });
 
+const OWNERSHIP_TYPE_OPTIONS = [
+    '🏛 Davlat obyekti',
+    '⚖️ E-Auksion',
+    '🏢 Xususiy obyekt'
+];
+
 export default function AdminPage() {
     // Внутренняя языковая переменная проекта
     const lang = 'uz';
@@ -34,6 +40,7 @@ export default function AdminPage() {
     const [area, setArea] = useState('');
     const [industry, setIndustry] = useState('Sanoat / Ishlab chiqarish');
     const [status, setStatus] = useState('Mavjud');
+    const [ownershipType, setOwnershipType] = useState(OWNERSHIP_TYPE_OPTIONS[0]);
     const [auksionUrl, setAuksionUrl] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     // Поля инфраструктуры лота
@@ -51,6 +58,7 @@ export default function AdminPage() {
         setArea('');
         setIndustry('Sanoat / Ishlab chiqarish');
         setStatus('Mavjud');
+        setOwnershipType(OWNERSHIP_TYPE_OPTIONS[0]);
         setAuksionUrl('');
         setImageUrl('');
         setGas('Mavjud');
@@ -118,6 +126,7 @@ export default function AdminPage() {
         setAuksionUrl(plot.auksionUrl || plot.auksion_url || plot.auction_url || '');
         setIndustry(plot.industry || 'Production');
         setStatus(plot.status || 'Mavjud');
+        setOwnershipType(plot.ownership_type || OWNERSHIP_TYPE_OPTIONS[0]);
         setGas(infrastructure.gas || 'Mavjud');
         setPower(infrastructure.power || infrastructure.electricity || '100 кВт');
         setWater(infrastructure.water || 'Mavjud');
@@ -148,6 +157,7 @@ export default function AdminPage() {
                 area: parseFloat(area),
                 industry,
                 status,
+                ownership_type: ownershipType,
                 image: imageUrl,
                 auksionUrl: auksionUrl || '',
                 infrastructure: { gas, power, water, road },
@@ -204,6 +214,7 @@ export default function AdminPage() {
             area: parseFloat(area),
             industry,
             status,
+            ownership_type: ownershipType,
             image: imageUrl,
             auksionUrl: auksionUrl || '',
             infrastructure: { gas, power, water, road },
@@ -383,6 +394,14 @@ export default function AdminPage() {
                                     <option value="Mavjud">Mavjud (Свободен)</option>
                                     <option value="E-auksion">E-auksion (На торгах)</option>
                                     <option value="Band">Band (Зарезервирован)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-slate-400 block mb-1">Тип объекта</label>
+                                <select value={ownershipType} onChange={(e) => setOwnershipType(e.target.value)} className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none cursor-pointer">
+                                    {OWNERSHIP_TYPE_OPTIONS.map((type) => (
+                                        <option key={type} value={type}>{type}</option>
+                                    ))}
                                 </select>
                             </div>
 

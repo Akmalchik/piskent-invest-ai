@@ -34,6 +34,7 @@ function normalizePlot(plot: any) {
         ...plot,
         image: getPlotImage(plot),
         auksionUrl: plot.auksionUrl || plot.auksion_url || plot.auction_url,
+        ownership_type: plot.ownership_type || plot.ownershipType,
         polygonCoordinates: plot.polygonCoordinates || plot.polygon_coords,
     };
 }
@@ -44,6 +45,7 @@ function normalizePlotForDb(plot: any) {
     delete dbPlot.image_url;
     delete dbPlot.polygon_coords;
     delete dbPlot.auksion_url;
+    delete dbPlot.ownershipType;
 
     return {
         ...dbPlot,
