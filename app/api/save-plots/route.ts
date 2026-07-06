@@ -25,6 +25,15 @@ function clearPlotsCache() {
     plotsCache = null;
 }
 
+function normalizePlot(plot: any) {
+    return {
+        ...plot,
+        image: plot.image || plot.image_url || plot.photo_url,
+        auksionUrl: plot.auksionUrl || plot.auksion_url || plot.auction_url,
+        polygonCoordinates: plot.polygonCoordinates || plot.polygon_coords,
+    };
+}
+
 // 1. МЕТОД GET: Чтение лотов из Supabase, а если пусто — чистка от лишних полей и автозаливка
 export async function GET() {
     try {
@@ -83,17 +92,13 @@ export async function GET() {
                     if (insertError) throw insertError;
 
                     console.log('🎉 Автоматический перенос данных выполнен успешно!');
-                    rememberPlots(uniquePlots);
-                    return jsonWithCache(uniquePlots);
+                    const normalizedPlots = uniquePlots.map(normalizePlot);
+                    rememberPlots(normalizedPlots);
+                    return jsonWithCache(normalizedPlots);
                 }
             }
         }
-        const normalizedPlots = (plots || []).map((plot: any) => ({
-            ...plot,
-            image: plot.image || plot.image_url || plot.photo_url,
-            auksionUrl: plot.auksionUrl || plot.auksion_url || plot.auction_url,
-            polygonCoordinates: plot.polygonCoordinates || plot.polygon_coords,
-        }));
+        const normalizedPlots = (plots || []).map(normalizePlot);
         // Если в базе уже есть данные — просто отдаем их фронтенду на карту
         rememberPlots(normalizedPlots);
         return jsonWithCache(normalizedPlots);
