@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
-
 function normalizePlots(plots: any[]) {
   return plots
     .filter(plot => plot && plot.id !== undefined)
@@ -18,13 +16,8 @@ function normalizePlots(plots: any[]) {
     }));
 }
 
-function pickRelevantPlots(plots: any[], message: string) {
-  const words = message
-    .toLowerCase()
-    .split(/[\s,.;:!?()[\]{}"'`]+/)
-    .filter(word => word.length >= 3);
-
-  const compactPlots = plots.map(plot => ({
+function toCompactPlot(plot: any) {
+  return {
     id: plot.id,
     name: plot.name,
     area: plot.area,
@@ -32,34 +25,221 @@ function pickRelevantPlots(plots: any[], message: string) {
     status: plot.status,
     infrastructure: plot.infrastructure || {},
     auksionUrl: plot.auksionUrl || '',
-  }));
+  };
+}
 
-  if (words.length === 0) {
-    return compactPlots.slice(0, 5);
+function parseAreaRequest(message: string) {
+  const matches = message.matchAll(/(\d+(?:[.,]\d+)?)\s*(?:ga|gektar|гектар(?:а|ов)?|ha)\b/gi);
+  const areas = Array.from(matches, match => Number(match[1].replace(',', '.'))).filter(Number.isFinite);
+  return areas.length > 0 ? areas[0] : null;
+}
+
+function isTestPlot(plot: any) {
+  const name = String(plot.name || '').trim().toLowerCase();
+  return !name || name === 'test' || name.includes('test');
+}
+
+function selectRelevantPlots(message: string, availablePlots: any[]) {
+  const normalizedMessage = message.toLowerCase();
+  const requestedArea = parseAreaRequest(message);
+  const wantsProduction = /sanoat|производств|factory|zavod|завод/.test(normalizedMessage);
+  const wantsHotel = /hotel|mehmonxona|гостиниц|отел/.test(normalizedMessage);
+  const wantsLogistics = /logistika|logistics|sklad|склад|логист/.test(normalizedMessage);
+  const infraRequests = [
+    { key: 'gas', matched: /gaz|газ/.test(normalizedMessage), fields: ['gas'] },
+    { key: 'power', matched: /elektr|свет|электрич/.test(normalizedMessage), fields: ['power', 'electricity'] },
+    { key: 'water', matched: /suv|вода|водоснаб/.test(normalizedMessage), fields: ['water'] },
+    { key: 'road', matched: /yo['’`]?l|дорога|asfalt|асфальт/.test(normalizedMessage), fields: ['road'] },
+  ];
+
+  const compactPlots = availablePlots.map(toCompactPlot);
+  const normalPlots = compactPlots.filter(plot => !isTestPlot(plot));
+  const candidatePlots = normalPlots.length > 0 ? normalPlots : compactPlots;
+  const areaFilteredPlots = requestedArea === null
+    ? candidatePlots
+    : candidatePlots.filter(plot => {
+      const area = Number(plot.area);
+      return Number.isFinite(area) && area >= requestedArea * 0.5;
+    });
+
+  if (areaFilteredPlots.length === 0) {
+    return [];
   }
 
-  const scoredPlots = compactPlots
+  const scoredPlots = areaFilteredPlots
     .map(plot => {
-      const searchableText = [
-        plot.name,
-        plot.area,
-        plot.industry,
-        plot.status,
-        plot.auksionUrl,
-        JSON.stringify(plot.infrastructure),
-      ].join(' ').toLowerCase();
+      let score = 0;
+      const area = Number(plot.area);
+      const industryText = String(plot.industry || '').toLowerCase();
+      const nameText = String(plot.name || '').toLowerCase();
+      const statusText = String(plot.status || '').toLowerCase();
+      const infrastructure = plot.infrastructure || {};
+      const infrastructureText = JSON.stringify(infrastructure).toLowerCase();
 
-      const score = words.reduce((total, word) => total + (searchableText.includes(word) ? 1 : 0), 0);
+      if (requestedArea !== null && Number.isFinite(area)) {
+        if (Math.abs(area - requestedArea) <= Math.max(1, requestedArea * 0.25)) score += 3;
+        if (area >= requestedArea) score += 2;
+      }
+
+      if (wantsProduction && /production|sanoat|производ|industrial|factory|zavod/.test(`${industryText} ${nameText}`)) score += 2;
+      if (wantsHotel && /hotel|mehmonxona|гостиниц|service|servis|tourism|туризм/.test(`${industryText} ${nameText}`)) score += 2;
+      if (wantsLogistics && /logistics|logistika|склад|warehouse|road|yo'l|йул|дорог/.test(`${industryText} ${nameText} ${statusText} ${infrastructureText}`)) score += 2;
+
+      for (const request of infraRequests) {
+        if (!request.matched) continue;
+
+        const hasInfrastructure = request.fields.some(field => {
+          const value = infrastructure[field];
+          return value !== undefined && value !== null && String(value).trim() !== '';
+        });
+
+        if (hasInfrastructure || request.fields.some(field => infrastructureText.includes(field))) {
+          score += 1;
+        }
+      }
+
       return { plot, score };
     })
-    .filter(item => item.score > 0)
     .sort((a, b) => b.score - a.score);
 
-  if (scoredPlots.length === 0) {
-    return compactPlots.slice(0, 5);
+  const positiveMatches = scoredPlots.filter(item => item.score > 0);
+  const selected = positiveMatches.length > 0 ? positiveMatches : scoredPlots;
+
+  return selected.slice(0, 3).map(item => item.plot);
+}
+
+function isRelevantInvestmentQuestion(message: string) {
+  const normalizedMessage = message.toLowerCase();
+  const investmentKeywords =
+    /piskent|пскент|пискент|皮斯肯特|invest|инвест|投资|obyekt|объект|property|地块|yer|земл|land|土地|lot|лот|uchast|участ|maydon|площад|area|面积|gektar|гектар|公顷|infratuzilma|инфраструктур|infrastructure|基础设施|gaz|газ|天然气|elektr|электр|свет|电力|suv|вода|水|yo['’`]?l|дорога|asfalt|道路|auksion|auction|аукцион|e-auksion|business|biznes|бизнес|业务|sanoat|производ|factory|zavod|工业|hotel|mehmonxona|гостиниц|酒店|logistika|logistics|sklad|склад|物流|agro|агро|农业|textile|текстил|纺织|contact|контакт|aloqa|связ|联系/.test(normalizedMessage);
+
+  return investmentKeywords;
+}
+
+function getOffTopicResponse(lang: string) {
+  if (lang === 'ru') {
+    return 'Извините, я консультирую только по инвестиционным объектам Пискентского района. Укажите площадь, инфраструктуру или направление бизнеса.';
   }
 
-  return scoredPlots.slice(0, 5).map(item => item.plot);
+  if (lang === 'en') {
+    return 'Sorry, I can only advise on investment properties in Piskent district. Please ask about land area, infrastructure, or business direction.';
+  }
+
+  if (lang === 'zh') {
+    return '抱歉，我只能就皮斯肯特区的投资地块提供咨询。请询问土地面积、基础设施或业务方向。';
+  }
+
+  return 'Uzr, men faqat Piskent tumanidagi investitsiya obyektlari bo‘yicha maslahat bera olaman. Yer maydoni, infratuzilma yoki biznes yo‘nalishi bo‘yicha savol bering.';
+}
+
+function getNoMatchingPlotsResponse(lang: string) {
+  if (lang === 'ru') {
+    return 'По вашему запросу точный объект не найден. Но вы можете посмотреть другие доступные объекты на карте.';
+  }
+
+  if (lang === 'en') {
+    return 'No exact matching property was found for your request. You can view other available properties on the map.';
+  }
+
+  if (lang === 'zh') {
+    return '未找到与您的请求完全匹配的地块。您可以在地图上查看其他可用地块。';
+  }
+
+  return 'So‘rovingiz bo‘yicha aniq mos obyekt topilmadi. Biroq xaritada boshqa mavjud obyektlarni ko‘rishingiz mumkin.';
+}
+
+function formatInfrastructure(infrastructure: any) {
+  if (!infrastructure || typeof infrastructure !== 'object') return 'Ma’lumot yo‘q';
+
+  const items = Object.entries(infrastructure)
+    .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
+    .map(([key, value]) => `${key}: ${value}`);
+
+  return items.length > 0 ? items.join(', ') : 'Ma’lumot yo‘q';
+}
+
+function getIdea(plot: any, lang: string) {
+  const text = `${plot.industry || ''} ${plot.name || ''}`.toLowerCase();
+
+  if (lang === 'ru') {
+    if (/hotel|mehmonxona|гостиниц|service|servis|tourism/.test(text)) return 'Гостиница или сервисный объект.';
+    if (/logistics|logistika|склад|warehouse/.test(text)) return 'Склад или логистический центр.';
+    if (/agro|агро|qishloq/.test(text)) return 'Агропереработка или хранение продукции.';
+    if (/textile|текстил|to'qimachilik/.test(text)) return 'Текстильное производство.';
+    return 'Производственный или сервисный проект.';
+  }
+
+  if (lang === 'en') {
+    if (/hotel|mehmonxona|гостиниц|service|servis|tourism/.test(text)) return 'Hotel or service facility.';
+    if (/logistics|logistika|склад|warehouse/.test(text)) return 'Warehouse or logistics center.';
+    if (/agro|агро|qishloq/.test(text)) return 'Agro-processing or storage project.';
+    if (/textile|текстил|to'qimachilik/.test(text)) return 'Textile production.';
+    return 'Production or service project.';
+  }
+
+  if (lang === 'zh') {
+    if (/hotel|mehmonxona|гостиниц|service|servis|tourism/.test(text)) return '酒店或服务设施。';
+    if (/logistics|logistika|склад|warehouse/.test(text)) return '仓储或物流中心。';
+    if (/agro|агро|qishloq/.test(text)) return '农产品加工或仓储项目。';
+    if (/textile|текстил|to'qimachilik/.test(text)) return '纺织生产项目。';
+    return '生产或服务项目。';
+  }
+
+  if (/hotel|mehmonxona|гостиниц|service|servis|tourism/.test(text)) return 'Mehmonxona yoki servis obyekti.';
+  if (/logistics|logistika|склад|warehouse/.test(text)) return 'Ombor yoki logistika markazi.';
+  if (/agro|агро|qishloq/.test(text)) return 'Agro qayta ishlash yoki saqlash loyihasi.';
+  if (/textile|текстил|to'qimachilik/.test(text)) return 'To‘qimachilik ishlab chiqarishi.';
+  return 'Ishlab chiqarish yoki servis loyihasi.';
+}
+
+function buildTemplateResponse(plots: any[], lang: string) {
+  const firstPlotId = plots[0]?.id;
+
+  if (lang === 'ru') {
+    const items = plots.map((plot, index) => [
+      `${index + 1}. ${plot.name}`,
+      `- Площадь: ${plot.area} га`,
+      `- Инфраструктура: ${formatInfrastructure(plot.infrastructure)}`,
+      '- Почему подходит: это один из ближайших реальных вариантов по вашему запросу.',
+      `- Идея проекта: ${getIdea(plot, lang)}`,
+    ].join('\n')).join('\n\n');
+
+    return `Здравствуйте! По вашему запросу рекомендую следующие объекты:\n\n${items}\n\nОбъект можно посмотреть на карте.\n[RECOMMEND_ID:${firstPlotId}]`;
+  }
+
+  if (lang === 'en') {
+    const items = plots.map((plot, index) => [
+      `${index + 1}. ${plot.name}`,
+      `- Area: ${plot.area} ha`,
+      `- Infrastructure: ${formatInfrastructure(plot.infrastructure)}`,
+      '- Why suitable: this is one of the closest real options for your request.',
+      `- Project idea: ${getIdea(plot, lang)}`,
+    ].join('\n')).join('\n\n');
+
+    return `Hello! Based on your request, I recommend these properties:\n\n${items}\n\nYou can view the property on the map.\n[RECOMMEND_ID:${firstPlotId}]`;
+  }
+
+  if (lang === 'zh') {
+    const items = plots.map((plot, index) => [
+      `${index + 1}. ${plot.name}`,
+      `- 面积：${plot.area} 公顷`,
+      `- 基础设施：${formatInfrastructure(plot.infrastructure)}`,
+      '- 适合原因：这是最接近您需求的真实地块之一。',
+      `- 项目想法：${getIdea(plot, lang)}`,
+    ].join('\n')).join('\n\n');
+
+    return `您好！根据您的需求，我推荐以下地块：\n\n${items}\n\n您可以在地图上查看该地块。\n[RECOMMEND_ID:${firstPlotId}]`;
+  }
+
+  const items = plots.map((plot, index) => [
+    `${index + 1}. ${plot.name}`,
+    `- Maydoni: ${plot.area} ga`,
+    `- Infratuzilma: ${formatInfrastructure(plot.infrastructure)}`,
+    '- Nega mos keladi: so‘rovingizga eng yaqin real variantlardan biri.',
+    `- Loyiha g‘oyasi: ${getIdea(plot, lang)}`,
+  ].join('\n')).join('\n\n');
+
+  return `Salom! Sizning so‘rovingiz bo‘yicha quyidagi obyektlarni tavsiya qilaman:\n\n${items}\n\nObyektni xaritada ko‘rishingiz mumkin.\n[RECOMMEND_ID:${firstPlotId}]`;
 }
 
 async function loadPlots(req: NextRequest, incomingPlots: unknown) {
@@ -87,118 +267,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid message' }, { status: 400 });
     }
 
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: 'GROQ_API_KEY is not configured on the server' }, { status: 500 });
+    if (!isRelevantInvestmentQuestion(message)) {
+      return NextResponse.json({ text: getOffTopicResponse(lang) });
     }
 
     const availablePlots = await loadPlots(req, plots);
     if (availablePlots.length === 0) {
       return NextResponse.json({ error: 'No investment plots available for AI consultation' }, { status: 503 });
     }
-    const relevantPlots = pickRelevantPlots(availablePlots, message);
-
-    const systemInstruction = `
-      Ты — AI инвестиционный консультант Piskent Invest AI.
-      Отвечай инвестору строго на выбранном языке: "${lang}". Запрещено смешивать языки. Все видимые фразы, заголовки и пояснения должны быть только на языке "${lang}".
-
-      Работай ТОЛЬКО с объектами, которые переданы в availablePlots.
-      availablePlots уже содержит ближайшие реальные объекты из базы. Если availablePlots не пустой, всегда покажи 1–3 объекта из availablePlots.
-
-      Запрещено:
-      - придумывать объекты;
-      - придумывать площади;
-      - придумывать инфраструктуру;
-      - придумывать координаты;
-      - придумывать ссылки.
-
-      Если точного совпадения нет, не пиши "объектов нет", пока availablePlots не пустой. Скажи, что точного совпадения нет, и покажи 1–3 ближайших реальных объекта из availablePlots.
-      Не делай выводы о данных, которых нет в объекте. Если поле отсутствует, кратко укажи, что данных нет.
-      Ответ должен быть максимально коротким.
-
-      Формат ответа:
-      Приветствие (1 строка)
-
-      1–3 объекта
-
-      Для каждого:
-      • Название
-      • Площадь
-      • Инфраструктура
-      • Почему подходит
-      • Идея проекта
-
-      В конце:
-      "При необходимости могу показать объект на карте."
-
-      Если рекомендуешь объект — в самом конце обязательно добавь:
-      [RECOMMEND_ID:id]
-      где id — id первого рекомендуемого объекта.
-      Тег [RECOMMEND_ID:id] обязателен всегда, когда availablePlots не пустой.
-    `;
-
-    const sanitizeGroqDetails = (value: unknown) =>
-      String(value || 'Unknown Groq error')
-        .replaceAll(apiKey, '[redacted]')
-        .slice(0, 700);
-
-    let response: Response;
-    try {
-      response = await fetch(
-        'https://api.groq.com/openai/v1/chat/completions',
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: GROQ_MODEL,
-            messages: [
-              { role: 'system', content: systemInstruction },
-              { role: 'user', content: JSON.stringify({ availablePlots: relevantPlots }) },
-              { role: 'user', content: `Инвестор пишет: ${message}` },
-            ],
-            temperature: 0.1,
-            top_p: 0.2,
-            max_tokens: 700,
-          }),
-        }
-      );
-    } catch (error: any) {
-      const responseBody = error?.response?.text ? await error.response.text().catch(() => '') : error?.response?.body;
-      const details = sanitizeGroqDetails(error?.message || responseBody);
-
-      console.error('Groq request failed', {
-        message: sanitizeGroqDetails(error?.message),
-        status: error?.status || error?.response?.status,
-        responseBody: responseBody ? sanitizeGroqDetails(responseBody) : null,
-      });
-
-      return NextResponse.json({ error: 'Groq request failed', details }, { status: 502 });
+    const relevantPlots = selectRelevantPlots(message, availablePlots);
+    if (relevantPlots.length === 0) {
+      return NextResponse.json({ text: getNoMatchingPlotsResponse(lang) });
     }
 
-    if (!response.ok) {
-      const responseBody = await response.text().catch(() => '');
-      const details = sanitizeGroqDetails(responseBody || `HTTP ${response.status}`);
-
-      console.error('Groq request failed', {
-        message: `Groq HTTP error ${response.status}`,
-        status: response.status,
-        responseBody: responseBody ? sanitizeGroqDetails(responseBody) : null,
-      });
-
-      return NextResponse.json({ error: 'Groq request failed', details }, { status: 502 });
-    }
-
-    const data = await response.json();
-    const aiText = data.choices?.[0]?.message?.content || '';
-
-    if (!aiText) {
-      return NextResponse.json({ error: 'Empty response from Groq' }, { status: 502 });
-    }
-
-    return NextResponse.json({ text: aiText });
+    return NextResponse.json({ text: buildTemplateResponse(relevantPlots, lang) });
   } catch (err) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
