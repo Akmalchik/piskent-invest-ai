@@ -80,6 +80,8 @@ export async function POST(req: NextRequest) {
         .replaceAll(apiKey, '[redacted]')
         .slice(0, 700);
 
+    const finalPrompt = `${systemInstruction}\n\nИнвестор пишет: ${message}`;
+
     let response: Response;
     try {
       response = await fetch(
@@ -88,7 +90,12 @@ export async function POST(req: NextRequest) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: systemInstruction + '\n\nИнвестор пишет: ' + message }] }],
+            contents: [
+              {
+                role: 'user',
+                parts: [{ text: finalPrompt }],
+              },
+            ],
             safetySettings: [
               { category: 'HARM_CATEGORY_HATRED', threshold: 'BLOCK_NONE' },
               { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
