@@ -134,6 +134,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     };
 
     const labels = chatLabels[lang] || chatLabels['uz'];
+    const isStarterScreen = chatMessages.length === 0;
     const starterPromptsByLang: Record<string, string[]> = {
         uz: [
             '🏭 10 gektar sanoat uchun yer kerak',
@@ -187,7 +188,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             </div>
 
             <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gradient-to-b from-[#040814] to-[#060c1f]">
-                {chatMessages.length === 0 ? (
+                {isStarterScreen ? (
                     <div className="text-center my-auto flex flex-col items-center justify-center h-full pt-4 animate-fade-in px-4">
                         <div className="w-12 h-12 bg-gradient-to-b from-cyan-500/10 to-blue-500/5 text-cyan-400 border border-cyan-500/20 rounded-2xl flex items-center justify-center text-xl mb-4 shadow-xl shadow-cyan-950/50">🤖</div>
                         <h4 className="text-sm font-bold text-white mb-2 tracking-wide">AI Investitsiya Maslahatchisi</h4>
