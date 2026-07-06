@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const OPENROUTER_MODEL = 'google/gemma-3-27b-it:free';
+
 function normalizePlots(plots: any[]) {
   return plots
     .filter(plot => plot && plot.id !== undefined)
@@ -41,9 +43,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid message' }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: 'GEMINI_API_KEY is not configured on the server' }, { status: 500 });
+      return NextResponse.json({ error: 'OPENROUTER_API_KEY is not configured on the server' }, { status: 500 });
     }
 
     const availablePlots = await loadPlots(req, plots);
@@ -57,26 +59,26 @@ export async function POST(req: NextRequest) {
       
       Используй только объекты из базы Piskent Invest AI ниже. Не придумывай новые объекты, названия, площади, инфраструктуру, ссылки или координаты.
       Если подходящих объектов меньше трёх, честно скажи, что по запросу найдено мало подходящих вариантов, и покажи только реальные найденные объекты.
+      Если подходящих объектов нет, скажи: "По вашему запросу точных объектов не найдено. Могу показать ближайшие варианты."
       Если точного совпадения нет, предложи самые близкие реальные объекты из базы и объясни, что это ближайшие варианты.
       Если запрос случайный или не связан с инвестициями, вежливо попроси уточнить сферу: производство, текстиль, агро, логистика, гостиница или сервис.
 
       Формат ответа:
-      1. Короткое приветствие как инвестиционный консультант Пискентского района.
-      2. Фраза: "По вашему запросу я нашёл подходящие объекты" — переведи её на язык "${lang}".
-      3. Список из 1–3 объектов из базы. Для каждого объекта укажи:
+      1. Приветствие максимум 1 строка.
+      2. Максимум 1–3 объекта из базы. Для каждого объекта укажи:
          - Название;
          - Площадь;
          - Инфраструктура;
          - Почему подходит;
          - Идея проекта.
-      4. Короткое заключение с предложением посмотреть объект на карте или уточнить требования.
-      5. Если рекомендуешь объекты, добавь в самый конец ответа один скрытый тег для первого/лучшего объекта: "[RECOMMEND_ID: id]".
+      3. Ответ должен быть коротким и конкретным.
+      4. Если рекомендуешь объекты, добавь в самый конец ответа один скрытый тег для первого/лучшего объекта: "[RECOMMEND_ID: id]".
 
       База объектов Piskent Invest AI: ${JSON.stringify(availablePlots)}
     `;
 
-    const sanitizeGeminiDetails = (value: unknown) =>
-      String(value || 'Unknown Gemini error')
+    const sanitizeOpenRouterDetails = (value: unknown) =>
+      String(value || 'Unknown OpenRouter error')
         .replaceAll(apiKey, '[redacted]')
         .slice(0, 700);
 
@@ -85,51 +87,50 @@ export async function POST(req: NextRequest) {
     let response: Response;
     try {
       response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        'https://openrouter.ai/api/v1/chat/completions',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
-            contents: [
-              {
-                role: 'user',
-                parts: [{ text: finalPrompt }],
-              },
-            ],
+            model: OPENROUTER_MODEL,
+            messages: [{ role: 'user', content: finalPrompt }],
           }),
         }
       );
     } catch (error: any) {
       const responseBody = error?.response?.text ? await error.response.text().catch(() => '') : error?.response?.body;
-      const details = sanitizeGeminiDetails(error?.message || responseBody);
+      const details = sanitizeOpenRouterDetails(error?.message || responseBody);
 
-      console.error('Gemini request failed', {
-        message: sanitizeGeminiDetails(error?.message),
+      console.error('OpenRouter request failed', {
+        message: sanitizeOpenRouterDetails(error?.message),
         status: error?.status || error?.response?.status,
-        responseBody: responseBody ? sanitizeGeminiDetails(responseBody) : null,
+        responseBody: responseBody ? sanitizeOpenRouterDetails(responseBody) : null,
       });
 
-      return NextResponse.json({ error: 'Gemini request failed', details }, { status: 502 });
+      return NextResponse.json({ error: 'OpenRouter request failed', details }, { status: 502 });
     }
 
     if (!response.ok) {
       const responseBody = await response.text().catch(() => '');
-      const details = sanitizeGeminiDetails(responseBody || `HTTP ${response.status}`);
+      const details = sanitizeOpenRouterDetails(responseBody || `HTTP ${response.status}`);
 
-      console.error('Gemini request failed', {
-        message: `Gemini HTTP error ${response.status}`,
+      console.error('OpenRouter request failed', {
+        message: `OpenRouter HTTP error ${response.status}`,
         status: response.status,
-        responseBody: responseBody ? sanitizeGeminiDetails(responseBody) : null,
+        responseBody: responseBody ? sanitizeOpenRouterDetails(responseBody) : null,
       });
 
-      return NextResponse.json({ error: 'Gemini request failed', details }, { status: 502 });
+      return NextResponse.json({ error: 'OpenRouter request failed', details }, { status: 502 });
     }
 
     const data = await response.json();
-    const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const aiText = data.choices?.[0]?.message?.content || '';
 
     if (!aiText) {
-      return NextResponse.json({ error: 'Empty response from Gemini' }, { status: 502 });
+      return NextResponse.json({ error: 'Empty response from OpenRouter' }, { status: 502 });
     }
 
     return NextResponse.json({ text: aiText });
