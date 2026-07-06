@@ -175,9 +175,28 @@ function normalizeInfrastructureValue(value: unknown, lang: string) {
   const rawValue = String(value || '').trim();
   if (!rawValue) return '';
 
-  const lowerValue = rawValue.toLowerCase();
-  const isAvailable = /mavjud|есть|available|bor|有/.test(lowerValue);
+  const lowerValue = rawValue.toLowerCase().replace(/’/g, "'");
+  const isUnavailable = /mavjud emas|yo['`]?q|yo‘q|нет|not available|unavailable|不可用/.test(lowerValue);
+  const isUnknown = /aniqlanmoqda|уточняется|being clarified|unknown|确认中/.test(lowerValue);
+  const isAvailable = /mavjud|есть|available|bor|有|可用/.test(lowerValue);
   const isAsphalt = /asfalt|асфальт|asphalt|沥青/.test(lowerValue);
+  const isGravel = /shag['`]?al|shag‘al|щеб|gravel|碎石/.test(lowerValue);
+  const isDirtRoad = /tuproq yo['`]?l|tuproq yo‘l|грунт|dirt road|土路/.test(lowerValue);
+  const isWell = /quduq|скваж|well|井/.test(lowerValue);
+
+  if (isUnavailable) {
+    if (lang === 'ru') return 'нет';
+    if (lang === 'en') return 'not available';
+    if (lang === 'zh') return '不可用';
+    return 'Mavjud emas';
+  }
+
+  if (isUnknown) {
+    if (lang === 'ru') return 'уточняется';
+    if (lang === 'en') return 'being clarified';
+    if (lang === 'zh') return '确认中';
+    return 'Aniqlanmoqda';
+  }
 
   if (isAvailable) {
     if (lang === 'ru') return 'есть';
@@ -191,6 +210,27 @@ function normalizeInfrastructureValue(value: unknown, lang: string) {
     if (lang === 'en') return 'asphalt';
     if (lang === 'zh') return '沥青路';
     return 'Asfalt';
+  }
+
+  if (isGravel) {
+    if (lang === 'ru') return 'щебень';
+    if (lang === 'en') return 'gravel';
+    if (lang === 'zh') return '碎石路';
+    return "Shag'al";
+  }
+
+  if (isDirtRoad) {
+    if (lang === 'ru') return 'грунтовая дорога';
+    if (lang === 'en') return 'dirt road';
+    if (lang === 'zh') return '土路';
+    return "Tuproq yo'l";
+  }
+
+  if (isWell) {
+    if (lang === 'ru') return 'скважина';
+    if (lang === 'en') return 'well';
+    if (lang === 'zh') return '水井';
+    return 'Quduq';
   }
 
   if (lang === 'en') return rawValue.replace(/кВт|kBT|kVt/gi, 'kW');
@@ -225,11 +265,31 @@ function formatInfrastructure(infrastructure: any, lang: string) {
   return items.join('\n');
 }
 
-function formatOwnershipType(ownershipType: string) {
+function formatOwnershipType(ownershipType: string, lang: string) {
   if (!ownershipType) return '';
-  if (ownershipType.includes('Davlat')) return 'Bu davlat obyekti.';
-  if (ownershipType.includes('E-Auksion')) return 'Obyekt E-Auksion orqali realizatsiya qilinadi.';
-  if (ownershipType.includes('Xususiy')) return 'Bu xususiy investitsiya obyekti.';
+  const value = ownershipType.toLowerCase();
+
+  if (value.includes('davlat')) {
+    if (lang === 'ru') return 'Это государственный объект.';
+    if (lang === 'en') return 'This is a state-owned property.';
+    if (lang === 'zh') return '这是国有资产。';
+    return 'Bu davlat obyekti.';
+  }
+
+  if (value.includes('auksion')) {
+    if (lang === 'ru') return 'Объект реализуется через E-Auksion.';
+    if (lang === 'en') return 'The property is offered through E-Auction.';
+    if (lang === 'zh') return '该项目通过电子拍卖进行处置。';
+    return 'Obyekt E-Auksion orqali realizatsiya qilinadi.';
+  }
+
+  if (value.includes('xususiy')) {
+    if (lang === 'ru') return 'Это частный инвестиционный объект.';
+    if (lang === 'en') return 'This is a private investment property.';
+    if (lang === 'zh') return '这是私有投资资产。';
+    return 'Bu xususiy investitsiya obyekti.';
+  }
+
   return ownershipType;
 }
 
@@ -274,7 +334,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
     const items = plots.map((plot, index) => [
       `${index + 1}. ${plot.name}`,
       `- Площадь: ${plot.area} га`,
-      formatOwnershipType(plot.ownership_type) ? `- Тип объекта: ${formatOwnershipType(plot.ownership_type)}` : '',
+      formatOwnershipType(plot.ownership_type, lang) ? `- Тип объекта: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
       `- Инфраструктура:\n${formatInfrastructure(plot.infrastructure, lang)}`,
       '- Почему подходит: это один из ближайших реальных вариантов по вашему запросу.',
       `- Идея проекта: ${getIdea(plot, lang)}`,
@@ -287,7 +347,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
     const items = plots.map((plot, index) => [
       `${index + 1}. ${plot.name}`,
       `- Area: ${plot.area} ha`,
-      formatOwnershipType(plot.ownership_type) ? `- Property type: ${formatOwnershipType(plot.ownership_type)}` : '',
+      formatOwnershipType(plot.ownership_type, lang) ? `- Property type: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
       `- Infrastructure:\n${formatInfrastructure(plot.infrastructure, lang)}`,
       '- Why suitable: this is one of the closest real options for your request.',
       `- Project idea: ${getIdea(plot, lang)}`,
@@ -300,7 +360,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
     const items = plots.map((plot, index) => [
       `${index + 1}. ${plot.name}`,
       `- 面积：${plot.area} 公顷`,
-      formatOwnershipType(plot.ownership_type) ? `- 对象类型：${formatOwnershipType(plot.ownership_type)}` : '',
+      formatOwnershipType(plot.ownership_type, lang) ? `- 对象类型：${formatOwnershipType(plot.ownership_type, lang)}` : '',
       `- 基础设施：\n${formatInfrastructure(plot.infrastructure, lang)}`,
       '- 适合原因：这是最接近您需求的真实地块之一。',
       `- 项目想法：${getIdea(plot, lang)}`,
@@ -312,7 +372,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
   const items = plots.map((plot, index) => [
     `${index + 1}. ${plot.name}`,
     `- Maydoni: ${plot.area} ga`,
-    formatOwnershipType(plot.ownership_type) ? `- Obyekt turi: ${formatOwnershipType(plot.ownership_type)}` : '',
+    formatOwnershipType(plot.ownership_type, lang) ? `- Obyekt turi: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
     `- Infratuzilma:\n${formatInfrastructure(plot.infrastructure, lang)}`,
     '- Nega mos keladi: so‘rovingizga eng yaqin real variantlardan biri.',
     `- Loyiha g‘oyasi: ${getIdea(plot, lang)}`,
