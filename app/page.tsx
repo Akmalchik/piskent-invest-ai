@@ -131,7 +131,7 @@ export default function Home() {
               <div>
                 <h1 className="font-bold text-sm tracking-wide text-white">Piskent Invest AI</h1>
                 <p className="text-[10px] text-slate-400 uppercase tracking-widest">
-                  {lang === 'zh' ? '政府官方门户' : lang === 'ru' ? 'Государственный Портал' : 'Davlat Portali'}
+                  {lang === 'zh' ? '政府官方门户' : lang === 'ru' ? 'Государственный Портал' : lang === 'en' ? 'Official Portal' : 'Davlat Portali'}
                 </p>
               </div>
             </div>
@@ -181,14 +181,14 @@ export default function Home() {
           {/* ЖИВОЙ СЧЁТЧИК KPI НА 4 ЯЗЫКАХ */}
           <div className="hidden lg:flex items-center gap-6 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-l border-r border-slate-800/80 px-6 mx-4">
             <div className="flex items-center gap-1.5">
-              <span>{lang === 'zh' ? '总规划面积' : lang === 'ru' ? 'Площадь' : 'Maydonlar'}:</span>
+              <span>{lang === 'zh' ? '总规划面积' : lang === 'ru' ? 'Площадь' : lang === 'en' ? 'Areas' : 'Maydonlar'}:</span>
               {/* Ставим заглушку 0, пока база пустая */}
               <AnimatedNumber value={0} />
               <span className="text-[10px] text-slate-500">{localLabels.ga}</span>
             </div>
             <span className="text-slate-800">•</span>
             <div className="flex items-center gap-1.5">
-              <span>{lang === 'zh' ? '空闲投资土地' : lang === 'ru' ? 'Свободные лоты' : 'Bo\'sh lotlar'}:</span>
+              <span>{lang === 'zh' ? '空闲投资土地' : lang === 'ru' ? 'Свободные лоты' : lang === 'en' ? 'Available lots' : 'Bo\'sh lotlar'}:</span>
               {/* Ставим заглушку 0 лотов */}
               <AnimatedNumber value={0} />
               <span className="text-[10px] text-slate-500">{localLabels.ta}</span>

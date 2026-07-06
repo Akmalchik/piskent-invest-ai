@@ -193,6 +193,7 @@ export default function MyInvestmentMap({
             statusTitle: "🔍 Holat bo'yicha filtr", indTitle: "🏭 Yo'nalishlar bo'yicha",
             infraTitle: "⚡ Infratuzilma qatlamlari", gas: "Gaz tarmog'i", power: "Elektr tarmog'i", water: "Suv ta'minoti",
             all: "Barchasi", allInd: "Hamma yo'nalishlar",
+            statusLabels: { Barchasi: "Barchasi", Mavjud: "Mavjud", "E-auksion": "Auksion", Band: "Band" },
             sanoat: "Sanoat va ishlab chiqarish", tekstil: "To'qimachilik va tekstil", agro: "Qishloq xo'jaligi va agro",
             logistika: "Logistika va transport", qurilish: "Qurilish materiallari", boshqa: "Boshqa yo'nalishlar"
         },
@@ -201,6 +202,7 @@ export default function MyInvestmentMap({
             statusTitle: "🔍 Фильтр по статусу", indTitle: "🏭 По направлениям",
             infraTitle: "⚡ Инфраструктурные слои", gas: "Газовая сеть", power: "Электросеть", water: "Водоснабжение",
             all: "Все", allInd: "Все направления",
+            statusLabels: { Barchasi: "Все", Mavjud: "Свободен", "E-auksion": "Аукцион", Band: "Занят" },
             sanoat: "Промышленность и производство", tekstil: "Текстиль и ткачество", agro: "Сельское хозяйство и агро",
             logistika: "Логистика и транспорт", qurilish: "Строительные материалы", boshqa: "Другие направления"
         },
@@ -209,6 +211,7 @@ export default function MyInvestmentMap({
             statusTitle: "🔍 Filter by Status", indTitle: "🏭 By Industry Branches",
             infraTitle: "⚡ Infrastructure Layers", gas: "Gas Network", power: "Power Grid", water: "Water Supply",
             all: "All", allInd: "All Industries",
+            statusLabels: { Barchasi: "All", Mavjud: "Available", "E-auksion": "Auction", Band: "Reserved" },
             sanoat: "Industry & Manufacturing", tekstil: "Textile & Clothing", agro: "Agriculture & Agro",
             logistika: "Logistics & Transport", qurilish: "Building Materials", boshqa: "Other Industries"
         },
@@ -217,12 +220,14 @@ export default function MyInvestmentMap({
             statusTitle: "🔍 按状态过滤", indTitle: "🏭 按行业领域",
             infraTitle: "⚡ 基础建设图层", gas: "天然气管网", power: "电网覆盖", water: "供水系统",
             all: "全部", allInd: "所有行业领域",
+            statusLabels: { Barchasi: "全部", Mavjud: "可用", "E-auksion": "拍卖", Band: "已预留" },
             sanoat: "工业与制造", tekstil: "纺织与服装加工", agro: "农业与农业深加工",
             logistika: "物流与仓储运输", qurilish: "新型建筑材料", boshqa: "其他多元行业"
         }
     };
 
     const t = localDict[lang] || localDict['uz'];
+    const mapLang = lang === 'zh' ? 'zh-CN' : ['uz', 'ru', 'en'].includes(lang) ? lang : 'uz';
 
     return (
         <div className="w-full h-full relative">
@@ -234,7 +239,7 @@ export default function MyInvestmentMap({
                 {/* 2. ИСПРАВЛЕНО: Переключаем на чистую схематичную векторную карту как на E-Auksion! */}
                 <TileLayer
                     attribution='&copy; Google Maps Road'
-                    url="https://mt1.google.com/vt/lyrs=m&hl=ru&x={x}&y={y}&z={z}"
+                    url={`https://mt1.google.com/vt/lyrs=m&hl=${mapLang}&x={x}&y={y}&z={z}`}
                 />
                 {/* 2. Контроллер для ссылок (летит к нужному лоту) */}
                 <MapController viewport={viewport} plotId={plotIdFromUrl} plots={plots} />
@@ -298,7 +303,7 @@ export default function MyInvestmentMap({
                                                 onClick={() => setStatusFilter(id)}
                                                 className={`py-1 rounded-lg text-[9px] font-bold border text-center transition-all ${statusFilter === id ? 'bg-cyan-600 text-white border-cyan-500' : 'bg-[#040814]/60 text-slate-400 border-slate-800'}`}
                                             >
-                                                {id === 'Barchasi' ? t.all : id === 'E-auksion' ? 'Auksion' : id}
+                                                {t.statusLabels[id] || id}
                                             </button>
                                         ))}
                                     </div>

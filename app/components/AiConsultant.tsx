@@ -88,15 +88,13 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 },
             ]);
         } catch (error) {
-            const errorText = 'AI maslahatchi vaqtincha mavjud emas. Lekin siz investitsiya xaritasidan obyektlarni ko‘rishingiz mumkin.';
-
             console.error('AI chat request failed:', error);
             setIsTyping(false);
             setChatMessages([
                 ...newMessages,
                 {
                     sender: 'ai',
-                    text: errorText,
+                    text: labels.errorText,
                 }
             ]);
         }
@@ -111,25 +109,37 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             title: "AI Investitsiya Maslahatchisi",
             sync: "E-Auksion Sync Active",
             mapBtn: "Xaritada ko‘rsatish",
-            pageBtn: "Auksion sahifasi"
+            pageBtn: "Auksion sahifasi",
+            starterTitle: "AI Investitsiya Maslahatchisi",
+            starterIntro: "Piskent tumanidagi investitsiya obyektlarini tanlashda yordam beraman.",
+            errorText: "AI maslahatchi vaqtincha mavjud emas. Lekin siz investitsiya xaritasidan obyektlarni ko‘rishingiz mumkin."
         },
         ru: {
             title: "AI Инвестиционный Консультант",
             sync: "Синхронизация с E-Auksion Активна",
             mapBtn: "Показать на карте",
-            pageBtn: "Страница аукциона"
+            pageBtn: "Страница аукциона",
+            starterTitle: "AI Инвестиционный Консультант",
+            starterIntro: "Помогу выбрать инвестиционные объекты в Пискентском районе.",
+            errorText: "AI-консультант временно недоступен. Но вы можете посмотреть объекты на инвестиционной карте."
         },
         en: {
             title: "AI Investment Consultant",
             sync: "E-Auksion Sync Active",
             mapBtn: "Show on Map",
-            pageBtn: "Auction Page"
+            pageBtn: "Auction Page",
+            starterTitle: "AI Investment Consultant",
+            starterIntro: "I can help you choose investment properties in Piskent district.",
+            errorText: "The AI consultant is temporarily unavailable. You can still view properties on the investment map."
         },
         zh: {
             title: "AI 投资顾问",
             sync: "电子拍卖数据同步激活",
             mapBtn: "在地图上查看",
-            pageBtn: "拍卖官方页面"
+            pageBtn: "拍卖官方页面",
+            starterTitle: "AI 投资顾问",
+            starterIntro: "我可以帮助您选择皮斯肯特区的投资项目。",
+            errorText: "AI 顾问暂时不可用。您仍然可以在投资地图上查看项目。"
         }
     };
 
@@ -191,9 +201,9 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 {isStarterScreen ? (
                     <div className="text-center my-auto flex flex-col items-center justify-center h-full pt-4 animate-fade-in px-4">
                         <div className="w-12 h-12 bg-gradient-to-b from-cyan-500/10 to-blue-500/5 text-cyan-400 border border-cyan-500/20 rounded-2xl flex items-center justify-center text-xl mb-4 shadow-xl shadow-cyan-950/50">🤖</div>
-                        <h4 className="text-sm font-bold text-white mb-2 tracking-wide">AI Investitsiya Maslahatchisi</h4>
+                        <h4 className="text-sm font-bold text-white mb-2 tracking-wide">{labels.starterTitle}</h4>
                         <p className="text-[11px] text-slate-400 max-w-xs mb-6 leading-relaxed">
-                            Piskent tumanidagi investitsiya obyektlarini tanlashda yordam beraman.
+                            {labels.starterIntro}
                         </p>
 
                         <div className="flex flex-col gap-2 w-full max-w-sm">

@@ -61,7 +61,7 @@ export const translations = {
         aiTitle: "AI 投资顾问",
         aiSubtitle: "皮斯肯特地区土地官方数据库",
         aiQuestion: "我能帮您什么？",
-        aiDesc: "描述您的商业想法 — 我 lines 将根据官方数据推荐皮斯肯特地区最合适的土地。",
+        aiDesc: "描述您的商业想法 — 我将根据官方数据推荐皮斯肯特地区最合适的土地。",
         prompt1: "我想建一个太阳能发电厂，预算5000万美元",
         prompt2: "我想开一家纺织厂，预算3000万美元",
         prompt3: "推荐一个1500万美元以内的冷库选址",

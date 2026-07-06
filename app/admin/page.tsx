@@ -15,6 +15,8 @@ const OWNERSHIP_TYPE_OPTIONS = [
     '⚖️ E-Auksion',
     '🏢 Xususiy obyekt'
 ];
+const BASIC_INFRA_OPTIONS = ['Mavjud', 'Mavjud emas', 'Aniqlanmoqda'];
+const ROAD_INFRA_OPTIONS = ['Asfalt', 'Shag‘al', 'Tuproq yo‘l', 'Aniqlanmoqda'];
 
 export default function AdminPage() {
     // Внутренняя языковая переменная проекта
@@ -45,7 +47,7 @@ export default function AdminPage() {
     const [imageUrl, setImageUrl] = useState('');
     // Поля инфраструктуры лота
     const [gas, setGas] = useState('Mavjud');
-    const [power, setPower] = useState('100 кВт');
+    const [power, setPower] = useState('Mavjud');
     const [water, setWater] = useState('Mavjud');
     const [road, setRoad] = useState('Asfalt');
 
@@ -62,7 +64,7 @@ export default function AdminPage() {
         setAuksionUrl('');
         setImageUrl('');
         setGas('Mavjud');
-        setPower('100 кВт');
+        setPower('Mavjud');
         setWater('Mavjud');
         setRoad('Asfalt');
         setMarkerCoords(null);
@@ -128,7 +130,7 @@ export default function AdminPage() {
         setStatus(plot.status || 'Mavjud');
         setOwnershipType(plot.ownership_type || OWNERSHIP_TYPE_OPTIONS[0]);
         setGas(infrastructure.gas || 'Mavjud');
-        setPower(infrastructure.power || infrastructure.electricity || '100 кВт');
+        setPower(infrastructure.power || infrastructure.electricity || 'Mavjud');
         setWater(infrastructure.water || 'Mavjud');
         setRoad(infrastructure.road || 'Asfalt');
 
@@ -412,19 +414,39 @@ export default function AdminPage() {
                             <div className="grid grid-cols-2 gap-3 text-xs">
                                 <label className="block">
                                     <span className="text-[10px] font-bold text-slate-400 block mb-1">🔥 Gaz</span>
-                                    <input type="text" value={gas} onChange={(e) => setGas(e.target.value)} placeholder="Masalan: Mavjud / Yo‘q / 50 metr" className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
+                                    <select value={gas} onChange={(e) => setGas(e.target.value)} className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white cursor-pointer">
+                                        {!BASIC_INFRA_OPTIONS.includes(gas) && gas && <option value={gas}>{gas}</option>}
+                                        {BASIC_INFRA_OPTIONS.map((option) => (
+                                            <option key={option} value={option}>{option}</option>
+                                        ))}
+                                    </select>
                                 </label>
                                 <label className="block">
                                     <span className="text-[10px] font-bold text-slate-400 block mb-1">⚡ Elektr</span>
-                                    <input type="text" value={power} onChange={(e) => setPower(e.target.value)} placeholder="Masalan: 100 kVt / 500 kVt / Yo‘q" className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
+                                    <select value={power} onChange={(e) => setPower(e.target.value)} className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white cursor-pointer">
+                                        {!BASIC_INFRA_OPTIONS.includes(power) && power && <option value={power}>{power}</option>}
+                                        {BASIC_INFRA_OPTIONS.map((option) => (
+                                            <option key={option} value={option}>{option}</option>
+                                        ))}
+                                    </select>
                                 </label>
                                 <label className="block">
                                     <span className="text-[10px] font-bold text-slate-400 block mb-1">💧 Suv</span>
-                                    <input type="text" value={water} onChange={(e) => setWater(e.target.value)} placeholder="Masalan: Mavjud / Quduq / Yo‘q" className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
+                                    <select value={water} onChange={(e) => setWater(e.target.value)} className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white cursor-pointer">
+                                        {!BASIC_INFRA_OPTIONS.includes(water) && water && <option value={water}>{water}</option>}
+                                        {BASIC_INFRA_OPTIONS.map((option) => (
+                                            <option key={option} value={option}>{option}</option>
+                                        ))}
+                                    </select>
                                 </label>
                                 <label className="block">
                                     <span className="text-[10px] font-bold text-slate-400 block mb-1">🛣 Yo‘l</span>
-                                    <input type="text" value={road} onChange={(e) => setRoad(e.target.value)} placeholder="Masalan: Asfalt / Shag‘al / Tuproq" className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
+                                    <select value={road} onChange={(e) => setRoad(e.target.value)} className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white cursor-pointer">
+                                        {!ROAD_INFRA_OPTIONS.includes(road) && road && <option value={road}>{road}</option>}
+                                        {ROAD_INFRA_OPTIONS.map((option) => (
+                                            <option key={option} value={option}>{option}</option>
+                                        ))}
+                                    </select>
                                 </label>
                             </div>
                         </div>
