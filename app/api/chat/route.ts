@@ -116,6 +116,27 @@ function isRelevantInvestmentQuestion(message: string) {
   return investmentKeywords;
 }
 
+function isGreetingMessage(message: string) {
+  const normalizedMessage = message.trim().toLowerCase();
+  return /^(salom|assalomu alaykum|привет|hello|hi|你好)[!.?\s]*$/.test(normalizedMessage);
+}
+
+function getGreetingResponse(lang: string) {
+  if (lang === 'ru') {
+    return 'Здравствуйте! Я помогаю подобрать инвестиционные объекты в Пискентском районе. Например:\n• Нужен участок 10 гектаров для производства\n• Покажи объекты с газом и электричеством\n• Нужен участок под гостиницу\n• Объекты рядом с дорогой для логистики';
+  }
+
+  if (lang === 'en') {
+    return 'Hello! I help find investment properties in Piskent district. For example:\n• I need 10 hectares for production\n• Show properties with gas and electricity\n• I need land for a hotel\n• Logistics sites near a road';
+  }
+
+  if (lang === 'zh') {
+    return '您好！我可以帮助您查找皮斯肯特区的投资地块。例如：\n• 我需要10公顷工业用地\n• 显示有天然气和电力的地块\n• 我需要酒店用地\n• 靠近道路的物流地块';
+  }
+
+  return 'Salom! Men Piskent tumanidagi investitsiya obyektlari bo‘yicha yordam beraman. Masalan:\n• 10 gektar sanoat uchun yer kerak\n• Gaz va elektr bor obyektlarni ko‘rsat\n• Mehmonxona uchun joy kerak\n• Yo‘lga yaqin logistika obyektlari';
+}
+
 function getOffTopicResponse(lang: string) {
   if (lang === 'ru') {
     return 'Извините, я консультирую только по инвестиционным объектам Пискентского района. Укажите площадь, инфраструктуру или направление бизнеса.';
@@ -265,6 +286,10 @@ export async function POST(req: NextRequest) {
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: 'Invalid message' }, { status: 400 });
+    }
+
+    if (isGreetingMessage(message)) {
+      return NextResponse.json({ text: getGreetingResponse(lang) });
     }
 
     if (!isRelevantInvestmentQuestion(message)) {

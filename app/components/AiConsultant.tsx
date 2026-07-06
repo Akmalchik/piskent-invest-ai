@@ -85,11 +85,6 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                     sender: 'ai',
                     text: aiText,
                     recommendedPlot: finalPlot,
-                    suggestions:
-                        lang === 'ru' ? ['⚡ Инфраструктура', '💼 Рабочие места'] :
-                            lang === 'zh' ? ['⚡ 基础设施', '💼 创造就业'] :
-                                lang === 'en' ? ['⚡ Infrastructure', '💼 Jobs Created'] :
-                                    ['⚡ Infratuzilma', '💼 Ish o\'rinlari'],
                 },
             ]);
         } catch (error) {
@@ -229,15 +224,6 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                                     </div>
                                 )}
                             </div>
-                            {msg.sender === 'ai' && msg.suggestions && (
-                                <div className="flex flex-wrap gap-1.5 mt-2 max-w-[85%]">
-                                    {msg.suggestions.map((suggestion: string, sIdx: number) => (
-                                        <button key={sIdx} onClick={() => suggestion.includes('Сбросить') || suggestion.includes('Очистить') ? resetChat() : handleSendMessage(suggestion)} className="px-3 py-1.5 bg-[#111c3a]/50 hover:bg-[#17264e] border border-cyan-500/10 rounded-xl text-[10px] font-semibold text-cyan-400 transition-all shadow-sm">
-                                            {suggestion}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
                         </div>
                     ))
                 )}
