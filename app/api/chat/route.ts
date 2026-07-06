@@ -75,25 +75,53 @@ export async function POST(req: NextRequest) {
       База объектов Piskent Invest AI: ${JSON.stringify(availablePlots)}
     `;
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: systemInstruction + '\n\nИнвестор пишет: ' + message }] }],
-          safetySettings: [
-            { category: 'HARM_CATEGORY_HATRED', threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
-          ],
-        }),
-      }
-    );
+    const sanitizeGeminiDetails = (value: unknown) =>
+      String(value || 'Unknown Gemini error')
+        .replaceAll(apiKey, '[redacted]')
+        .slice(0, 700);
+
+    let response: Response;
+    try {
+      response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: systemInstruction + '\n\nИнвестор пишет: ' + message }] }],
+            safetySettings: [
+              { category: 'HARM_CATEGORY_HATRED', threshold: 'BLOCK_NONE' },
+              { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+              { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+              { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+            ],
+          }),
+        }
+      );
+    } catch (error: any) {
+      const responseBody = error?.response?.text ? await error.response.text().catch(() => '') : error?.response?.body;
+      const details = sanitizeGeminiDetails(error?.message || responseBody);
+
+      console.error('Gemini request failed', {
+        message: sanitizeGeminiDetails(error?.message),
+        status: error?.status || error?.response?.status,
+        responseBody: responseBody ? sanitizeGeminiDetails(responseBody) : null,
+      });
+
+      return NextResponse.json({ error: 'Gemini request failed', details }, { status: 502 });
+    }
 
     if (!response.ok) {
-      return NextResponse.json({ error: `Gemini error: ${response.status}` }, { status: 502 });
+      const responseBody = await response.text().catch(() => '');
+      const details = sanitizeGeminiDetails(responseBody || `HTTP ${response.status}`);
+
+      console.error('Gemini request failed', {
+        message: `Gemini HTTP error ${response.status}`,
+        status: response.status,
+        responseBody: responseBody ? sanitizeGeminiDetails(responseBody) : null,
+      });
+
+      return NextResponse.json({ error: 'Gemini request failed', details }, { status: 502 });
     }
 
     const data = await response.json();
