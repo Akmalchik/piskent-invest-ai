@@ -9,7 +9,7 @@ let plotsCache: { data: any[]; expiresAt: number } | null = null;
 function jsonWithCache(data: any[]) {
     return NextResponse.json(data, {
         headers: {
-            'Cache-Control': 'max-age=0, s-maxage=60, stale-while-revalidate=300',
+            'Cache-Control': 'no-store',
         },
     });
 }
@@ -25,12 +25,29 @@ function clearPlotsCache() {
     plotsCache = null;
 }
 
+function getPlotImage(plot: any) {
+    return plot.image || plot.image_url || plot.photo_url || null;
+}
+
 function normalizePlot(plot: any) {
     return {
         ...plot,
-        image: plot.image || plot.image_url || plot.photo_url,
+        image: getPlotImage(plot),
         auksionUrl: plot.auksionUrl || plot.auksion_url || plot.auction_url,
         polygonCoordinates: plot.polygonCoordinates || plot.polygon_coords,
+    };
+}
+
+function normalizePlotForDb(plot: any) {
+    const dbPlot = normalizePlot(plot);
+
+    delete dbPlot.image_url;
+    delete dbPlot.polygon_coords;
+    delete dbPlot.auksion_url;
+
+    return {
+        ...dbPlot,
+        image: getPlotImage(plot),
     };
 }
 
@@ -118,9 +135,13 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, error: 'Данные запроса пусты' }, { status: 400 });
         }
 
+        const plotsToSave = Array.isArray(incomingData)
+            ? incomingData.map(normalizePlotForDb)
+            : normalizePlotForDb(incomingData);
+
         const { error } = await supabase
             .from('piskent_plots')
-            .upsert(incomingData, { onConflict: 'id' });
+            .upsert(plotsToSave, { onConflict: 'id' });
 
         if (error) throw error;
 
@@ -142,9 +163,11 @@ export async function PATCH(request: Request) {
             return NextResponse.json({ success: false, error: 'ID объекта обязателен для обновления' }, { status: 400 });
         }
 
+        const plotToUpdate = normalizePlotForDb(incomingData);
+
         const { error } = await supabase
             .from('piskent_plots')
-            .update(incomingData)
+            .update(plotToUpdate)
             .eq('id', incomingData.id);
 
         if (error) throw error;

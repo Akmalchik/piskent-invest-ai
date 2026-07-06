@@ -68,19 +68,16 @@ function getPlotCenter(plot: any): [number, number] | null {
     return [totals[0] / points.length, totals[1] / points.length];
 }
 
-const DEFAULT_PLOT_IMAGE = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80";
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80";
 
-function normalizePlotImage(plot: any) {
-    return {
-        ...plot,
-        image: plot.image || plot.image_url || plot.photo_url,
-    };
+function getPlotImage(plot: any) {
+    return plot.image || plot.image_url || plot.photo_url || DEFAULT_IMAGE;
 }
 
-function withDefaultPlotImage(plot: any) {
+function withPlotImage(plot: any) {
     return {
-        ...normalizePlotImage(plot),
-        image: plot.image || plot.image_url || plot.photo_url || DEFAULT_PLOT_IMAGE,
+        ...plot,
+        image: getPlotImage(plot),
     };
 }
 
@@ -166,7 +163,7 @@ export default function MyInvestmentMap({
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
-                    setPlots(data.map(normalizePlotImage));
+                    setPlots(data.map(withPlotImage));
                 }
             })
             .catch(err => {
@@ -263,7 +260,7 @@ export default function MyInvestmentMap({
                                 weight: isSelected ? 3.5 : 2
                             }}
                             eventHandlers={{
-                                click: () => onSelectPlot(normalizePlotImage(plot)),
+                                click: () => onSelectPlot(withPlotImage(plot)),
                             }}
                         />
                     );
@@ -352,7 +349,7 @@ export default function MyInvestmentMap({
             {!isAdminMode && selectedPlot && (
                 <div className="fixed md:absolute z-[1000] bg-[#0b1329]/98 backdrop-blur-lg border border-slate-800 shadow-2xl overflow-y-auto animate-fade-in inset-x-0 bottom-0 h-[60vh] rounded-t-3xl md:inset-y-4 md:right-4 md:left-auto md:h-auto md:w-[420px] md:rounded-2xl">
                     <div className="w-12 h-1 bg-slate-700 rounded-full mx-auto my-3 md:hidden" />
-                    <PlotCard plot={withDefaultPlotImage(selectedPlot)} onClose={() => onSelectPlot(null)} lang={lang} />
+                    <PlotCard plot={withPlotImage(selectedPlot)} onClose={() => onSelectPlot(null)} lang={lang} />
                 </div>
             )}
         </div>

@@ -348,6 +348,9 @@ export default function AdminPage() {
                                 placeholder="https://..."
                                 className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
                             />
+                            <p className="mt-1 text-[10px] text-slate-500">
+                                Faqat to‘g‘ridan-to‘g‘ri rasm havolasi kiriting: .jpg, .png, .webp
+                            </p>
                         </div>
                         <div>
                             <label className="text-[10px] font-bold text-slate-400 block mb-1">
