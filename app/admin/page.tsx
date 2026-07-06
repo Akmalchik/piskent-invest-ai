@@ -391,10 +391,22 @@ export default function AdminPage() {
                         <div className="bg-[#040814] p-4 rounded-xl border border-slate-800 space-y-3">
                             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Подключение коммуникаций:</h3>
                             <div className="grid grid-cols-2 gap-3 text-xs">
-                                <input type="text" value={gas} onChange={(e) => setGas(e.target.value)} className="bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
-                                <input type="text" value={power} onChange={(e) => setPower(e.target.value)} className="bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
-                                <input type="text" value={water} onChange={(e) => setWater(e.target.value)} className="bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
-                                <input type="text" value={road} onChange={(e) => setRoad(e.target.value)} className="bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
+                                <label className="block">
+                                    <span className="text-[10px] font-bold text-slate-400 block mb-1">🔥 Gaz</span>
+                                    <input type="text" value={gas} onChange={(e) => setGas(e.target.value)} placeholder="Masalan: Mavjud / Yo‘q / 50 metr" className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
+                                </label>
+                                <label className="block">
+                                    <span className="text-[10px] font-bold text-slate-400 block mb-1">⚡ Elektr</span>
+                                    <input type="text" value={power} onChange={(e) => setPower(e.target.value)} placeholder="Masalan: 100 kVt / 500 kVt / Yo‘q" className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
+                                </label>
+                                <label className="block">
+                                    <span className="text-[10px] font-bold text-slate-400 block mb-1">💧 Suv</span>
+                                    <input type="text" value={water} onChange={(e) => setWater(e.target.value)} placeholder="Masalan: Mavjud / Quduq / Yo‘q" className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
+                                </label>
+                                <label className="block">
+                                    <span className="text-[10px] font-bold text-slate-400 block mb-1">🛣 Yo‘l</span>
+                                    <input type="text" value={road} onChange={(e) => setRoad(e.target.value)} placeholder="Masalan: Asfalt / Shag‘al / Tuproq" className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white" />
+                                </label>
                             </div>
                         </div>
 
