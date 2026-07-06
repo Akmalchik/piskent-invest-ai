@@ -169,14 +169,58 @@ function getNoMatchingPlotsResponse(lang: string) {
   return 'So‘rovingiz bo‘yicha aniq mos obyekt topilmadi. Biroq xaritada boshqa mavjud obyektlarni ko‘rishingiz mumkin.';
 }
 
-function formatInfrastructure(infrastructure: any) {
-  if (!infrastructure || typeof infrastructure !== 'object') return 'Ma’lumot yo‘q';
+function normalizeInfrastructureValue(value: unknown, lang: string) {
+  const rawValue = String(value || '').trim();
+  if (!rawValue) return '';
 
-  const items = Object.entries(infrastructure)
-    .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
-    .map(([key, value]) => `${key}: ${value}`);
+  const lowerValue = rawValue.toLowerCase();
+  const isAvailable = /mavjud|есть|available|bor|有/.test(lowerValue);
+  const isAsphalt = /asfalt|асфальт|asphalt|沥青/.test(lowerValue);
 
-  return items.length > 0 ? items.join(', ') : 'Ma’lumot yo‘q';
+  if (isAvailable) {
+    if (lang === 'ru') return 'есть';
+    if (lang === 'en') return 'available';
+    if (lang === 'zh') return '有';
+    return 'Mavjud';
+  }
+
+  if (isAsphalt) {
+    if (lang === 'ru') return 'асфальт';
+    if (lang === 'en') return 'asphalt';
+    if (lang === 'zh') return '沥青路';
+    return 'Asfalt';
+  }
+
+  if (lang === 'en') return rawValue.replace(/кВт|kBT|kVt/gi, 'kW');
+  if (lang === 'zh') return rawValue.replace(/\s*(кВт|kBT|kVt|kW)\b/gi, '千瓦');
+  if (lang === 'ru') return rawValue.replace(/kBT|kVt|kW/gi, 'кВт');
+  return rawValue.replace(/кВт|kBT|kW/gi, 'kVt');
+}
+
+function formatInfrastructure(infrastructure: any, lang: string) {
+  if (!infrastructure || typeof infrastructure !== 'object') return '';
+
+  const gas = normalizeInfrastructureValue(infrastructure.gas, lang);
+  const power = normalizeInfrastructureValue(infrastructure.power || infrastructure.electricity, lang);
+  const water = normalizeInfrastructureValue(infrastructure.water, lang);
+  const road = normalizeInfrastructureValue(infrastructure.road, lang);
+
+  const labels: Record<string, Record<string, string>> = {
+    uz: { gas: '🔥 Gaz', power: '⚡ Elektr', water: '💧 Suv', road: '🛣 Yo‘l' },
+    ru: { gas: '🔥 Газ', power: '⚡ Электричество', water: '💧 Вода', road: '🛣 Дорога' },
+    en: { gas: '🔥 Gas', power: '⚡ Electricity', water: '💧 Water', road: '🛣 Road' },
+    zh: { gas: '🔥 天然气', power: '⚡ 电力', water: '💧 供水', road: '🛣 道路' },
+  };
+  const separator = lang === 'zh' ? '：' : ': ';
+  const activeLabels = labels[lang] || labels.uz;
+  const items = [
+    gas ? `${activeLabels.gas}${separator}${gas}` : '',
+    power ? `${activeLabels.power}${separator}${power}` : '',
+    water ? `${activeLabels.water}${separator}${water}` : '',
+    road ? `${activeLabels.road}${separator}${road}` : '',
+  ].filter(Boolean);
+
+  return items.join('\n');
 }
 
 function getIdea(plot: any, lang: string) {
@@ -220,7 +264,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
     const items = plots.map((plot, index) => [
       `${index + 1}. ${plot.name}`,
       `- Площадь: ${plot.area} га`,
-      `- Инфраструктура: ${formatInfrastructure(plot.infrastructure)}`,
+      `- Инфраструктура:\n${formatInfrastructure(plot.infrastructure, lang)}`,
       '- Почему подходит: это один из ближайших реальных вариантов по вашему запросу.',
       `- Идея проекта: ${getIdea(plot, lang)}`,
     ].join('\n')).join('\n\n');
@@ -232,7 +276,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
     const items = plots.map((plot, index) => [
       `${index + 1}. ${plot.name}`,
       `- Area: ${plot.area} ha`,
-      `- Infrastructure: ${formatInfrastructure(plot.infrastructure)}`,
+      `- Infrastructure:\n${formatInfrastructure(plot.infrastructure, lang)}`,
       '- Why suitable: this is one of the closest real options for your request.',
       `- Project idea: ${getIdea(plot, lang)}`,
     ].join('\n')).join('\n\n');
@@ -244,7 +288,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
     const items = plots.map((plot, index) => [
       `${index + 1}. ${plot.name}`,
       `- 面积：${plot.area} 公顷`,
-      `- 基础设施：${formatInfrastructure(plot.infrastructure)}`,
+      `- 基础设施：\n${formatInfrastructure(plot.infrastructure, lang)}`,
       '- 适合原因：这是最接近您需求的真实地块之一。',
       `- 项目想法：${getIdea(plot, lang)}`,
     ].join('\n')).join('\n\n');
@@ -255,7 +299,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
   const items = plots.map((plot, index) => [
     `${index + 1}. ${plot.name}`,
     `- Maydoni: ${plot.area} ga`,
-    `- Infratuzilma: ${formatInfrastructure(plot.infrastructure)}`,
+    `- Infratuzilma:\n${formatInfrastructure(plot.infrastructure, lang)}`,
     '- Nega mos keladi: so‘rovingizga eng yaqin real variantlardan biri.',
     `- Loyiha g‘oyasi: ${getIdea(plot, lang)}`,
   ].join('\n')).join('\n\n');
