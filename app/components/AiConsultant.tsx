@@ -106,40 +106,40 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
 
     const chatLabels: Record<string, any> = {
         uz: {
-            title: "AI Investitsiya Maslahatchisi",
+            title: "Raqamli investitsiya maslahatchisi",
             sync: "E-Auksion Sync Active",
             mapBtn: "Xaritada ko‘rsatish",
             pageBtn: "Auksion sahifasi",
-            starterTitle: "AI Investitsiya Maslahatchisi",
-            starterIntro: "Piskent tumanidagi investitsiya obyektlarini tanlashda yordam beraman.",
-            errorText: "AI maslahatchi vaqtincha mavjud emas. Lekin siz investitsiya xaritasidan obyektlarni ko‘rishingiz mumkin."
+            starterTitle: "Raqamli investitsiya maslahatchisi",
+            starterIntro: "Piskent tumanidagi investitsiya obyektlari bo‘yicha rasmiy ma'lumot va tavsiyalar taqdim etadi.",
+            errorText: "Raqamli investitsiya maslahatchisi vaqtincha mavjud emas. Investitsiya obyektlarini xarita orqali ko‘rishingiz mumkin."
         },
         ru: {
-            title: "AI Инвестиционный Консультант",
+            title: "Цифровой инвестиционный консультант",
             sync: "Синхронизация с E-Auksion Активна",
             mapBtn: "Показать на карте",
             pageBtn: "Страница аукциона",
-            starterTitle: "AI Инвестиционный Консультант",
-            starterIntro: "Помогу выбрать инвестиционные объекты в Пискентском районе.",
-            errorText: "AI-консультант временно недоступен. Но вы можете посмотреть объекты на инвестиционной карте."
+            starterTitle: "Цифровой инвестиционный консультант",
+            starterIntro: "Предоставляет официальную информацию и рекомендации по инвестиционным объектам Пискентского района.",
+            errorText: "Цифровой инвестиционный консультант временно недоступен. Инвестиционные объекты можно посмотреть на карте."
         },
         en: {
-            title: "AI Investment Consultant",
+            title: "Digital Investment Consultant",
             sync: "E-Auksion Sync Active",
             mapBtn: "Show on Map",
             pageBtn: "Auction Page",
-            starterTitle: "AI Investment Consultant",
-            starterIntro: "I can help you choose investment properties in Piskent district.",
-            errorText: "The AI consultant is temporarily unavailable. You can still view properties on the investment map."
+            starterTitle: "Digital Investment Consultant",
+            starterIntro: "Provides official information and recommendations on investment properties in Piskent district.",
+            errorText: "The Digital Investment Consultant is temporarily unavailable. Investment properties can be viewed on the map."
         },
         zh: {
-            title: "AI 投资顾问",
+            title: "数字投资顾问",
             sync: "电子拍卖数据同步激活",
             mapBtn: "在地图上查看",
             pageBtn: "拍卖官方页面",
-            starterTitle: "AI 投资顾问",
-            starterIntro: "我可以帮助您选择皮斯肯特区的投资项目。",
-            errorText: "AI 顾问暂时不可用。您仍然可以在投资地图上查看项目。"
+            starterTitle: "数字投资顾问",
+            starterIntro: "提供皮斯肯特区投资项目的官方信息和建议。",
+            errorText: "数字投资顾问暂时不可用。您仍然可以在投资地图上查看项目。"
         }
     };
 
@@ -147,28 +147,28 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     const isStarterScreen = chatMessages.length === 0;
     const starterPromptsByLang: Record<string, string[]> = {
         uz: [
-            '🏭 10 gektar sanoat uchun yer kerak',
-            '⚡ Gaz va elektr bor obyektlar',
-            '🏨 Mehmonxona uchun joy kerak',
-            '🚛 Yo‘lga yaqin logistika obyektlari'
+            '🏭 Sanoat loyihasi uchun yer maydoni',
+            '🏨 Mehmonxona qurilishi uchun joy',
+            '🚛 Logistika uchun obyekt',
+            '⚡ Gaz va elektr mavjud obyektlar'
         ],
         ru: [
-            '🏭 Нужен участок 10 гектаров для промышленности',
-            '⚡ Объекты с газом и электричеством',
-            '🏨 Нужна локация для гостиницы',
-            '🚛 Логистические объекты рядом с дорогой'
+            '🏭 Земельный участок для промышленного проекта',
+            '🏨 Локация для строительства гостиницы',
+            '🚛 Объект для логистики',
+            '⚡ Объекты с газом и электричеством'
         ],
         en: [
-            '🏭 I need 10 hectares for industrial use',
-            '⚡ Sites with gas and electricity',
-            '🏨 I need a location for a hotel',
-            '🚛 Logistics sites close to the road'
+            '🏭 Land area for an industrial project',
+            '🏨 Location for hotel construction',
+            '🚛 Property for logistics',
+            '⚡ Properties with gas and electricity'
         ],
         zh: [
-            '🏭 需要10公顷工业用地',
-            '⚡ 有天然气和电力的地块',
-            '🏨 需要适合酒店的位置',
-            '🚛 靠近道路的物流地块'
+            '🏭 工业项目用地',
+            '🏨 酒店建设选址',
+            '🚛 物流用途项目',
+            '⚡ 具备天然气和电力的项目'
         ],
     };
     const starterPrompts = starterPromptsByLang[lang] || starterPromptsByLang.uz;

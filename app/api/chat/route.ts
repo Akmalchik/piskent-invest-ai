@@ -125,18 +125,18 @@ function isGreetingMessage(message: string) {
 
 function getGreetingResponse(lang: string) {
   if (lang === 'ru') {
-    return 'Здравствуйте! Я помогаю подобрать инвестиционные объекты в Пискентском районе. Например:\n• Нужен участок 10 гектаров для производства\n• Покажи объекты с газом и электричеством\n• Нужен участок под гостиницу\n• Объекты рядом с дорогой для логистики';
+    return 'Цифровой инвестиционный консультант предоставляет официальную информацию и рекомендации по инвестиционным объектам Пискентского района. Например:\n• Земельный участок для промышленного проекта\n• Объекты с газом и электричеством\n• Локация для строительства гостиницы\n• Объект для логистики';
   }
 
   if (lang === 'en') {
-    return 'Hello! I help find investment properties in Piskent district. For example:\n• I need 10 hectares for production\n• Show properties with gas and electricity\n• I need land for a hotel\n• Logistics sites near a road';
+    return 'The Digital Investment Consultant provides official information and recommendations on investment properties in Piskent district. For example:\n• Land area for an industrial project\n• Properties with gas and electricity\n• Location for hotel construction\n• Property for logistics';
   }
 
   if (lang === 'zh') {
-    return '您好！我可以帮助您查找皮斯肯特区的投资地块。例如：\n• 我需要10公顷工业用地\n• 显示有天然气和电力的地块\n• 我需要酒店用地\n• 靠近道路的物流地块';
+    return '数字投资顾问提供皮斯肯特区投资项目的官方信息和建议。例如：\n• 工业项目用地\n• 具备天然气和电力的项目\n• 酒店建设选址\n• 物流用途项目';
   }
 
-  return 'Salom! Men Piskent tumanidagi investitsiya obyektlari bo‘yicha yordam beraman. Masalan:\n• 10 gektar sanoat uchun yer kerak\n• Gaz va elektr bor obyektlarni ko‘rsat\n• Mehmonxona uchun joy kerak\n• Yo‘lga yaqin logistika obyektlari';
+  return 'Raqamli investitsiya maslahatchisi Piskent tumanidagi investitsiya obyektlari bo‘yicha rasmiy ma\'lumot va tavsiyalar taqdim etadi. Masalan:\n• Sanoat loyihasi uchun yer maydoni\n• Gaz va elektr mavjud obyektlar\n• Mehmonxona qurilishi uchun joy\n• Logistika uchun obyekt';
 }
 
 function getOffTopicResponse(lang: string) {
@@ -329,56 +329,65 @@ function getIdea(plot: any, lang: string) {
 
 function buildTemplateResponse(plots: any[], lang: string) {
   const firstPlotId = plots[0]?.id;
+  const divider = '━━━━━━━━━━━━━━━━━━━━━━';
 
   if (lang === 'ru') {
     const items = plots.map((plot, index) => [
-      `${index + 1}. ${plot.name}`,
-      `- Площадь: ${plot.area} га`,
-      formatOwnershipType(plot.ownership_type, lang) ? `- Тип объекта: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
-      `- Инфраструктура:\n${formatInfrastructure(plot.infrastructure, lang)}`,
-      '- Почему подходит: это один из ближайших реальных вариантов по вашему запросу.',
-      `- Идея проекта: ${getIdea(plot, lang)}`,
-    ].filter(Boolean).join('\n')).join('\n\n');
+      `${index + 1}.`,
+      '',
+      `Наименование: ${plot.name}`,
+      `Площадь: ${plot.area} га`,
+      formatOwnershipType(plot.ownership_type, lang) ? `Тип объекта: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
+      `Инфраструктура:\n${formatInfrastructure(plot.infrastructure, lang)}`,
+      `Рекомендуемый проект: ${getIdea(plot, lang)}`,
+      'Почему рекомендуется: объект является одним из наиболее близких вариантов по указанным параметрам.',
+    ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
 
-    return `Здравствуйте! По вашему запросу рекомендую следующие объекты:\n\n${items}\n\nОбъект можно посмотреть на карте.\n[RECOMMEND_ID:${firstPlotId}]`;
+    return `${divider}\n\nРЕКОМЕНДУЕМЫЕ ОБЪЕКТЫ\n\n${divider}\n\n${items}\n\n${divider}\n\nДля получения дополнительной информации вы можете обратиться в отдел инвестиций, промышленности и торговли.\n\nПримечание: Рекомендации сформированы автоматически на основании имеющихся данных. Окончательное решение рекомендуется принимать после дополнительного изучения объекта и консультации с ответственным отделом.\n[RECOMMEND_ID:${firstPlotId}]`;
   }
 
   if (lang === 'en') {
     const items = plots.map((plot, index) => [
-      `${index + 1}. ${plot.name}`,
-      `- Area: ${plot.area} ha`,
-      formatOwnershipType(plot.ownership_type, lang) ? `- Property type: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
-      `- Infrastructure:\n${formatInfrastructure(plot.infrastructure, lang)}`,
-      '- Why suitable: this is one of the closest real options for your request.',
-      `- Project idea: ${getIdea(plot, lang)}`,
-    ].filter(Boolean).join('\n')).join('\n\n');
+      `${index + 1}.`,
+      '',
+      `Name: ${plot.name}`,
+      `Area: ${plot.area} ha`,
+      formatOwnershipType(plot.ownership_type, lang) ? `Property type: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
+      `Infrastructure:\n${formatInfrastructure(plot.infrastructure, lang)}`,
+      `Recommended project: ${getIdea(plot, lang)}`,
+      'Why recommended: the property is one of the closest available options based on the specified parameters.',
+    ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
 
-    return `Hello! Based on your request, I recommend these properties:\n\n${items}\n\nYou can view the property on the map.\n[RECOMMEND_ID:${firstPlotId}]`;
+    return `${divider}\n\nRECOMMENDED PROPERTIES\n\n${divider}\n\n${items}\n\n${divider}\n\nFor additional information, you may contact the Department of Investments, Industry and Trade.\n\nThe recommendations are generated automatically based on available data. Final investment decisions should be made after additional verification and consultation with the responsible department.\n[RECOMMEND_ID:${firstPlotId}]`;
   }
 
   if (lang === 'zh') {
     const items = plots.map((plot, index) => [
-      `${index + 1}. ${plot.name}`,
-      `- 面积：${plot.area} 公顷`,
-      formatOwnershipType(plot.ownership_type, lang) ? `- 对象类型：${formatOwnershipType(plot.ownership_type, lang)}` : '',
-      `- 基础设施：\n${formatInfrastructure(plot.infrastructure, lang)}`,
-      '- 适合原因：这是最接近您需求的真实地块之一。',
-      `- 项目想法：${getIdea(plot, lang)}`,
-    ].filter(Boolean).join('\n')).join('\n\n');
+      `${index + 1}.`,
+      '',
+      `名称：${plot.name}`,
+      `面积：${plot.area} 公顷`,
+      formatOwnershipType(plot.ownership_type, lang) ? `对象类型：${formatOwnershipType(plot.ownership_type, lang)}` : '',
+      `基础设施：\n${formatInfrastructure(plot.infrastructure, lang)}`,
+      `建议项目：${getIdea(plot, lang)}`,
+      '推荐理由：该项目是根据指定参数筛选出的较为匹配的可用选项之一。',
+    ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
 
-    return `您好！根据您的需求，我推荐以下地块：\n\n${items}\n\n您可以在地图上查看该地块。\n[RECOMMEND_ID:${firstPlotId}]`;
+    return `${divider}\n\n推荐项目\n\n${divider}\n\n${items}\n\n${divider}\n\n如需更多信息，您可以联系投资、工业和贸易部门。\n\n说明：建议根据现有数据自动生成。最终投资决定建议在进一步核实并咨询相关部门后作出。\n[RECOMMEND_ID:${firstPlotId}]`;
   }
 
   const items = plots.map((plot, index) => [
-    `${index + 1}. ${plot.name}`,
-    `- Maydoni: ${plot.area} ga`,
-    formatOwnershipType(plot.ownership_type, lang) ? `- Obyekt turi: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
-    `- Infratuzilma:\n${formatInfrastructure(plot.infrastructure, lang)}`,
-    '- Nega mos keladi: so‘rovingizga eng yaqin real variantlardan biri.',
-    `- Loyiha g‘oyasi: ${getIdea(plot, lang)}`,
-  ].filter(Boolean).join('\n')).join('\n\n');
+    `${index + 1}.`,
+    '',
+    `Nomi: ${plot.name}`,
+    `Maydoni: ${plot.area} ga`,
+    formatOwnershipType(plot.ownership_type, lang) ? `Obyekt turi: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
+    `Infratuzilma:\n${formatInfrastructure(plot.infrastructure, lang)}`,
+    `Tavsiya etilgan loyiha: ${getIdea(plot, lang)}`,
+    'Nega tavsiya etiladi: obyekt kiritilgan parametrlar bo‘yicha eng yaqin mavjud variantlardan biri hisoblanadi.',
+  ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
 
-  return `Salom! Sizning so‘rovingiz bo‘yicha quyidagi obyektlarni tavsiya qilaman:\n\n${items}\n\nObyektni xaritada ko‘rishingiz mumkin.\n[RECOMMEND_ID:${firstPlotId}]`;
+  return `${divider}\n\nTAVSIYA ETILGAN OBYEKTLAR\n\n${divider}\n\n${items}\n\n${divider}\n\nQo‘shimcha ma'lumot olish uchun Investitsiyalar, sanoat va savdo bo‘limiga murojaat qilishingiz mumkin.\n\nEslatma: Mazkur tavsiyalar taqdim etilgan ma'lumotlar asosida avtomatik shakllantirilgan. Yakuniy qaror qo‘shimcha o‘rganish va mas'ul bo‘lim bilan maslahatlashuvdan so‘ng qabul qilinishi tavsiya etiladi.\n[RECOMMEND_ID:${firstPlotId}]`;
 }
 
 async function loadPlots(req: NextRequest, incomingPlots: unknown) {
