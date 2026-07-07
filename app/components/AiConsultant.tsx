@@ -106,13 +106,13 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
 
     const chatLabels: Record<string, any> = {
         uz: {
-            title: "Raqamli investitsiya maslahatchisi",
+            title: "AI Investitsiya Maslahatchisi",
             sync: "E-Auksion Sync Active",
             mapBtn: "Xaritada ko‘rsatish",
             pageBtn: "Auksion sahifasi",
-            starterTitle: "Raqamli investitsiya maslahatchisi",
-            starterIntro: "Piskent tumanidagi investitsiya obyektlari bo‘yicha rasmiy ma'lumot va tavsiyalar taqdim etadi.",
-            errorText: "Raqamli investitsiya maslahatchisi vaqtincha mavjud emas. Investitsiya obyektlarini xarita orqali ko‘rishingiz mumkin."
+            starterTitle: "AI Investitsiya Maslahatchisi",
+            starterIntro: "Piskent tumanidagi investitsiya obyektlari bo‘yicha savol bering.",
+            errorText: "AI Investitsiya Maslahatchisi vaqtincha mavjud emas. Investitsiya obyektlarini xarita orqali ko‘rishingiz mumkin."
         },
         ru: {
             title: "Цифровой инвестиционный консультант",
@@ -147,10 +147,10 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     const isStarterScreen = chatMessages.length === 0;
     const starterPromptsByLang: Record<string, string[]> = {
         uz: [
-            '🏭 Sanoat loyihasi uchun yer maydoni',
-            '🏨 Mehmonxona qurilishi uchun joy',
-            '🚛 Logistika uchun obyekt',
-            '⚡ Gaz va elektr mavjud obyektlar'
+            '🏭 Sanoat loyihasi uchun yer kerak',
+            '🏨 Mehmonxona qurish uchun joy toping',
+            '🚛 Logistika uchun obyekt tavsiya qiling',
+            '⚡ Gaz va elektr bor obyektlarni ko‘rsating'
         ],
         ru: [
             '🏭 Земельный участок для промышленного проекта',

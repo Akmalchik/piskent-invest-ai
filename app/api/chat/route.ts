@@ -387,7 +387,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
     'Nega tavsiya etiladi: obyekt kiritilgan parametrlar bo‘yicha eng yaqin mavjud variantlardan biri hisoblanadi.',
   ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
 
-  return `${divider}\n\nTAVSIYA ETILGAN OBYEKTLAR\n\n${divider}\n\n${items}\n\n${divider}\n\nQo‘shimcha ma'lumot olish uchun Investitsiyalar, sanoat va savdo bo‘limiga murojaat qilishingiz mumkin.\n\nEslatma: Mazkur tavsiyalar taqdim etilgan ma'lumotlar asosida avtomatik shakllantirilgan. Yakuniy qaror qo‘shimcha o‘rganish va mas'ul bo‘lim bilan maslahatlashuvdan so‘ng qabul qilinishi tavsiya etiladi.\n[RECOMMEND_ID:${firstPlotId}]`;
+  return `${divider}\n\nAI INVESTITSIYA MASLAHATCHISI TAVSIYASI\n\n${divider}\n\n${items}\n\n${divider}\n\nQo‘shimcha ma'lumot olish uchun Investitsiyalar, sanoat va savdo bo‘limiga murojaat qilishingiz mumkin.\n\nEslatma: Mazkur tavsiyalar taqdim etilgan ma'lumotlar asosida avtomatik shakllantirilgan. Yakuniy qaror qo‘shimcha o‘rganish va mas'ul bo‘lim bilan maslahatlashuvdan so‘ng qabul qilinishi tavsiya etiladi.\n[RECOMMEND_ID:${firstPlotId}]`;
 }
 
 async function loadPlots(req: NextRequest, incomingPlots: unknown) {
