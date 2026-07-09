@@ -44,7 +44,16 @@ export const translations = {
         contact: "Aloqa",
         responsibleDepartment: "Mas’ul bo‘lim",
         responsibleOfficer: "Mas’ul xodim",
-        phone: "Telefon"
+        phone: "Telefon",
+        investmentSectors: "Investitsiya yo‘nalishlari",
+        agriculture: "Qishloq xo‘jaligi",
+        industrySector: "Sanoat",
+        servicesSector: "Xizmat ko‘rsatish",
+        logisticsSector: "Logistika",
+        constructionMaterials: "Qurilish materiallari",
+        foodIndustry: "Oziq-ovqat sanoati",
+        lightIndustry: "Yengil sanoat",
+        tradeService: "Savdo va servis"
     },
     ru: {
         aiTitle: "AI Инвестиционный Консультант",
@@ -90,7 +99,16 @@ export const translations = {
         contact: "Контакты",
         responsibleDepartment: "Ответственный отдел",
         responsibleOfficer: "Ответственный сотрудник",
-        phone: "Телефон"
+        phone: "Телефон",
+        investmentSectors: "Инвестиционные направления",
+        agriculture: "Сельское хозяйство",
+        industrySector: "Промышленность",
+        servicesSector: "Сфера услуг",
+        logisticsSector: "Логистика",
+        constructionMaterials: "Строительные материалы",
+        foodIndustry: "Пищевая промышленность",
+        lightIndustry: "Лёгкая промышленность",
+        tradeService: "Торговля и сервис"
     },
     en: {
         aiTitle: "AI Investment Consultant",
@@ -136,7 +154,16 @@ export const translations = {
         contact: "Contact",
         responsibleDepartment: "Responsible department",
         responsibleOfficer: "Responsible officer",
-        phone: "Phone"
+        phone: "Phone",
+        investmentSectors: "Investment sectors",
+        agriculture: "Agriculture",
+        industrySector: "Industry",
+        servicesSector: "Services",
+        logisticsSector: "Logistics",
+        constructionMaterials: "Construction materials",
+        foodIndustry: "Food industry",
+        lightIndustry: "Light industry",
+        tradeService: "Trade and service"
     },
     zh: {
         aiTitle: "AI 投资顾问",
@@ -182,6 +209,15 @@ export const translations = {
         contact: "联系方式",
         responsibleDepartment: "负责部门",
         responsibleOfficer: "负责人",
-        phone: "电话"
+        phone: "电话",
+        investmentSectors: "投资方向",
+        agriculture: "农业",
+        industrySector: "工业",
+        servicesSector: "服务业",
+        logisticsSector: "物流",
+        constructionMaterials: "建筑材料",
+        foodIndustry: "食品工业",
+        lightIndustry: "轻工业",
+        tradeService: "贸易与服务"
     }
 };

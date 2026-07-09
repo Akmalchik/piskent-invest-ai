@@ -47,10 +47,25 @@ The district offers opportunities for investment projects in agriculture, indust
   mahallas: 23,
   households: 19074,
   families: 27850,
-  mayorName: 'Арипов Музаффар Акбарович',
-  contactDepartment: 'Investitsiyalar, sanoat va savdo bo‘limi',
+  mayorName: 'Aripov Muzaffar Akbarovich',
+  contactDepartment: {
+    uz: 'Investitsiyalar, sanoat va savdo bo‘limi',
+    ru: 'Отдел инвестиций, промышленности и торговли',
+    en: 'Department of Investment, Industry and Trade',
+    zh: '投资、工业和贸易部门',
+  },
   contactResponsible: 'Nazirqulov Doniyor Rahmonjon o‘g‘li',
   contactPhone: '+998 99 512 75 70',
+  investmentSectors: [
+    { icon: '🌾', key: 'agriculture' },
+    { icon: '🏭', key: 'industrySector' },
+    { icon: '🏢', key: 'servicesSector' },
+    { icon: '🚛', key: 'logisticsSector' },
+    { icon: '🧱', key: 'constructionMaterials' },
+    { icon: '🍞', key: 'foodIndustry' },
+    { icon: '🧵', key: 'lightIndustry' },
+    { icon: '🛒', key: 'tradeService' },
+  ],
   communications: {
     drinkingWaterNetworkKm: '255,8 km',
     drinkingWaterCoveragePercent: '75,4%',
@@ -137,7 +152,7 @@ export default function Home() {
   ];
 
   const contactRows = [
-    [t.responsibleDepartment, DISTRICT_PASSPORT.contactDepartment],
+    [t.responsibleDepartment, DISTRICT_PASSPORT.contactDepartment[lang]],
     [t.responsibleOfficer, DISTRICT_PASSPORT.contactResponsible],
     [t.phone, DISTRICT_PASSPORT.contactPhone],
   ];
@@ -372,6 +387,18 @@ export default function Home() {
 		                      <span className="mt-2 block text-lg font-black text-cyan-400">{value}</span>
 		                    </div>
 		                  ))}
+			                </div>
+
+		                <div className="rounded-xl border border-slate-800 bg-[#0b1329] p-4 md:p-5">
+		                  <h3 className="text-xs font-black uppercase tracking-widest text-slate-300 mb-4">{t.investmentSectors}</h3>
+		                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+		                    {DISTRICT_PASSPORT.investmentSectors.map((sector) => (
+		                      <div key={sector.key} className="rounded-xl border border-slate-800 bg-[#071127] p-3 flex items-center gap-3">
+		                        <span className="h-8 w-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-sm">{sector.icon}</span>
+		                        <span className="text-xs font-bold text-slate-200 leading-snug">{t[sector.key]}</span>
+		                      </div>
+		                    ))}
+		                  </div>
 		                </div>
 
 		                <div className="rounded-xl border border-slate-800 bg-[#0b1329] p-4 md:p-5">
