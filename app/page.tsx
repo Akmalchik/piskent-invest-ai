@@ -11,30 +11,54 @@ const MyInvestmentMap = dynamic(() => import('./components/MyInvestmentMap'), {
 });
 import AiConsultant from './components/AiConsultant';
 
-type DistrictProfile = {
-  district_name?: string;
-  hero_image?: string;
-  population?: string | number;
-  working_population?: string | number;
-  mahallas?: string | number;
-  area_km2?: string | number;
-  electricity_percent?: string | number;
-  gas_percent?: string | number;
-  water_percent?: string | number;
-  roads_percent?: string | number;
-  description?: string;
-  description_uz?: string;
-  description_ru?: string;
-  description_en?: string;
-  description_zh?: string;
-  mayor_name?: string;
-  mayor_photo?: string;
-  deputy_name?: string;
-  deputy_photo?: string;
-  investment_department_name?: string;
-  investment_head_name?: string;
-  investment_phone?: string;
-  investment_phone2?: string;
+type Lang = 'uz' | 'ru' | 'en' | 'zh';
+
+const DISTRICT_PASSPORT = {
+  districtName: {
+    uz: 'Piskent tumani',
+    ru: 'Пискентский район',
+    en: 'Piskent district',
+    zh: '皮斯肯特区',
+  },
+  createdDate: {
+    uz: '1926-yil 29-sentabr',
+    ru: '29 сентября 1926 года',
+    en: 'September 29, 1926',
+    zh: '1926年9月29日',
+  },
+  description: {
+    uz: `Piskent tumani Toshkent viloyatining ma’muriy hududlaridan biri bo‘lib, ma’muriy markazi Piskent shahri hisoblanadi. Tuman 1926-yil 29-sentabrda tashkil topgan. Umumiy maydoni 749,09 kv.km, mahallalar soni 23 ta.
+
+Tumanda qishloq xo‘jaligi, sanoat, xizmat ko‘rsatish, logistika va boshqa yo‘nalishlarda investitsiya loyihalarini amalga oshirish uchun imkoniyatlar mavjud. Aholi soni 105,1 ming kishini, jami mehnat resurslari 55 922 nafarni, iqtisodiy faol aholi esa 46 575 nafarni tashkil etadi.`,
+    ru: `Пискентский район является одной из административных территорий Ташкентской области. Административный центр района — город Пискент. Район был образован 29 сентября 1926 года. Общая площадь составляет 749,09 кв.км, количество махаллей — 23.
+
+В районе имеются возможности для реализации инвестиционных проектов в сферах сельского хозяйства, промышленности, услуг, логистики и других направлениях. Численность населения составляет 105,1 тыс. человек, общий объём трудовых ресурсов — 55 922 человека, экономически активное население — 46 575 человек.`,
+    en: `Piskent district is one of the administrative territories of Tashkent region. The administrative center of the district is the city of Piskent. The district was established on September 29, 1926. Its total area is 749.09 sq. km, and it includes 23 mahallas.
+
+The district offers opportunities for investment projects in agriculture, industry, services, logistics, and other sectors. The population is 105.1 thousand people, total labor resources amount to 55,922 people, and the economically active population is 46,575 people.`,
+    zh: `皮斯肯特区是塔什干州的行政区域之一，行政中心为皮斯肯特市。该区成立于1926年9月29日，总面积为749.09平方公里，共有23个社区。
+
+该区在农业、工业、服务业、物流及其他领域具备实施投资项目的潜力。人口为10.51万人，劳动力资源总数为55,922人，经济活动人口为46,575人。`,
+  },
+  area: 749.09,
+  population: 105100,
+  laborResources: 55922,
+  economicallyActivePopulation: 46575,
+  mahallas: 23,
+  households: 19074,
+  families: 27850,
+  mayorName: 'Арипов Музаффар Акбарович',
+  contactDepartment: 'Investitsiyalar, sanoat va savdo bo‘limi',
+  contactResponsible: 'Nazirqulov Doniyor Rahmonjon o‘g‘li',
+  contactPhone: '+998 99 512 75 70',
+  communications: {
+    drinkingWaterNetworkKm: '255,8 km',
+    drinkingWaterCoveragePercent: '75,4%',
+    electricityNetworkKm: '1068,4 km',
+    gasNetworkKm: '536,5 km',
+    gasCoveragePercent: '87,1%',
+    roadsKm: '201 km',
+  },
 };
 
 // Компонент для красивого плавного набегания цифр (CountUp)
@@ -67,23 +91,15 @@ function AnimatedNumber({ value }: { value: number }) {
 export default function Home() {
   const [activeTab, setActiveTab] = useState('ai');
   const [selectedPlot, setSelectedPlot] = useState(null);
-  const [districtProfile, setDistrictProfile] = useState<DistrictProfile | null>(null);
 
   const [mapViewport, setMapViewport] = useState({ center: [40.9022, 69.3444], zoom: 13 });
-  const [lang, setLang] = useState<'uz' | 'ru' | 'en' | 'zh'>('uz');
+  const [lang, setLang] = useState<Lang>('uz');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Стейты управления скрытым режимом админа
   const [isAdminMode] = useState<boolean>(false);
   const [adminMarkerCoords, setAdminMarkerCoords] = useState<[number, number] | null>(null);
   const t = (translations as any)[lang] || translations.uz;
-
-  React.useEffect(() => {
-    fetch('/api/district-profile')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => setDistrictProfile(data || {}))
-      .catch(() => setDistrictProfile({}));
-  }, []);
 
   const showValue = (value: unknown, suffix = '') => {
     const text = String(value ?? '').trim();
@@ -113,41 +129,18 @@ export default function Home() {
     return `${numeric.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km²`;
   };
 
-  const districtDescription = showValue(
-    districtProfile?.[`description_${lang}` as keyof DistrictProfile] ||
-    districtProfile?.description_uz ||
-    districtProfile?.description
-  );
-
   const communicationCards = [
-    { title: t.drinkingWaterNetworks, value: '255,8 km', detail: `${t.supplyLevel}: 75,4%` },
-    { title: t.electricityNetworks, value: '1068,4 km' },
-    { title: t.sewageNetworks, value: '1,1 km' },
-    { title: t.naturalGasNetworks, value: '536,5 km', detail: `${t.supplyLevel}: 87,1%` },
-    { title: t.roadsNetworks, value: '201 km' },
+    { title: t.drinkingWaterNetworks, value: DISTRICT_PASSPORT.communications.drinkingWaterNetworkKm, detail: `${t.supplyLevel}: ${DISTRICT_PASSPORT.communications.drinkingWaterCoveragePercent}` },
+    { title: t.electricityNetworks, value: DISTRICT_PASSPORT.communications.electricityNetworkKm },
+    { title: t.naturalGasNetworks, value: DISTRICT_PASSPORT.communications.gasNetworkKm, detail: `${t.supplyLevel}: ${DISTRICT_PASSPORT.communications.gasCoveragePercent}` },
+    { title: t.roadsNetworks, value: DISTRICT_PASSPORT.communications.roadsKm },
   ];
 
   const contactRows = [
-    [t.responsibleDepartment, districtProfile?.investment_department_name],
-    [t.responsibleOfficer, districtProfile?.investment_head_name],
-    [t.phone, districtProfile?.investment_phone],
-    [t.phone, districtProfile?.investment_phone2],
-  ].reduce((rows: Array<[string, string]>, [label, value]) => {
-    const text = String(value || '').trim();
-    const normalizedText = text.toLowerCase().replace(/[‘’`]/g, "'");
-    const textDigits = text.replace(/\D/g, '');
-    const isDuplicate = rows.some(([, existing]) => {
-      const existingDigits = existing.replace(/\D/g, '');
-      return existing === text || Boolean(textDigits && existingDigits && existingDigits === textDigits);
-    });
-    const isBlockedPerson = /to'?xtayev|алишер/i.test(normalizedText);
-
-    if (text && !isDuplicate && !isBlockedPerson) {
-      rows.push([String(label), text]);
-    }
-
-    return rows;
-  }, []);
+    [t.responsibleDepartment, DISTRICT_PASSPORT.contactDepartment],
+    [t.responsibleOfficer, DISTRICT_PASSPORT.contactResponsible],
+    [t.phone, DISTRICT_PASSPORT.contactPhone],
+  ];
 
   // Дополнительные служебные переводы для каркаса, которых может не быть в translations.ts
   const localLabels = {
@@ -341,44 +334,39 @@ export default function Home() {
 	            <div className="w-full h-full overflow-y-auto bg-[#070d1e] p-4 md:p-6">
 	              <div className="mx-auto max-w-6xl space-y-5">
 		                <div className="relative overflow-hidden rounded-xl border border-slate-800 bg-[#0b1329]">
-		                  {districtProfile?.hero_image && (
-		                    <img src={districtProfile.hero_image} alt={districtProfile.district_name || t.aboutTitle} className="absolute inset-0 h-full w-full object-cover opacity-25" />
-		                  )}
 		                  <div className="relative grid gap-5 lg:grid-cols-[1fr_280px] p-5 md:p-8 bg-gradient-to-r from-[#0b1329] via-[#0b1329]/95 to-[#0b1329]/75">
 		                    <div>
 		                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.aboutTitle}</span>
 		                      <h2 className="mt-3 max-w-3xl text-2xl md:text-4xl font-black text-white tracking-tight">
-		                        {showValue(districtProfile?.district_name)}
-			                      </h2>
-			                      <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
-			                        {districtDescription}
-			                      </p>
+		                        {DISTRICT_PASSPORT.districtName[lang]}
+				                      </h2>
+		                      <p className="mt-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+		                        {t.createdDate}: {DISTRICT_PASSPORT.createdDate[lang]}
+		                      </p>
+				                      <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
+				                        {DISTRICT_PASSPORT.description[lang]}
+				                      </p>
 		                    </div>
 		                    <div className="rounded-xl border border-cyan-500/20 bg-[#071127]/85 p-4">
 		                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.mayor}</span>
 		                      <div className="mt-3 flex items-center gap-4 lg:block">
 		                        <div className="h-20 w-20 lg:h-40 lg:w-full rounded-xl bg-slate-800 overflow-hidden flex-shrink-0">
-		                          {districtProfile?.mayor_photo ? (
-		                            <img src={districtProfile.mayor_photo} alt={districtProfile.mayor_name || t.mayor} className="h-full w-full object-cover" />
-		                          ) : (
-		                            <div className="h-full w-full flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-slate-500 text-center px-2">
-		                              {t.noData}
-		                            </div>
-		                          )}
+		                          <div className="h-full w-full flex items-center justify-center text-2xl font-black text-cyan-500 bg-cyan-500/5">M</div>
 		                        </div>
-		                        <p className="text-sm font-bold text-white lg:mt-3">{showValue(districtProfile?.mayor_name)}</p>
+		                        <p className="text-sm font-bold text-white lg:mt-3">{DISTRICT_PASSPORT.mayorName}</p>
 		                      </div>
 		                    </div>
 		                  </div>
 		                </div>
 
 	                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-	                  {[
-		                    [t.population, formatPopulation(districtProfile?.population)],
-		                    [t.workingPopulation, formatPlainNumber(districtProfile?.working_population)],
-		                    [t.mahallas, showValue(districtProfile?.mahallas)],
-		                    [t.areaKm2, formatArea(districtProfile?.area_km2)],
-		                  ].map(([label, value]) => (
+		                  {[
+			                    [t.population, formatPopulation(DISTRICT_PASSPORT.population)],
+			                    [t.workingPopulation, formatPlainNumber(DISTRICT_PASSPORT.laborResources)],
+			                    [t.economicallyActivePopulation, formatPlainNumber(DISTRICT_PASSPORT.economicallyActivePopulation)],
+			                    [t.mahallas, showValue(DISTRICT_PASSPORT.mahallas)],
+			                    [t.areaKm2, formatArea(DISTRICT_PASSPORT.area)],
+			                  ].map(([label, value]) => (
 		                    <div key={String(label)} className="rounded-xl border border-slate-800 bg-[#0b1329] p-4">
 		                      <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</span>
 		                      <span className="mt-2 block text-lg font-black text-cyan-400">{value}</span>
@@ -401,18 +389,14 @@ export default function Home() {
 
 		                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4 md:p-5">
 		                  <h3 className="text-xs font-black uppercase tracking-widest text-cyan-400 mb-3">{t.contact}</h3>
-		                  {contactRows.length > 0 ? (
-		                    <div className="grid md:grid-cols-2 gap-3">
-		                      {contactRows.map(([label, value]) => (
-		                        <div key={`${label}-${value}`} className="rounded-xl border border-cyan-500/10 bg-[#071127]/70 p-3">
-		                          <span className="block text-[10px] font-bold uppercase tracking-wider text-cyan-400">{label}</span>
-		                          <span className={`mt-1 block text-sm text-slate-200 ${label === t.phone ? 'font-mono' : 'font-bold'}`}>{value}</span>
-		                        </div>
-		                      ))}
-		                    </div>
-		                  ) : (
-		                    <p className="text-sm text-slate-300">{t.noData}</p>
-		                  )}
+		                  <div className="grid md:grid-cols-3 gap-3">
+		                    {contactRows.map(([label, value]) => (
+		                      <div key={`${label}-${value}`} className="rounded-xl border border-cyan-500/10 bg-[#071127]/70 p-3">
+		                        <span className="block text-[10px] font-bold uppercase tracking-wider text-cyan-400">{label}</span>
+		                        <span className={`mt-1 block text-sm text-slate-200 ${label === t.phone ? 'font-mono' : 'font-bold'}`}>{value}</span>
+		                      </div>
+		                    ))}
+		                  </div>
 		                </div>
 	              </div>
 	            </div>

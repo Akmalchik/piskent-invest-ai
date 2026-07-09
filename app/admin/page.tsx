@@ -21,64 +21,12 @@ const normalizeInfraOption = (value: unknown, options: string[]) => {
     const normalizedValue = String(value || '').trim();
     return options.includes(normalizedValue) ? normalizedValue : 'Aniqlanmoqda';
 };
-const DISTRICT_PROFILE_DEFAULTS = {
-    district_name: '',
-    hero_image: '',
-    population: '',
-    working_population: '',
-    mahallas: '',
-    area_km2: '',
-    electricity_percent: '',
-    gas_percent: '',
-    water_percent: '',
-    roads_percent: '',
-    description: '',
-    description_uz: '',
-    description_ru: '',
-    description_en: '',
-    description_zh: '',
-    mayor_name: '',
-    mayor_photo: '',
-    deputy_name: '',
-    deputy_photo: '',
-    investment_department_name: '',
-    investment_head_name: '',
-    investment_phone: '',
-    investment_phone2: '',
-};
-const DISTRICT_PROFILE_FIELDS = [
-    ['district_name', 'Название района'],
-    ['hero_image', 'Hero image URL'],
-    ['population', 'Население'],
-    ['working_population', 'Трудоспособное население'],
-    ['mahallas', 'Количество махаллей'],
-    ['area_km2', 'Площадь, км²'],
-    ['electricity_percent', 'Электричество, %'],
-    ['gas_percent', 'Газ, %'],
-    ['water_percent', 'Вода, %'],
-    ['roads_percent', 'Дороги, %'],
-    ['mayor_name', 'ФИО хокима'],
-    ['mayor_photo', 'Фото хокима URL'],
-    ['deputy_name', 'ФИО заместителя'],
-    ['deputy_photo', 'Фото заместителя URL'],
-    ['investment_department_name', 'Название отдела инвестиций'],
-    ['investment_head_name', 'Руководитель отдела инвестиций'],
-    ['investment_phone', 'Телефон'],
-    ['investment_phone2', 'Телефон 2'],
-];
-const DISTRICT_DESCRIPTION_FIELDS = [
-    ['description_uz', 'Описание UZ'],
-    ['description_ru', 'Описание RU'],
-    ['description_en', 'Описание EN'],
-    ['description_zh', 'Описание ZH'],
-];
 
 export default function AdminPage() {
     // Внутренняя языковая переменная проекта
     const lang = 'uz';
     const [inputPassword, setInputPassword] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [adminSection, setAdminSection] = useState<'plots' | 'profile'>('plots');
     const handleLogin = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (inputPassword === 'Piskent2026!') {
@@ -110,7 +58,6 @@ export default function AdminPage() {
     // Стейты для хранения координат клика и показа успешного баннера
     const [markerCoords, setMarkerCoords] = useState<[number, number] | null>(null);
     const [successMessage, setSuccessMessage] = useState(false);
-    const [districtProfile, setDistrictProfile] = useState<Record<string, any>>(DISTRICT_PROFILE_DEFAULTS);
 
     const resetForm = () => {
         setName('');
@@ -163,21 +110,6 @@ export default function AdminPage() {
             .finally(() => {
                 // Сигнализируем, что клиент готов и можно безопасно рендерить карту Leaflet
                 setIsMounted(true);
-            });
-    }, [isAuthenticated]);
-
-    useEffect(() => {
-        if (!isAuthenticated) return;
-
-        fetch('/api/district-profile')
-            .then(res => {
-                if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
-                return res.json();
-            })
-            .then(data => setDistrictProfile({ ...DISTRICT_PROFILE_DEFAULTS, ...(data || {}) }))
-            .catch(err => {
-                console.error('Ошибка загрузки паспорта района:', err);
-                setDistrictProfile(DISTRICT_PROFILE_DEFAULTS);
             });
     }, [isAuthenticated]);
 
@@ -357,36 +289,6 @@ export default function AdminPage() {
         }
     };
 
-    const handleDistrictProfileChange = (field: string, value: string) => {
-        setDistrictProfile(prev => ({ ...prev, [field]: value }));
-    };
-
-    const handleSaveDistrictProfile = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        try {
-            const res = await fetch('/api/district-profile', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(districtProfile)
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Код ответа сервера: ${res.status}`);
-            }
-
-            const data = await res.json();
-            if (data.success) {
-                setDistrictProfile({ ...DISTRICT_PROFILE_DEFAULTS, ...(data.profile || {}) });
-                setSuccessMessage(true);
-                setTimeout(() => setSuccessMessage(false), 4000);
-            }
-        } catch (err: any) {
-            alert(`Ошибка при сохранении паспорта района: ${err.message}`);
-        }
-    };
-
     // 1. Добавляем проверку условия перед твоим новым кодом:
     if (!isAuthenticated) {
         return (
@@ -439,17 +341,8 @@ export default function AdminPage() {
 
 
 
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                        <button type="button" onClick={() => setAdminSection('plots')} className={`py-2 rounded-xl text-xs font-bold border transition-all ${adminSection === 'plots' ? 'bg-cyan-600/20 text-cyan-300 border-cyan-500/30' : 'bg-[#040814] text-slate-400 border-slate-800'}`}>
-                            Объекты
-                        </button>
-                        <button type="button" onClick={() => setAdminSection('profile')} className={`py-2 rounded-xl text-xs font-bold border transition-all ${adminSection === 'profile' ? 'bg-cyan-600/20 text-cyan-300 border-cyan-500/30' : 'bg-[#040814] text-slate-400 border-slate-800'}`}>
-                            Паспорт района
-                        </button>
-                    </div>
-
                     {/* ФОРМА ИНСТРУМЕНТА №2 */}
-                    <form onSubmit={handleSavePlot} className={`${adminSection === 'plots' ? 'block' : 'hidden'} space-y-4 mt-4`}>
+                    <form onSubmit={handleSavePlot} className="space-y-4 mt-4">
                         <div>
                             <label className="text-[10px] font-bold text-slate-400 block mb-1">НАЗВАНИЕ ОБЪЕКТА / ЛОТА</label>
                             <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Например: Новая текстильная фабрика" className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" />
@@ -581,58 +474,12 @@ export default function AdminPage() {
                         )}
                     </form>
 
-                    <form onSubmit={handleSaveDistrictProfile} className={`${adminSection === 'profile' ? 'block' : 'hidden'} space-y-4 mt-4`}>
-                        <div className="p-4 bg-[#040814] rounded-xl border border-slate-800">
-                            <h2 className="text-sm font-black text-white mb-1">Паспорт района</h2>
-                            <p className="text-[11px] text-slate-500">Данные для публичного раздела “О районе”.</p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            {DISTRICT_DESCRIPTION_FIELDS.map(([field, label]) => (
-                                <label key={field} className="block">
-                                    <span className="text-[10px] font-bold text-slate-400 block mb-1">{label}</span>
-                                    <textarea
-                                        value={districtProfile[field] || ''}
-                                        onChange={(e) => handleDistrictProfileChange(field, e.target.value)}
-                                        rows={5}
-                                        className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
-                                    />
-                                </label>
-                            ))}
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            {DISTRICT_PROFILE_FIELDS.map(([field, label]) => (
-                                <label key={field} className="block">
-                                    <span className="text-[10px] font-bold text-slate-400 block mb-1">{label}</span>
-                                    <input
-                                        type={String(field).includes('percent') || ['population', 'working_population', 'mahallas', 'area_km2'].includes(String(field)) ? 'number' : String(field).includes('image') || String(field).includes('photo') ? 'url' : 'text'}
-                                        value={districtProfile[field] || ''}
-                                        onChange={(e) => handleDistrictProfileChange(field, e.target.value)}
-                                        className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
-                                    />
-                                </label>
-                            ))}
-                        </div>
-
-                        <button type="submit" className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all">
-                            💾 Сохранить паспорт района
-                        </button>
-                    </form>
                 </div>
             </div>
 
             {/* СЕКЦИЯ С ИНТЕРАКТИВНОЙ КАРТОЙ СПРАВА */}
             <div className="flex-1 h-full relative bg-[#040814]">
-                {adminSection === 'profile' ? (
-                    <div className="h-full p-6 overflow-y-auto">
-                        <div className="h-full rounded-xl border border-slate-800 bg-[#0b1329] p-6 flex flex-col justify-center">
-                            <span className="text-[10px] text-cyan-400 font-black uppercase tracking-widest mb-2">Публичный раздел</span>
-                            <h2 className="text-2xl font-black text-white mb-3">{districtProfile.district_name || 'Piskent tumani'}</h2>
-                            <p className="text-sm text-slate-400 leading-7">{districtProfile.description_uz || districtProfile.description || 'Описание района появится здесь после сохранения.'}</p>
-                        </div>
-                    </div>
-                ) : isMounted && (
+                {isMounted && (
                     <MyInvestmentMap
                         key={`admin-map-${mapRefreshKey}`}
                         viewport={null}
