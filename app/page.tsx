@@ -86,11 +86,56 @@ export default function Home() {
     return text ? `${text}${suffix}` : t.noData;
   };
 
-  const progressValue = (value: unknown) => {
+  const formatPlainNumber = (value: unknown) => {
     const numeric = Number(value);
-    if (!Number.isFinite(numeric)) return 0;
-    return Math.max(0, Math.min(100, numeric));
+    if (!Number.isFinite(numeric)) return showValue(value);
+    return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(numeric);
   };
+
+  const formatPopulation = (value: unknown) => {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return showValue(value);
+    if (lang === 'ru') return `${(numeric / 1000).toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} тыс.`;
+    if (lang === 'en') return `${(numeric / 1000).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} thousand`;
+    if (lang === 'zh') return `${(numeric / 10000).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}万`;
+    return `${(numeric / 1000).toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} ming`;
+  };
+
+  const formatArea = (value: unknown) => {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return showValue(value, ' km²');
+    return `${numeric.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km²`;
+  };
+
+  const communicationCards = [
+    { title: t.drinkingWaterNetworks, value: '255,8 km', detail: `${t.supplyLevel}: 75,4%` },
+    { title: t.electricityNetworks, value: '1068,4 km' },
+    { title: t.sewageNetworks, value: '1,1 km' },
+    { title: t.naturalGasNetworks, value: '536,5 km', detail: `${t.supplyLevel}: 87,1%` },
+    { title: t.roadsNetworks, value: '201 km' },
+  ];
+
+  const contactRows = [
+    [t.responsibleDepartment, districtProfile?.investment_department_name],
+    [t.responsibleOfficer, districtProfile?.investment_head_name],
+    [t.phone, districtProfile?.investment_phone],
+    [t.phone, districtProfile?.investment_phone2],
+  ].reduce((rows: Array<[string, string]>, [label, value]) => {
+    const text = String(value || '').trim();
+    const normalizedText = text.toLowerCase().replace(/[‘’`]/g, "'");
+    const textDigits = text.replace(/\D/g, '');
+    const isDuplicate = rows.some(([, existing]) => {
+      const existingDigits = existing.replace(/\D/g, '');
+      return existing === text || Boolean(textDigits && existingDigits && existingDigits === textDigits);
+    });
+    const isBlockedPerson = /to'?xtayev|алишер/i.test(normalizedText);
+
+    if (text && !isDuplicate && !isBlockedPerson) {
+      rows.push([String(label), text]);
+    }
+
+    return rows;
+  }, []);
 
   // Дополнительные служебные переводы для каркаса, которых может не быть в translations.ts
   const localLabels = {
@@ -283,81 +328,80 @@ export default function Home() {
 	          {activeTab === 'about' && (
 	            <div className="w-full h-full overflow-y-auto bg-[#070d1e] p-4 md:p-6">
 	              <div className="mx-auto max-w-6xl space-y-5">
-	                <div className="relative overflow-hidden rounded-xl border border-slate-800 bg-[#0b1329] min-h-[260px]">
-	                  {districtProfile?.hero_image && (
-	                    <img src={districtProfile.hero_image} alt={districtProfile.district_name || t.aboutTitle} className="absolute inset-0 h-full w-full object-cover opacity-35" />
-	                  )}
-	                  <div className="relative p-5 md:p-8 bg-gradient-to-r from-[#0b1329] via-[#0b1329]/90 to-[#0b1329]/50">
-	                    <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.aboutTitle}</span>
-	                    <h2 className="mt-3 max-w-3xl text-2xl md:text-4xl font-black text-white tracking-tight">
-	                      {showValue(districtProfile?.district_name)}
-	                    </h2>
-	                    <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
-	                      {showValue(districtProfile?.description)}
-	                    </p>
-	                  </div>
-	                </div>
+		                <div className="relative overflow-hidden rounded-xl border border-slate-800 bg-[#0b1329]">
+		                  {districtProfile?.hero_image && (
+		                    <img src={districtProfile.hero_image} alt={districtProfile.district_name || t.aboutTitle} className="absolute inset-0 h-full w-full object-cover opacity-25" />
+		                  )}
+		                  <div className="relative grid gap-5 lg:grid-cols-[1fr_280px] p-5 md:p-8 bg-gradient-to-r from-[#0b1329] via-[#0b1329]/95 to-[#0b1329]/75">
+		                    <div>
+		                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.aboutTitle}</span>
+		                      <h2 className="mt-3 max-w-3xl text-2xl md:text-4xl font-black text-white tracking-tight">
+		                        {showValue(districtProfile?.district_name)}
+		                      </h2>
+		                      <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
+		                        {showValue(districtProfile?.description)}
+		                      </p>
+		                    </div>
+		                    <div className="rounded-xl border border-cyan-500/20 bg-[#071127]/85 p-4">
+		                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.mayor}</span>
+		                      <div className="mt-3 flex items-center gap-4 lg:block">
+		                        <div className="h-20 w-20 lg:h-40 lg:w-full rounded-xl bg-slate-800 overflow-hidden flex-shrink-0">
+		                          {districtProfile?.mayor_photo ? (
+		                            <img src={districtProfile.mayor_photo} alt={districtProfile.mayor_name || t.mayor} className="h-full w-full object-cover" />
+		                          ) : (
+		                            <div className="h-full w-full flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-slate-500 text-center px-2">
+		                              {t.noData}
+		                            </div>
+		                          )}
+		                        </div>
+		                        <p className="text-sm font-bold text-white lg:mt-3">{showValue(districtProfile?.mayor_name)}</p>
+		                      </div>
+		                    </div>
+		                  </div>
+		                </div>
 
 	                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
 	                  {[
-	                    [t.population, districtProfile?.population, ''],
-	                    [t.workingPopulation, districtProfile?.working_population, ''],
-	                    [t.mahallas, districtProfile?.mahallas, ''],
-	                    [t.areaKm2, districtProfile?.area_km2, ' km²'],
-	                  ].map(([label, value, suffix]) => (
-	                    <div key={String(label)} className="rounded-xl border border-slate-800 bg-[#0b1329] p-4">
-	                      <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</span>
-	                      <span className="mt-2 block text-lg font-black text-cyan-400">{showValue(value, String(suffix))}</span>
-	                    </div>
-	                  ))}
-	                </div>
+		                    [t.population, formatPopulation(districtProfile?.population)],
+		                    [t.workingPopulation, formatPlainNumber(districtProfile?.working_population)],
+		                    [t.mahallas, showValue(districtProfile?.mahallas)],
+		                    [t.areaKm2, formatArea(districtProfile?.area_km2)],
+		                  ].map(([label, value]) => (
+		                    <div key={String(label)} className="rounded-xl border border-slate-800 bg-[#0b1329] p-4">
+		                      <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</span>
+		                      <span className="mt-2 block text-lg font-black text-cyan-400">{value}</span>
+		                    </div>
+		                  ))}
+		                </div>
 
-	                <div className="rounded-xl border border-slate-800 bg-[#0b1329] p-4 md:p-5">
-	                  <h3 className="text-xs font-black uppercase tracking-widest text-slate-300 mb-4">{t.infrastructure}</h3>
-	                  <div className="grid md:grid-cols-2 gap-4">
-	                    {[
-	                      [t.electricity, districtProfile?.electricity_percent],
-	                      [t.gas, districtProfile?.gas_percent],
-	                      [t.water, districtProfile?.water_percent],
-	                      [t.roads, districtProfile?.roads_percent],
-	                    ].map(([label, value]) => (
-	                      <div key={String(label)}>
-	                        <div className="flex justify-between text-[11px] font-bold text-slate-400 mb-1">
-	                          <span>{label}</span>
-	                          <span>{showValue(value, '%')}</span>
-	                        </div>
-	                        <div className="h-2 rounded-full bg-slate-800 overflow-hidden">
-	                          <div className="h-full rounded-full bg-cyan-500" style={{ width: `${progressValue(value)}%` }} />
-	                        </div>
-	                      </div>
-	                    ))}
-	                  </div>
-	                </div>
+		                <div className="rounded-xl border border-slate-800 bg-[#0b1329] p-4 md:p-5">
+		                  <h3 className="text-xs font-black uppercase tracking-widest text-slate-300 mb-4">{t.communication}</h3>
+		                  <div className="grid sm:grid-cols-2 xl:grid-cols-5 gap-3">
+		                    {communicationCards.map((item) => (
+		                      <div key={item.title} className="rounded-xl border border-slate-800 bg-[#071127] p-4">
+		                        <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 leading-relaxed">{item.title}</span>
+		                        <span className="mt-2 block text-lg font-black text-cyan-400">{item.value}</span>
+		                        {item.detail && <span className="mt-2 block text-[11px] font-medium text-slate-400">{item.detail}</span>}
+		                      </div>
+		                    ))}
+		                  </div>
+		                </div>
 
-	                <div className="grid md:grid-cols-2 gap-4">
-	                  {[
-	                    [t.mayor, districtProfile?.mayor_name, districtProfile?.mayor_photo],
-	                    [t.deputy, districtProfile?.deputy_name, districtProfile?.deputy_photo],
-	                  ].map(([role, name, photo]) => (
-	                    <div key={String(role)} className="rounded-xl border border-slate-800 bg-[#0b1329] p-4 flex items-center gap-4">
-	                      <div className="h-16 w-16 rounded-xl bg-slate-800 overflow-hidden flex-shrink-0">
-	                        {photo ? <img src={String(photo)} alt={String(name || role)} className="h-full w-full object-cover" /> : null}
-	                      </div>
-	                      <div>
-	                        <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{role}</span>
-	                        <p className="text-sm font-bold text-white mt-1">{showValue(name)}</p>
-	                      </div>
-	                    </div>
-	                  ))}
-	                </div>
-
-	                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4 md:p-5">
-	                  <h3 className="text-xs font-black uppercase tracking-widest text-cyan-400 mb-3">{t.contact}</h3>
-	                  <p className="text-sm font-bold text-white">{showValue(districtProfile?.investment_department_name)}</p>
-	                  <p className="text-sm text-slate-300 mt-1">{showValue(districtProfile?.investment_head_name)}</p>
-	                  <p className="text-sm text-slate-300 mt-2 font-mono">{showValue(districtProfile?.investment_phone)}</p>
-	                  <p className="text-sm text-slate-300 font-mono">{showValue(districtProfile?.investment_phone2)}</p>
-	                </div>
+		                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4 md:p-5">
+		                  <h3 className="text-xs font-black uppercase tracking-widest text-cyan-400 mb-3">{t.contact}</h3>
+		                  {contactRows.length > 0 ? (
+		                    <div className="grid md:grid-cols-2 gap-3">
+		                      {contactRows.map(([label, value]) => (
+		                        <div key={`${label}-${value}`} className="rounded-xl border border-cyan-500/10 bg-[#071127]/70 p-3">
+		                          <span className="block text-[10px] font-bold uppercase tracking-wider text-cyan-400">{label}</span>
+		                          <span className={`mt-1 block text-sm text-slate-200 ${label === t.phone ? 'font-mono' : 'font-bold'}`}>{value}</span>
+		                        </div>
+		                      ))}
+		                    </div>
+		                  ) : (
+		                    <p className="text-sm text-slate-300">{t.noData}</p>
+		                  )}
+		                </div>
 	              </div>
 	            </div>
 	          )}
