@@ -33,6 +33,10 @@ const DISTRICT_PROFILE_DEFAULTS = {
     water_percent: '',
     roads_percent: '',
     description: '',
+    description_uz: '',
+    description_ru: '',
+    description_en: '',
+    description_zh: '',
     mayor_name: '',
     mayor_photo: '',
     deputy_name: '',
@@ -61,6 +65,12 @@ const DISTRICT_PROFILE_FIELDS = [
     ['investment_head_name', 'Руководитель отдела инвестиций'],
     ['investment_phone', 'Телефон'],
     ['investment_phone2', 'Телефон 2'],
+];
+const DISTRICT_DESCRIPTION_FIELDS = [
+    ['description_uz', 'Описание UZ'],
+    ['description_ru', 'Описание RU'],
+    ['description_en', 'Описание EN'],
+    ['description_zh', 'Описание ZH'],
 ];
 
 export default function AdminPage() {
@@ -577,14 +587,18 @@ export default function AdminPage() {
                             <p className="text-[11px] text-slate-500">Данные для публичного раздела “О районе”.</p>
                         </div>
 
-                        <div>
-                            <label className="text-[10px] font-bold text-slate-400 block mb-1">Описание района</label>
-                            <textarea
-                                value={districtProfile.description || ''}
-                                onChange={(e) => handleDistrictProfileChange('description', e.target.value)}
-                                rows={5}
-                                className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
-                            />
+                        <div className="grid grid-cols-2 gap-4">
+                            {DISTRICT_DESCRIPTION_FIELDS.map(([field, label]) => (
+                                <label key={field} className="block">
+                                    <span className="text-[10px] font-bold text-slate-400 block mb-1">{label}</span>
+                                    <textarea
+                                        value={districtProfile[field] || ''}
+                                        onChange={(e) => handleDistrictProfileChange(field, e.target.value)}
+                                        rows={5}
+                                        className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500"
+                                    />
+                                </label>
+                            ))}
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
@@ -615,7 +629,7 @@ export default function AdminPage() {
                         <div className="h-full rounded-xl border border-slate-800 bg-[#0b1329] p-6 flex flex-col justify-center">
                             <span className="text-[10px] text-cyan-400 font-black uppercase tracking-widest mb-2">Публичный раздел</span>
                             <h2 className="text-2xl font-black text-white mb-3">{districtProfile.district_name || 'Piskent tumani'}</h2>
-                            <p className="text-sm text-slate-400 leading-7">{districtProfile.description || 'Описание района появится здесь после сохранения.'}</p>
+                            <p className="text-sm text-slate-400 leading-7">{districtProfile.description_uz || districtProfile.description || 'Описание района появится здесь после сохранения.'}</p>
                         </div>
                     </div>
                 ) : isMounted && (

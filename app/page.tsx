@@ -23,6 +23,10 @@ type DistrictProfile = {
   water_percent?: string | number;
   roads_percent?: string | number;
   description?: string;
+  description_uz?: string;
+  description_ru?: string;
+  description_en?: string;
+  description_zh?: string;
   mayor_name?: string;
   mayor_photo?: string;
   deputy_name?: string;
@@ -89,6 +93,7 @@ export default function Home() {
   const formatPlainNumber = (value: unknown) => {
     const numeric = Number(value);
     if (!Number.isFinite(numeric)) return showValue(value);
+    if (lang === 'zh') return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(numeric);
     return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(numeric);
   };
 
@@ -104,8 +109,15 @@ export default function Home() {
   const formatArea = (value: unknown) => {
     const numeric = Number(value);
     if (!Number.isFinite(numeric)) return showValue(value, ' km²');
+    if (lang === 'en' || lang === 'zh') return `${numeric.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km²`;
     return `${numeric.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} km²`;
   };
+
+  const districtDescription = showValue(
+    districtProfile?.[`description_${lang}` as keyof DistrictProfile] ||
+    districtProfile?.description_uz ||
+    districtProfile?.description
+  );
 
   const communicationCards = [
     { title: t.drinkingWaterNetworks, value: '255,8 km', detail: `${t.supplyLevel}: 75,4%` },
@@ -337,10 +349,10 @@ export default function Home() {
 		                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.aboutTitle}</span>
 		                      <h2 className="mt-3 max-w-3xl text-2xl md:text-4xl font-black text-white tracking-tight">
 		                        {showValue(districtProfile?.district_name)}
-		                      </h2>
-		                      <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
-		                        {showValue(districtProfile?.description)}
-		                      </p>
+			                      </h2>
+			                      <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
+			                        {districtDescription}
+			                      </p>
 		                    </div>
 		                    <div className="rounded-xl border border-cyan-500/20 bg-[#071127]/85 p-4">
 		                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.mayor}</span>
