@@ -53,6 +53,7 @@ export default function AdminPage() {
     // Поля формы для ручного создания нового объекта (оригинальная верстка и стейты Акмаля)
     const [name, setName] = useState('');
     const [area, setArea] = useState('');
+    const [buildingAreaM2, setBuildingAreaM2] = useState('');
     const [industry, setIndustry] = useState('Sanoat / Ishlab chiqarish');
     const [status, setStatus] = useState('Mavjud');
     const [ownershipType, setOwnershipType] = useState(OWNERSHIP_TYPE_OPTIONS[0]);
@@ -72,6 +73,7 @@ export default function AdminPage() {
     const resetForm = () => {
         setName('');
         setArea('');
+        setBuildingAreaM2('');
         setIndustry('Sanoat / Ishlab chiqarish');
         setStatus('Mavjud');
         setOwnershipType(OWNERSHIP_TYPE_OPTIONS[0]);
@@ -139,6 +141,7 @@ export default function AdminPage() {
         setEditingPlot(plot);
         setName(plot.name || '');
         setArea(plot.area !== undefined && plot.area !== null ? String(plot.area) : '');
+        setBuildingAreaM2(plot.building_area_m2 !== undefined && plot.building_area_m2 !== null ? String(plot.building_area_m2) : String(plot.buildingAreaM2 ?? ''));
         setImageUrl(plot.image || plot.image_url || plot.photo_url || '');
         setAuksionUrl(plot.auksionUrl || plot.auksion_url || plot.auction_url || '');
         setIndustry(plot.industry || 'Production');
@@ -173,6 +176,7 @@ export default function AdminPage() {
                 ...editingPlot,
                 name,
                 area: parseFloat(area),
+                building_area_m2: buildingAreaM2 ? parseFloat(buildingAreaM2) : null,
                 industry,
                 status,
                 ownership_type: ownershipType,
@@ -231,6 +235,7 @@ export default function AdminPage() {
             id: Date.now(), // Уникальный ID на базе времени создания
             name,
             area: parseFloat(area),
+            building_area_m2: buildingAreaM2 ? parseFloat(buildingAreaM2) : null,
             industry,
             status,
             ownership_type: ownershipType,
@@ -262,7 +267,7 @@ export default function AdminPage() {
             if (data.success) {
                 setSuccessMessage(true);
                 // Зачищаем форму после успешной отправки данных
-                setName(''); setArea(''); setImageUrl('');
+                setName(''); setArea(''); setBuildingAreaM2(''); setImageUrl('');
                 setPropertyType('land');
                 setMarkerCoords(null);
                 setMapRefreshKey(prev => prev + 1);
@@ -367,6 +372,10 @@ export default function AdminPage() {
                             <div>
                                 <label className="text-[10px] font-bold text-slate-400 block mb-1">ПЛОЩАДЬ (В ГЕКТАРАХ)</label>
                                 <input type="number" step="0.1" value={area} onChange={(e) => setArea(e.target.value)} placeholder="4.5" className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-slate-400 block mb-1">Bino maydoni, m²</label>
+                                <input type="number" step="0.1" value={buildingAreaM2} onChange={(e) => setBuildingAreaM2(e.target.value)} placeholder="Masalan: 450" className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" />
                             </div>
                         </div>
                         <div>

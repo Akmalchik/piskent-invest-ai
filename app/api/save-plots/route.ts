@@ -35,8 +35,16 @@ function normalizePropertyType(value: unknown) {
     return PROPERTY_TYPES.includes(normalizedValue) ? normalizedValue : 'land';
 }
 
+function normalizeBuildingArea(value: unknown) {
+    if (value === undefined || value === null || value === '') return null;
+
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : null;
+}
+
 function normalizePlot(plot: any) {
     const incomingPropertyType = plot.property_type !== undefined ? plot.property_type : plot.propertyType;
+    const incomingBuildingArea = plot.building_area_m2 !== undefined ? plot.building_area_m2 : plot.buildingAreaM2;
 
     return {
         ...plot,
@@ -44,6 +52,7 @@ function normalizePlot(plot: any) {
         auksionUrl: plot.auksionUrl || plot.auksion_url || plot.auction_url,
         ownership_type: plot.ownership_type || plot.ownershipType,
         property_type: normalizePropertyType(incomingPropertyType),
+        building_area_m2: normalizeBuildingArea(incomingBuildingArea),
         polygonCoordinates: plot.polygonCoordinates || plot.polygon_coords,
     };
 }
@@ -56,6 +65,7 @@ function normalizePlotForDb(plot: any) {
     delete dbPlot.auksion_url;
     delete dbPlot.ownershipType;
     delete dbPlot.propertyType;
+    delete dbPlot.buildingAreaM2;
 
     return {
         ...dbPlot,

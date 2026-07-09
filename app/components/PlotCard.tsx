@@ -12,6 +12,8 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             jobs: "ISH O'RINLARI",
             industry: "Soha / Yo‘nalish",
             objectType: "Obyekt turi",
+            landArea: "Yer maydoni",
+            buildingArea: "Bino maydoni",
             infraTitle: "Infratuzilma (Kommunikatsiyalar):",
             gas: "Gaz tarmog'i",
             power: "Elektr quvvati",
@@ -24,6 +26,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreMid: "O'rtacha jozibadorlik, infratuzilmani rivojlantirish tavsiya etiladi",
             noPhoto: "Foto yuklanmoqda...",
             loading: "Yuklanmoqda...",
+            noData: "Ma'lumot kiritilmagan",
             noAuctionLink: "Havola hozircha yo'q",
             contactTitle: "Aloqa",
             contactDepartment: "Investitsiyalar, sanoat va savdo bo‘limi"
@@ -33,6 +36,8 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             jobs: "РАБОЧИЕ МЕСТА",
             industry: "Сфера бизнеса / отрасль",
             objectType: "Тип объекта",
+            landArea: "Площадь участка",
+            buildingArea: "Площадь здания",
             infraTitle: "Инфраструктура (Коммуникации):",
             gas: "Газоснабжение",
             power: "Электросеть",
@@ -45,6 +50,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreMid: "Средняя привлекательность, рекомендуется развитие сетей",
             noPhoto: "Фото лота обрабатывается...",
             loading: "Загрузка...",
+            noData: "Данные не указаны",
             noAuctionLink: "Ссылка пока не добавлена",
             contactTitle: "Контакты",
             contactDepartment: "Отдел инвестиций, промышленности и торговли"
@@ -54,6 +60,8 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             jobs: "JOBS CREATED",
             industry: "Business sector / industry",
             objectType: "Object type",
+            landArea: "Land area",
+            buildingArea: "Building area",
             infraTitle: "Infrastructure (Utilities):",
             gas: "Gas Supply",
             power: "Power Grid",
@@ -66,6 +74,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreMid: "Moderate appeal, infrastructure development recommended",
             noPhoto: "Loading lot image...",
             loading: "Loading...",
+            noData: "No data entered",
             noAuctionLink: "No auction link yet",
             contactTitle: "Contact",
             contactDepartment: "Department of Investment, Industry and Trade"
@@ -75,6 +84,8 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             jobs: "创造就业岗位",
             industry: "规划行业领域",
             objectType: "对象类型",
+            landArea: "土地面积",
+            buildingArea: "建筑面积",
             infraTitle: "基础设施（管网通信）：",
             gas: "天然气供应",
             power: "电力网络",
@@ -87,6 +98,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreMid: "投资吸引力中等，建议进一步完善配套基础设施",
             noPhoto: "正在获取拍卖会现场图片...",
             loading: "加载中...",
+            noData: "暂无数据",
             noAuctionLink: "暂无拍卖链接",
             contactTitle: "联系方式",
             contactDepartment: "投资、工业和贸易部门"
@@ -156,6 +168,24 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
 
         return labels[lang]?.[normalizedValue] || labels.uz[normalizedValue];
     };
+    const propertyType = normalizePropertyType(plot.property_type || plot.propertyType);
+    const landAreaUnit = lang === 'ru' ? 'га' : lang === 'uz' ? 'ga' : 'ha';
+    const formatBuildingArea = (value: unknown) => {
+        if (value === undefined || value === null || value === '') return d.noData;
+
+        const numericValue = Number(value);
+        if (!Number.isFinite(numericValue)) return d.noData;
+
+        return `${Number.isInteger(numericValue) ? numericValue.toFixed(0) : String(numericValue)} m²`;
+    };
+    const areaRows = propertyType === 'building'
+        ? [{ label: d.buildingArea, value: formatBuildingArea(plot.building_area_m2 ?? plot.buildingAreaM2) }]
+        : propertyType === 'land_building'
+            ? [
+                { label: d.landArea, value: `${plot.area || 0} ${landAreaUnit}` },
+                { label: d.buildingArea, value: formatBuildingArea(plot.building_area_m2 ?? plot.buildingAreaM2) },
+            ]
+            : [{ label: d.landArea, value: `${plot.area || 0} ${landAreaUnit}` }];
     const ownershipType = plot.ownership_type || plot.ownershipType;
 
     const normalizeValue = (value: unknown) => String(value || '').trim().toLowerCase().replace(/’/g, "'");
@@ -295,16 +325,18 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                     );
                 })()}
 
-                {/* Параметры: Площадь и Рабочие места */}
-                <div className="mb-3">
-                    <div className="bg-[#101f42]/40 p-4 rounded-xl border border-slate-800/60">
-                        <span className="text-[9px] text-slate-400 block font-bold tracking-wide uppercase mb-1">
-                            {lang === 'zh' ? '面积' : lang === 'ru' ? 'Площадь участка' : lang === 'en' ? 'Land area' : 'Yer maydoni'}
-                        </span>
-                        <span className="text-sm font-black text-white">
-                            {plot.area || 0} {lang === 'zh' ? '公顷' : 'га'}
-                        </span>
-                    </div>
+                {/* Параметры площади */}
+                <div className="mb-3 space-y-2">
+                    {areaRows.map((row) => (
+                        <div key={row.label} className="bg-[#101f42]/40 p-4 rounded-xl border border-slate-800/60">
+                            <span className="text-[9px] text-slate-400 block font-bold tracking-wide uppercase mb-1">
+                                {row.label}
+                            </span>
+                            <span className="text-sm font-black text-white">
+                                {row.value}
+                            </span>
+                        </div>
+                    ))}
                 </div>
                 {/* Сфера бизнеса */}
                 <div className="bg-[#101f42]/40 p-3 rounded-xl border border-slate-800/60 mb-5">
