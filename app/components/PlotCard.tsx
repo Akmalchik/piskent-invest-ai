@@ -11,6 +11,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             area: "MAYDONI",
             jobs: "ISH O'RINLARI",
             industry: "Soha / Yo‘nalish",
+            objectType: "Obyekt turi",
             infraTitle: "Infratuzilma (Kommunikatsiyalar):",
             gas: "Gaz tarmog'i",
             power: "Elektr quvvati",
@@ -31,6 +32,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             area: "ПЛОЩАДЬ",
             jobs: "РАБОЧИЕ МЕСТА",
             industry: "Сфера бизнеса / отрасль",
+            objectType: "Тип объекта",
             infraTitle: "Инфраструктура (Коммуникации):",
             gas: "Газоснабжение",
             power: "Электросеть",
@@ -51,6 +53,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             area: "TOTAL AREA",
             jobs: "JOBS CREATED",
             industry: "Business sector / industry",
+            objectType: "Object type",
             infraTitle: "Infrastructure (Utilities):",
             gas: "Gas Supply",
             power: "Power Grid",
@@ -71,6 +74,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             area: "规划土地面积",
             jobs: "创造就业岗位",
             industry: "规划行业领域",
+            objectType: "对象类型",
             infraTitle: "基础设施（管网通信）：",
             gas: "天然气供应",
             power: "电力网络",
@@ -136,6 +140,21 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                                 '';
 
         return key ? labels[key][lang] || labels[key].uz : rawIndustry;
+    };
+    const normalizePropertyType = (value: unknown) => {
+        const normalizedValue = String(value || '').trim();
+        return ['building', 'land_building'].includes(normalizedValue) ? normalizedValue : 'land';
+    };
+    const formatPropertyType = (value: unknown) => {
+        const normalizedValue = normalizePropertyType(value);
+        const labels: Record<string, Record<string, string>> = {
+            uz: { land: 'Yer maydoni', building: 'Bino', land_building: 'Bino va yer maydoni' },
+            ru: { land: 'Земельный участок', building: 'Здание', land_building: 'Здание с участком' },
+            en: { land: 'Land plot', building: 'Building', land_building: 'Building with land' },
+            zh: { land: '土地', building: '建筑物', land_building: '建筑物及土地' },
+        };
+
+        return labels[lang]?.[normalizedValue] || labels.uz[normalizedValue];
     };
     const ownershipType = plot.ownership_type || plot.ownershipType;
 
@@ -291,6 +310,10 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                 <div className="bg-[#101f42]/40 p-3 rounded-xl border border-slate-800/60 mb-5">
                     <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">{d.industry}</span>
                     <span className="text-xs md:text-sm font-bold text-cyan-400">{formatIndustry(plot.industry)}</span>
+                </div>
+                <div className="bg-[#101f42]/40 p-3 rounded-xl border border-slate-800/60 mb-5">
+                    <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">{d.objectType}</span>
+                    <span className="text-xs md:text-sm font-bold text-white">{formatPropertyType(plot.property_type || plot.propertyType)}</span>
                 </div>
 
                 {/* Инфраструктура */}

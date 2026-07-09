@@ -5,6 +5,7 @@ import path from 'path';
 
 const PLOTS_CACHE_TTL_MS = 60_000;
 let plotsCache: { data: any[]; expiresAt: number } | null = null;
+const PROPERTY_TYPES = ['land', 'building', 'land_building'];
 
 function jsonWithCache(data: any[]) {
     return NextResponse.json(data, {
@@ -29,12 +30,20 @@ function getPlotImage(plot: any) {
     return plot.image || plot.image_url || plot.photo_url || null;
 }
 
+function normalizePropertyType(value: unknown) {
+    const normalizedValue = String(value || '').trim();
+    return PROPERTY_TYPES.includes(normalizedValue) ? normalizedValue : 'land';
+}
+
 function normalizePlot(plot: any) {
+    const incomingPropertyType = plot.property_type !== undefined ? plot.property_type : plot.propertyType;
+
     return {
         ...plot,
         image: getPlotImage(plot),
         auksionUrl: plot.auksionUrl || plot.auksion_url || plot.auction_url,
         ownership_type: plot.ownership_type || plot.ownershipType,
+        property_type: normalizePropertyType(incomingPropertyType),
         polygonCoordinates: plot.polygonCoordinates || plot.polygon_coords,
     };
 }
@@ -46,6 +55,7 @@ function normalizePlotForDb(plot: any) {
     delete dbPlot.polygon_coords;
     delete dbPlot.auksion_url;
     delete dbPlot.ownershipType;
+    delete dbPlot.propertyType;
 
     return {
         ...dbPlot,

@@ -81,6 +81,11 @@ function withPlotImage(plot: any) {
     };
 }
 
+function normalizePropertyType(value: unknown) {
+    const normalizedValue = String(value || '').trim();
+    return ['building', 'land_building'].includes(normalizedValue) ? normalizedValue : 'land';
+}
+
 function MapController({ viewport, plotId, plots }: { viewport?: any, plotId: string | null, plots: any[] }) {
     const map = useMap();
 
@@ -131,6 +136,7 @@ export default function MyInvestmentMap({
     const [isPanelVisible, setIsPanelVisible] = useState(true);
     const [plots, setPlots] = useState<any[]>([]);
     const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
+    const [propertyTypeFilter, setPropertyTypeFilter] = useState('all');
 
     /*  // 1. ИСПРАВЛЕНО: Загружаем живые данные из нашего парсера e-auksion
       useEffect(() => {
@@ -175,6 +181,8 @@ export default function MyInvestmentMap({
     // ОБЪЕДИНЕННЫЙ ФИЛЬТР
     const filteredPlots = plots.filter(plot => {
         const matchesStatus = statusFilter === 'Barchasi' || plot.status === statusFilter;
+        const plotPropertyType = normalizePropertyType(plot.property_type || plot.propertyType);
+        const matchesPropertyType = propertyTypeFilter === 'all' || plotPropertyType === propertyTypeFilter;
 
         let matchesIndustry = true;
         if (selectedIndustry) {
@@ -183,7 +191,7 @@ export default function MyInvestmentMap({
             if (selectedIndustry === "Agro") matchesIndustry = plot.industry === "Agro";
             if (selectedIndustry === "Logistics") matchesIndustry = plot.industry === "Logistics";
         }
-        return matchesStatus && matchesIndustry;
+        return matchesStatus && matchesPropertyType && matchesIndustry;
     });
 
     // Локальный словарь для перевода всей панели
@@ -193,6 +201,8 @@ export default function MyInvestmentMap({
             statusTitle: "🔍 Holat bo'yicha filtr", indTitle: "🏭 Yo'nalishlar bo'yicha",
             infraTitle: "⚡ Infratuzilma qatlamlari", gas: "Gaz tarmog'i", power: "Elektr tarmog'i", water: "Suv ta'minoti",
             all: "Barchasi", allInd: "Hamma yo'nalishlar",
+            propertyTypeTitle: "🏷 Obyekt turi",
+            propertyTypeLabels: { all: "Barcha obyektlar", land: "Yer maydoni", building: "Bino", land_building: "Bino va yer maydoni" },
             statusLabels: { Barchasi: "Barchasi", Mavjud: "Mavjud", "E-auksion": "Auksion", Band: "Band" },
             sanoat: "Sanoat va ishlab chiqarish", tekstil: "To'qimachilik va tekstil", agro: "Qishloq xo'jaligi va agro",
             logistika: "Logistika va transport", qurilish: "Qurilish materiallari", boshqa: "Boshqa yo'nalishlar"
@@ -202,6 +212,8 @@ export default function MyInvestmentMap({
             statusTitle: "🔍 Фильтр по статусу", indTitle: "🏭 По направлениям",
             infraTitle: "⚡ Инфраструктурные слои", gas: "Газовая сеть", power: "Электросеть", water: "Водоснабжение",
             all: "Все", allInd: "Все направления",
+            propertyTypeTitle: "🏷 Тип объекта",
+            propertyTypeLabels: { all: "Все объекты", land: "Земельные участки", building: "Здания", land_building: "Здания с участком" },
             statusLabels: { Barchasi: "Все", Mavjud: "Свободен", "E-auksion": "Аукцион", Band: "Занят" },
             sanoat: "Промышленность и производство", tekstil: "Текстиль и ткачество", agro: "Сельское хозяйство и агро",
             logistika: "Логистика и транспорт", qurilish: "Строительные материалы", boshqa: "Другие направления"
@@ -211,6 +223,8 @@ export default function MyInvestmentMap({
             statusTitle: "🔍 Filter by Status", indTitle: "🏭 By Industry Branches",
             infraTitle: "⚡ Infrastructure Layers", gas: "Gas Network", power: "Power Grid", water: "Water Supply",
             all: "All", allInd: "All Industries",
+            propertyTypeTitle: "🏷 Object type",
+            propertyTypeLabels: { all: "All objects", land: "Land plots", building: "Buildings", land_building: "Buildings with land" },
             statusLabels: { Barchasi: "All", Mavjud: "Available", "E-auksion": "Auction", Band: "Reserved" },
             sanoat: "Industry & Manufacturing", tekstil: "Textile & Clothing", agro: "Agriculture & Agro",
             logistika: "Logistics & Transport", qurilish: "Building Materials", boshqa: "Other Industries"
@@ -220,6 +234,8 @@ export default function MyInvestmentMap({
             statusTitle: "🔍 按状态过滤", indTitle: "🏭 按行业领域",
             infraTitle: "⚡ 基础建设图层", gas: "天然气管网", power: "电网覆盖", water: "供水系统",
             all: "全部", allInd: "所有行业领域",
+            propertyTypeTitle: "🏷 对象类型",
+            propertyTypeLabels: { all: "全部对象", land: "土地", building: "建筑物", land_building: "建筑物及土地" },
             statusLabels: { Barchasi: "全部", Mavjud: "可用", "E-auksion": "拍卖", Band: "已预留" },
             sanoat: "工业与制造", tekstil: "纺织与服装加工", agro: "农业与农业深加工",
             logistika: "物流与仓储运输", qurilish: "新型建筑材料", boshqa: "其他多元行业"
@@ -307,6 +323,21 @@ export default function MyInvestmentMap({
                                             </button>
                                         ))}
                                     </div>
+                                </div>
+
+                                <div className="border-t border-slate-800/50" />
+
+                                <div>
+                                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">{t.propertyTypeTitle}</h3>
+                                    <select
+                                        value={propertyTypeFilter}
+                                        onChange={(e) => setPropertyTypeFilter(e.target.value)}
+                                        className="w-full bg-[#040814]/90 text-slate-300 border border-slate-800 px-3 py-2 rounded-xl text-[11px] font-medium outline-none cursor-pointer focus:border-cyan-500 transition-all"
+                                    >
+                                        {['all', 'land', 'building', 'land_building'].map((type) => (
+                                            <option key={type} value={type}>{t.propertyTypeLabels[type]}</option>
+                                        ))}
+                                    </select>
                                 </div>
 
                                 <div className="border-t border-slate-800/50" />

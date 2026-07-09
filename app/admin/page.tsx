@@ -15,8 +15,17 @@ const OWNERSHIP_TYPE_OPTIONS = [
     '⚖️ E-Auksion',
     '🏢 Xususiy obyekt'
 ];
+const PROPERTY_TYPE_OPTIONS = [
+    { value: 'land', label: 'Yer maydoni' },
+    { value: 'building', label: 'Bino' },
+    { value: 'land_building', label: 'Bino va yer maydoni' }
+];
 const BASIC_INFRA_OPTIONS = ['Mavjud', 'Mavjud emas', 'Aniqlanmoqda'];
 const ROAD_INFRA_OPTIONS = ['Asfalt', 'Shag‘al', 'Tuproq yo‘l', 'Aniqlanmoqda'];
+const normalizePropertyType = (value: unknown) => {
+    const normalizedValue = String(value || '').trim();
+    return PROPERTY_TYPE_OPTIONS.some((option) => option.value === normalizedValue) ? normalizedValue : 'land';
+};
 const normalizeInfraOption = (value: unknown, options: string[]) => {
     const normalizedValue = String(value || '').trim();
     return options.includes(normalizedValue) ? normalizedValue : 'Aniqlanmoqda';
@@ -47,6 +56,7 @@ export default function AdminPage() {
     const [industry, setIndustry] = useState('Sanoat / Ishlab chiqarish');
     const [status, setStatus] = useState('Mavjud');
     const [ownershipType, setOwnershipType] = useState(OWNERSHIP_TYPE_OPTIONS[0]);
+    const [propertyType, setPropertyType] = useState('land');
     const [auksionUrl, setAuksionUrl] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     // Поля инфраструктуры лота
@@ -65,6 +75,7 @@ export default function AdminPage() {
         setIndustry('Sanoat / Ishlab chiqarish');
         setStatus('Mavjud');
         setOwnershipType(OWNERSHIP_TYPE_OPTIONS[0]);
+        setPropertyType('land');
         setAuksionUrl('');
         setImageUrl('');
         setGas('Mavjud');
@@ -133,6 +144,7 @@ export default function AdminPage() {
         setIndustry(plot.industry || 'Production');
         setStatus(plot.status || 'Mavjud');
         setOwnershipType(plot.ownership_type || OWNERSHIP_TYPE_OPTIONS[0]);
+        setPropertyType(normalizePropertyType(plot.property_type || plot.propertyType));
         setGas(normalizeInfraOption(infrastructure.gas, BASIC_INFRA_OPTIONS));
         setPower(normalizeInfraOption(infrastructure.power || infrastructure.electricity, BASIC_INFRA_OPTIONS));
         setWater(normalizeInfraOption(infrastructure.water, BASIC_INFRA_OPTIONS));
@@ -164,6 +176,7 @@ export default function AdminPage() {
                 industry,
                 status,
                 ownership_type: ownershipType,
+                property_type: propertyType,
                 image: imageUrl,
                 auksionUrl: auksionUrl || '',
                 infrastructure: { gas, power, water, road },
@@ -221,6 +234,7 @@ export default function AdminPage() {
             industry,
             status,
             ownership_type: ownershipType,
+            property_type: propertyType,
             image: imageUrl,
             auksionUrl: auksionUrl || '',
             infrastructure: { gas, power, water, road },
@@ -249,6 +263,7 @@ export default function AdminPage() {
                 setSuccessMessage(true);
                 // Зачищаем форму после успешной отправки данных
                 setName(''); setArea(''); setImageUrl('');
+                setPropertyType('land');
                 setMarkerCoords(null);
                 setMapRefreshKey(prev => prev + 1);
                 setTimeout(() => setSuccessMessage(false), 4000);
@@ -403,10 +418,18 @@ export default function AdminPage() {
                                 </select>
                             </div>
                             <div>
-                                <label className="text-[10px] font-bold text-slate-400 block mb-1">Тип объекта</label>
+                                <label className="text-[10px] font-bold text-slate-400 block mb-1">ФОРМА СОБСТВЕННОСТИ</label>
                                 <select value={ownershipType} onChange={(e) => setOwnershipType(e.target.value)} className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none cursor-pointer">
                                     {OWNERSHIP_TYPE_OPTIONS.map((type) => (
                                         <option key={type} value={type}>{type}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-slate-400 block mb-1">Obyekt turi</label>
+                                <select value={propertyType} onChange={(e) => setPropertyType(normalizePropertyType(e.target.value))} className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none cursor-pointer">
+                                    {PROPERTY_TYPE_OPTIONS.map((option) => (
+                                        <option key={option.value} value={option.value}>{option.label}</option>
                                     ))}
                                 </select>
                             </div>
