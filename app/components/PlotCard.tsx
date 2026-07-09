@@ -291,6 +291,19 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                         </div>
                     )}
                 </div>
+
+                <div className="mt-4 p-3 rounded-xl border border-cyan-500/20 bg-cyan-500/5">
+                    <span className="text-[10px] font-black text-cyan-400 uppercase tracking-wider block mb-2">Aloqa</span>
+                    <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
+                        Investitsiyalar, sanoat va savdo bo‘limi
+                    </p>
+                    <p className="text-[11px] text-white leading-relaxed font-bold">
+                        Nazirqulov Doniyor Rahmonjon o‘g‘li
+                    </p>
+                    <p className="text-[11px] text-slate-300 leading-relaxed font-mono">
+                        +998 99 512 75 70
+                    </p>
+                </div>
             </div>
 
             {/* Главная кнопка перехода к торгам */}
