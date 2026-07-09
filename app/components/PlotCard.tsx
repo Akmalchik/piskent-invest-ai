@@ -10,7 +10,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
         uz: {
             area: "MAYDONI",
             jobs: "ISH O'RINLARI",
-            industry: "Soha / Yo'nalish",
+            industry: "Soha / Yo‘nalish",
             infraTitle: "Infratuzilma (Kommunikatsiyalar):",
             gas: "Gaz tarmog'i",
             power: "Elektr quvvati",
@@ -23,12 +23,14 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreMid: "O'rtacha jozibadorlik, infratuzilmani rivojlantirish tavsiya etiladi",
             noPhoto: "Foto yuklanmoqda...",
             loading: "Yuklanmoqda...",
-            noAuctionLink: "Havola hozircha yo'q"
+            noAuctionLink: "Havola hozircha yo'q",
+            contactTitle: "Aloqa",
+            contactDepartment: "Investitsiyalar, sanoat va savdo bo‘limi"
         },
         ru: {
             area: "ПЛОЩАДЬ",
             jobs: "РАБОЧИЕ МЕСТА",
-            industry: "Сфера бизнеса / Отрасль",
+            industry: "Сфера бизнеса / отрасль",
             infraTitle: "Инфраструктура (Коммуникации):",
             gas: "Газоснабжение",
             power: "Электросеть",
@@ -41,12 +43,14 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreMid: "Средняя привлекательность, рекомендуется развитие сетей",
             noPhoto: "Фото лота обрабатывается...",
             loading: "Загрузка...",
-            noAuctionLink: "Ссылка пока не добавлена"
+            noAuctionLink: "Ссылка пока не добавлена",
+            contactTitle: "Контакты",
+            contactDepartment: "Отдел инвестиций, промышленности и торговли"
         },
         en: {
             area: "TOTAL AREA",
             jobs: "JOBS CREATED",
-            industry: "Business Industry Sector",
+            industry: "Business sector / industry",
             infraTitle: "Infrastructure (Utilities):",
             gas: "Gas Supply",
             power: "Power Grid",
@@ -59,7 +63,9 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreMid: "Moderate appeal, infrastructure development recommended",
             noPhoto: "Loading lot image...",
             loading: "Loading...",
-            noAuctionLink: "No auction link yet"
+            noAuctionLink: "No auction link yet",
+            contactTitle: "Contact",
+            contactDepartment: "Department of Investment, Industry and Trade"
         },
         zh: {
             area: "规划土地面积",
@@ -77,36 +83,59 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
             scoreMid: "投资吸引力中等，建议进一步完善配套基础设施",
             noPhoto: "正在获取拍卖会现场图片...",
             loading: "加载中...",
-            noAuctionLink: "暂无拍卖链接"
+            noAuctionLink: "暂无拍卖链接",
+            contactTitle: "联系方式",
+            contactDepartment: "投资、工业和贸易部门"
         }
     };
 
     const d = cardDict[lang] || cardDict['uz'];
 
-    // Локальный перевод типов индустрии из парсера
-    const getIndustryName = (ind: string) => {
-        if (lang === 'zh') {
-            if (ind === 'Production') return '🏭 工业与制造';
-            if (ind === 'Textile') return '🧵 纺织与服装加工';
-            if (ind === 'Agro') return '🌾 农业与食品加工';
-            if (ind === 'Logistics') return '📦 物流与仓储运输';
-        } else if (lang === 'ru') {
-            if (ind === 'Production') return '🏭 Промышленность и производство';
-            if (ind === 'Textile') return '🧵 Текстиль и ткачество';
-            if (ind === 'Agro') return '🌾 Сельское хозяйство и агро';
-            if (ind === 'Logistics') return '📦 Логистика и транспорт';
-        } else if (lang === 'en') {
-            if (ind === 'Production') return '🏭 Industry & Manufacturing';
-            if (ind === 'Textile') return '🧵 Textile & Clothing';
-            if (ind === 'Agro') return '🌾 Agriculture & Agro';
-            if (ind === 'Logistics') return '📦 Logistics & Transport';
-        }
-        // По умолчанию узбекский
-        if (ind === 'Production') return "🏭 Sanoat va ishlab chiqarish";
-        if (ind === 'Textile') return "🧵 To'qimachilik va tekstil";
-        if (ind === 'Agro') return "🌾 Qishloq xo'jaligi va agro";
-        if (ind === 'Logistics') return "📦 Logistika va transport";
-        return ind || "Sanoat va ishlab chiqarish";
+    const formatIndustry = (industry: unknown) => {
+        const rawIndustry = String(industry || '').trim();
+        const value = rawIndustry.toLowerCase().replace(/[‘’`]/g, "'");
+        const labels: Record<string, Record<string, string>> = {
+            production: {
+                uz: 'Sanoat / Ishlab chiqarish',
+                ru: 'Промышленность / производство',
+                en: 'Industry / manufacturing',
+                zh: '工业 / 制造业',
+            },
+            agro: {
+                uz: 'Qishloq xo‘jaligi',
+                ru: 'Сельское хозяйство',
+                en: 'Agriculture',
+                zh: '农业',
+            },
+            logistics: {
+                uz: 'Logistika',
+                ru: 'Логистика',
+                en: 'Logistics',
+                zh: '物流',
+            },
+            service: {
+                uz: 'Xizmat ko‘rsatish',
+                ru: 'Сфера услуг',
+                en: 'Services',
+                zh: '服务业',
+            },
+            trade: {
+                uz: 'Savdo va servis',
+                ru: 'Торговля и сервис',
+                en: 'Trade and service',
+                zh: '贸易与服务',
+            },
+        };
+
+        const key =
+            /production|sanoat|ishlab chiqarish/.test(value) ? 'production' :
+                /agro|qishloq|xo'jaligi/.test(value) ? 'agro' :
+                    /logistika|logistics|transport/.test(value) ? 'logistics' :
+                        /xizmat|servis|service/.test(value) ? 'service' :
+                            /savdo|trade/.test(value) ? 'trade' :
+                                '';
+
+        return key ? labels[key][lang] || labels[key].uz : rawIndustry;
     };
     const ownershipType = plot.ownership_type || plot.ownershipType;
 
@@ -261,7 +290,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                 {/* Сфера бизнеса */}
                 <div className="bg-[#101f42]/40 p-3 rounded-xl border border-slate-800/60 mb-5">
                     <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">{d.industry}</span>
-                    <span className="text-xs md:text-sm font-bold text-cyan-400">{getIndustryName(plot.industry)}</span>
+                    <span className="text-xs md:text-sm font-bold text-cyan-400">{formatIndustry(plot.industry)}</span>
                 </div>
 
                 {/* Инфраструктура */}
@@ -293,9 +322,9 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                 </div>
 
                 <div className="mt-4 p-3 rounded-xl border border-cyan-500/20 bg-cyan-500/5">
-                    <span className="text-[10px] font-black text-cyan-400 uppercase tracking-wider block mb-2">Aloqa</span>
+                    <span className="text-[10px] font-black text-cyan-400 uppercase tracking-wider block mb-2">{d.contactTitle}</span>
                     <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
-                        Investitsiyalar, sanoat va savdo bo‘limi
+                        {d.contactDepartment}
                     </p>
                     <p className="text-[11px] text-white leading-relaxed font-bold">
                         Nazirqulov Doniyor Rahmonjon o‘g‘li
