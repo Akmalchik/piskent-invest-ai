@@ -17,6 +17,10 @@ const OWNERSHIP_TYPE_OPTIONS = [
 ];
 const BASIC_INFRA_OPTIONS = ['Mavjud', 'Mavjud emas', 'Aniqlanmoqda'];
 const ROAD_INFRA_OPTIONS = ['Asfalt', 'Shag‘al', 'Tuproq yo‘l', 'Aniqlanmoqda'];
+const normalizeInfraOption = (value: unknown, options: string[]) => {
+    const normalizedValue = String(value || '').trim();
+    return options.includes(normalizedValue) ? normalizedValue : 'Aniqlanmoqda';
+};
 
 export default function AdminPage() {
     // Внутренняя языковая переменная проекта
@@ -129,10 +133,10 @@ export default function AdminPage() {
         setIndustry(plot.industry || 'Production');
         setStatus(plot.status || 'Mavjud');
         setOwnershipType(plot.ownership_type || OWNERSHIP_TYPE_OPTIONS[0]);
-        setGas(infrastructure.gas || 'Mavjud');
-        setPower(infrastructure.power || infrastructure.electricity || 'Mavjud');
-        setWater(infrastructure.water || 'Mavjud');
-        setRoad(infrastructure.road || 'Asfalt');
+        setGas(normalizeInfraOption(infrastructure.gas, BASIC_INFRA_OPTIONS));
+        setPower(normalizeInfraOption(infrastructure.power || infrastructure.electricity, BASIC_INFRA_OPTIONS));
+        setWater(normalizeInfraOption(infrastructure.water, BASIC_INFRA_OPTIONS));
+        setRoad(normalizeInfraOption(infrastructure.road, ROAD_INFRA_OPTIONS));
 
         if (Array.isArray(firstPoint) && firstPoint.length >= 2) {
             setMarkerCoords([Number(firstPoint[0]), Number(firstPoint[1])]);
@@ -415,7 +419,6 @@ export default function AdminPage() {
                                 <label className="block">
                                     <span className="text-[10px] font-bold text-slate-400 block mb-1">🔥 Gaz</span>
                                     <select value={gas} onChange={(e) => setGas(e.target.value)} className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white cursor-pointer">
-                                        {!BASIC_INFRA_OPTIONS.includes(gas) && gas && <option value={gas}>{gas}</option>}
                                         {BASIC_INFRA_OPTIONS.map((option) => (
                                             <option key={option} value={option}>{option}</option>
                                         ))}
@@ -424,7 +427,6 @@ export default function AdminPage() {
                                 <label className="block">
                                     <span className="text-[10px] font-bold text-slate-400 block mb-1">⚡ Elektr</span>
                                     <select value={power} onChange={(e) => setPower(e.target.value)} className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white cursor-pointer">
-                                        {!BASIC_INFRA_OPTIONS.includes(power) && power && <option value={power}>{power}</option>}
                                         {BASIC_INFRA_OPTIONS.map((option) => (
                                             <option key={option} value={option}>{option}</option>
                                         ))}
@@ -433,7 +435,6 @@ export default function AdminPage() {
                                 <label className="block">
                                     <span className="text-[10px] font-bold text-slate-400 block mb-1">💧 Suv</span>
                                     <select value={water} onChange={(e) => setWater(e.target.value)} className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white cursor-pointer">
-                                        {!BASIC_INFRA_OPTIONS.includes(water) && water && <option value={water}>{water}</option>}
                                         {BASIC_INFRA_OPTIONS.map((option) => (
                                             <option key={option} value={option}>{option}</option>
                                         ))}
@@ -442,7 +443,6 @@ export default function AdminPage() {
                                 <label className="block">
                                     <span className="text-[10px] font-bold text-slate-400 block mb-1">🛣 Yo‘l</span>
                                     <select value={road} onChange={(e) => setRoad(e.target.value)} className="w-full bg-[#0b1329] border border-slate-800 rounded-lg p-2 text-white cursor-pointer">
-                                        {!ROAD_INFRA_OPTIONS.includes(road) && road && <option value={road}>{road}</option>}
                                         {ROAD_INFRA_OPTIONS.map((option) => (
                                             <option key={option} value={option}>{option}</option>
                                         ))}
