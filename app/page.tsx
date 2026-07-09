@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
+import { translations } from './components/translations';
 
 // Загружаем карту динамически только в браузере
 const MyInvestmentMap = dynamic(() => import('./components/MyInvestmentMap'), {
@@ -9,6 +10,28 @@ const MyInvestmentMap = dynamic(() => import('./components/MyInvestmentMap'), {
   loading: () => <div className="w-full h-full bg-[#0b1329] flex items-center justify-center text-xs text-slate-400">Xarita yuklanmoqda...</div>
 });
 import AiConsultant from './components/AiConsultant';
+
+type DistrictProfile = {
+  district_name?: string;
+  hero_image?: string;
+  population?: string | number;
+  working_population?: string | number;
+  mahallas?: string | number;
+  area_km2?: string | number;
+  electricity_percent?: string | number;
+  gas_percent?: string | number;
+  water_percent?: string | number;
+  roads_percent?: string | number;
+  description?: string;
+  mayor_name?: string;
+  mayor_photo?: string;
+  deputy_name?: string;
+  deputy_photo?: string;
+  investment_department_name?: string;
+  investment_head_name?: string;
+  investment_phone?: string;
+  investment_phone2?: string;
+};
 
 // Компонент для красивого плавного набегания цифр (CountUp)
 function AnimatedNumber({ value }: { value: number }) {
@@ -40,6 +63,7 @@ function AnimatedNumber({ value }: { value: number }) {
 export default function Home() {
   const [activeTab, setActiveTab] = useState('ai');
   const [selectedPlot, setSelectedPlot] = useState(null);
+  const [districtProfile, setDistrictProfile] = useState<DistrictProfile | null>(null);
 
   const [mapViewport, setMapViewport] = useState({ center: [40.9022, 69.3444], zoom: 13 });
   const [lang, setLang] = useState<'uz' | 'ru' | 'en' | 'zh'>('uz');
@@ -48,49 +72,73 @@ export default function Home() {
   // Стейты управления скрытым режимом админа
   const [isAdminMode] = useState<boolean>(false);
   const [adminMarkerCoords, setAdminMarkerCoords] = useState<[number, number] | null>(null);
+  const t = (translations as any)[lang] || translations.uz;
+
+  React.useEffect(() => {
+    fetch('/api/district-profile')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setDistrictProfile(data || {}))
+      .catch(() => setDistrictProfile({}));
+  }, []);
+
+  const showValue = (value: unknown, suffix = '') => {
+    const text = String(value ?? '').trim();
+    return text ? `${text}${suffix}` : t.noData;
+  };
+
+  const progressValue = (value: unknown) => {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return 0;
+    return Math.max(0, Math.min(100, numeric));
+  };
 
   // Дополнительные служебные переводы для каркаса, которых может не быть в translations.ts
   const localLabels = {
     uz: {
       portalInfo: "📍 Piskent tuman investitsiya portali",
 
-      mapTab: "🗺️ Investitsiya xaritasi",
-      aiTab: "🤖 AI Maslahatchi",
-      ga: "GA",
-      ta: "TA"
-    },
+	      mapTab: "🗺️ Investitsiya xaritasi",
+	      aiTab: "🤖 AI Maslahatchi",
+	      aboutTab: t.aboutTab,
+	      ga: "GA",
+	      ta: "TA"
+	    },
     ru: {
       portalInfo: "📍 Инвестиционный портал Пискентского района",
 
-      mapTab: "🗺️ Инвестиционная карта",
-      aiTab: "🤖 AI Консультант",
-      ga: "ГА",
-      ta: "ЕД"
-    },
+	      mapTab: "🗺️ Инвестиционная карта",
+	      aiTab: "🤖 AI Консультант",
+	      aboutTab: t.aboutTab,
+	      ga: "ГА",
+	      ta: "ЕД"
+	    },
     en: {
       portalInfo: "📍 Piskent District Investment Portal",
 
-      mapTab: "🗺️ Investment Map",
-      aiTab: "🤖 AI Consultant",
-      ga: "HA",
-      ta: "LOTS"
-    },
+	      mapTab: "🗺️ Investment Map",
+	      aiTab: "🤖 AI Consultant",
+	      aboutTab: t.aboutTab,
+	      ga: "HA",
+	      ta: "LOTS"
+	    },
     zh: {
       portalInfo: "📍 皮斯肯特地区投资门户网站",
 
-      mapTab: "🗺️ 投资地图",
-      aiTab: "🤖 AI 投资顾问",
-      ga: "公顷",
-      ta: "个"
-    }
+	      mapTab: "🗺️ 投资地图",
+	      aiTab: "🤖 AI 投资顾问",
+	      aboutTab: t.aboutTab,
+	      ga: "公顷",
+	      ta: "个"
+	    }
   }[lang] || {
     portalInfo: "📍 Piskent tuman investitsiya portali",
 
-    mapTab: "🗺️ Investitsiya xaritasi",
-    aiTab: "🤖 AI Maslahatchi",
-    ga: "GA",
-    ta: "TA"
-  };
+	    mapTab: "🗺️ Investitsiya xaritasi",
+	    aiTab: "🤖 AI Maslahatchi",
+	    aboutTab: t.aboutTab,
+	    ga: "GA",
+	    ta: "TA"
+	  };
 
   const handleShowOnMap = (plot: any) => {
     if (plot && plot.polygonCoordinates && plot.polygonCoordinates[0]) {
@@ -143,10 +191,13 @@ export default function Home() {
             <button onClick={() => handleTabChange('ai')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${activeTab === 'ai' ? 'bg-cyan-600/20 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:bg-slate-800/50'}`}>
               {localLabels.aiTab}
             </button>
-            <button onClick={() => handleTabChange('map')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${activeTab === 'map' ? 'bg-cyan-600/20 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:bg-slate-800/50'}`}>
-              {localLabels.mapTab}
-            </button>
-          </nav>
+	            <button onClick={() => handleTabChange('map')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${activeTab === 'map' ? 'bg-cyan-600/20 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:bg-slate-800/50'}`}>
+	              {localLabels.mapTab}
+	            </button>
+	            <button onClick={() => handleTabChange('about')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${activeTab === 'about' ? 'bg-cyan-600/20 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:bg-slate-800/50'}`}>
+	              {localLabels.aboutTab}
+	            </button>
+	          </nav>
         </div>
 
         {/* Финальный вид подвала: только версия, никакой кнопки админки */}
@@ -215,9 +266,9 @@ export default function Home() {
           )}
 
           {/* ЭКРАН 2: INVESTITSIYA XARITASI */}
-          {activeTab === 'map' && (
-            <div className="w-full h-full relative">
-              <MyInvestmentMap
+	          {activeTab === 'map' && (
+	            <div className="w-full h-full relative">
+	              <MyInvestmentMap
                 viewport={mapViewport}
                 selectedPlot={selectedPlot}
                 onSelectPlot={setSelectedPlot}
@@ -225,10 +276,92 @@ export default function Home() {
                 isAdminMode={isAdminMode}
                 onMapClick={handleMapClick}
                 adminMarkerCoords={adminMarkerCoords}
-              />
-            </div>
-          )}
-        </div>
+	              />
+	            </div>
+	          )}
+
+	          {activeTab === 'about' && (
+	            <div className="w-full h-full overflow-y-auto bg-[#070d1e] p-4 md:p-6">
+	              <div className="mx-auto max-w-6xl space-y-5">
+	                <div className="relative overflow-hidden rounded-xl border border-slate-800 bg-[#0b1329] min-h-[260px]">
+	                  {districtProfile?.hero_image && (
+	                    <img src={districtProfile.hero_image} alt={districtProfile.district_name || t.aboutTitle} className="absolute inset-0 h-full w-full object-cover opacity-35" />
+	                  )}
+	                  <div className="relative p-5 md:p-8 bg-gradient-to-r from-[#0b1329] via-[#0b1329]/90 to-[#0b1329]/50">
+	                    <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.aboutTitle}</span>
+	                    <h2 className="mt-3 max-w-3xl text-2xl md:text-4xl font-black text-white tracking-tight">
+	                      {showValue(districtProfile?.district_name)}
+	                    </h2>
+	                    <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
+	                      {showValue(districtProfile?.description)}
+	                    </p>
+	                  </div>
+	                </div>
+
+	                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+	                  {[
+	                    [t.population, districtProfile?.population, ''],
+	                    [t.workingPopulation, districtProfile?.working_population, ''],
+	                    [t.mahallas, districtProfile?.mahallas, ''],
+	                    [t.areaKm2, districtProfile?.area_km2, ' km²'],
+	                  ].map(([label, value, suffix]) => (
+	                    <div key={String(label)} className="rounded-xl border border-slate-800 bg-[#0b1329] p-4">
+	                      <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</span>
+	                      <span className="mt-2 block text-lg font-black text-cyan-400">{showValue(value, String(suffix))}</span>
+	                    </div>
+	                  ))}
+	                </div>
+
+	                <div className="rounded-xl border border-slate-800 bg-[#0b1329] p-4 md:p-5">
+	                  <h3 className="text-xs font-black uppercase tracking-widest text-slate-300 mb-4">{t.infrastructure}</h3>
+	                  <div className="grid md:grid-cols-2 gap-4">
+	                    {[
+	                      [t.electricity, districtProfile?.electricity_percent],
+	                      [t.gas, districtProfile?.gas_percent],
+	                      [t.water, districtProfile?.water_percent],
+	                      [t.roads, districtProfile?.roads_percent],
+	                    ].map(([label, value]) => (
+	                      <div key={String(label)}>
+	                        <div className="flex justify-between text-[11px] font-bold text-slate-400 mb-1">
+	                          <span>{label}</span>
+	                          <span>{showValue(value, '%')}</span>
+	                        </div>
+	                        <div className="h-2 rounded-full bg-slate-800 overflow-hidden">
+	                          <div className="h-full rounded-full bg-cyan-500" style={{ width: `${progressValue(value)}%` }} />
+	                        </div>
+	                      </div>
+	                    ))}
+	                  </div>
+	                </div>
+
+	                <div className="grid md:grid-cols-2 gap-4">
+	                  {[
+	                    [t.mayor, districtProfile?.mayor_name, districtProfile?.mayor_photo],
+	                    [t.deputy, districtProfile?.deputy_name, districtProfile?.deputy_photo],
+	                  ].map(([role, name, photo]) => (
+	                    <div key={String(role)} className="rounded-xl border border-slate-800 bg-[#0b1329] p-4 flex items-center gap-4">
+	                      <div className="h-16 w-16 rounded-xl bg-slate-800 overflow-hidden flex-shrink-0">
+	                        {photo ? <img src={String(photo)} alt={String(name || role)} className="h-full w-full object-cover" /> : null}
+	                      </div>
+	                      <div>
+	                        <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{role}</span>
+	                        <p className="text-sm font-bold text-white mt-1">{showValue(name)}</p>
+	                      </div>
+	                    </div>
+	                  ))}
+	                </div>
+
+	                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4 md:p-5">
+	                  <h3 className="text-xs font-black uppercase tracking-widest text-cyan-400 mb-3">{t.contact}</h3>
+	                  <p className="text-sm font-bold text-white">{showValue(districtProfile?.investment_department_name)}</p>
+	                  <p className="text-sm text-slate-300 mt-1">{showValue(districtProfile?.investment_head_name)}</p>
+	                  <p className="text-sm text-slate-300 mt-2 font-mono">{showValue(districtProfile?.investment_phone)}</p>
+	                  <p className="text-sm text-slate-300 font-mono">{showValue(districtProfile?.investment_phone2)}</p>
+	                </div>
+	              </div>
+	            </div>
+	          )}
+	        </div>
 
 
       </div>
