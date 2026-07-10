@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Circle, Marker, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, LayersControl, LayerGroup, Circle, Marker, useMap, useMapEvents } from 'react-leaflet';
 import PlotCard from './PlotCard';
 import L from 'leaflet';
 import { useSearchParams } from 'next/navigation';
@@ -243,20 +243,36 @@ export default function MyInvestmentMap({
     };
 
     const t = localDict[lang] || localDict['uz'];
-    const mapLang = lang === 'zh' ? 'zh-CN' : ['uz', 'ru', 'en'].includes(lang) ? lang : 'uz';
 
     return (
         <div className="w-full h-full relative">
 
             <MapContainer center={defaultCenter} zoom={defaultZoom} className="h-full w-full z-0" zoomControl={false}>
 
-                {/* 2. ИСПРАВЛЕНО: Подключаем чистые тайлы Google Спутник (lyrs=s) БЕЗ точек POI, магазинов и туалетов */}
-                {/* 2. ИСПРАВЛЕНО: Подключаем чистые тайлы Google Спутник */}
-                {/* 2. ИСПРАВЛЕНО: Переключаем на чистую схематичную векторную карту как на E-Auksion! */}
-                <TileLayer
-                    attribution='&copy; Google Maps Road'
-                    url={`https://mt1.google.com/vt/lyrs=m&hl=${mapLang}&x={x}&y={y}&z={z}`}
-                />
+                <LayersControl>
+                    <LayersControl.BaseLayer checked name="Clean map / Oddiy xarita">
+                        <TileLayer
+                            attribution='&copy; OpenStreetMap contributors &copy; CARTO'
+                            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                        />
+                    </LayersControl.BaseLayer>
+                    <LayersControl.BaseLayer name="Satellite hybrid / Sun’iy yo‘ldosh">
+                        <LayerGroup>
+                            <TileLayer
+                                attribution='Tiles &copy; Esri'
+                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                            />
+                            <TileLayer
+                                attribution='Tiles &copy; Esri'
+                                url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
+                            />
+                            <TileLayer
+                                attribution='Tiles &copy; Esri'
+                                url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+                            />
+                        </LayerGroup>
+                    </LayersControl.BaseLayer>
+                </LayersControl>
                 {/* 2. Контроллер для ссылок (летит к нужному лоту) */}
                 <MapController viewport={viewport} plotId={plotIdFromUrl} plots={plots} />
                 {/* 3. Контроллер для кликов админа */}
