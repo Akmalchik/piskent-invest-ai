@@ -164,7 +164,7 @@ export default function Home() {
 
 	      mapTab: "🗺️ Investitsiya xaritasi",
 	      aiTab: "🤖 AI Maslahatchi",
-	      aboutTab: t.aboutTab,
+	      aboutTab: `🏛️ ${t.aboutTab}`,
 	      ga: "GA",
 	      ta: "TA"
 	    },
@@ -173,7 +173,7 @@ export default function Home() {
 
 	      mapTab: "🗺️ Инвестиционная карта",
 	      aiTab: "🤖 AI Консультант",
-	      aboutTab: t.aboutTab,
+	      aboutTab: `🏛️ ${t.aboutTab}`,
 	      ga: "ГА",
 	      ta: "ЕД"
 	    },
@@ -182,7 +182,7 @@ export default function Home() {
 
 	      mapTab: "🗺️ Investment Map",
 	      aiTab: "🤖 AI Consultant",
-	      aboutTab: t.aboutTab,
+	      aboutTab: `🏛️ ${t.aboutTab}`,
 	      ga: "HA",
 	      ta: "LOTS"
 	    },
@@ -191,7 +191,7 @@ export default function Home() {
 
 	      mapTab: "🗺️ 投资地图",
 	      aiTab: "🤖 AI 投资顾问",
-	      aboutTab: t.aboutTab,
+	      aboutTab: `🏛️ ${t.aboutTab}`,
 	      ga: "公顷",
 	      ta: "个"
 	    }
@@ -200,7 +200,7 @@ export default function Home() {
 
 	    mapTab: "🗺️ Investitsiya xaritasi",
 	    aiTab: "🤖 AI Maslahatchi",
-	    aboutTab: t.aboutTab,
+	    aboutTab: `🏛️ ${t.aboutTab}`,
 	    ga: "GA",
 	    ta: "TA"
 	  };

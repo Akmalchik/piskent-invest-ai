@@ -70,13 +70,13 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             let aiText = data.text || '';
             if (!aiText) throw new Error('Empty response');
 
-            let finalPlot = null;
-            const match = aiText.match(/\[RECOMMEND_ID:\s*(\d+)\]/);
-            if (match) {
-                const recommendedId = parseInt(match[1]);
-                finalPlot = plots.find((p: any) => p.id === recommendedId);
-                aiText = aiText.replace(/\[RECOMMEND_ID:\s*\d+\]/, '').trim();
-            }
+            const recommendedIds = Array.from(
+                new Set([...aiText.matchAll(/\[RECOMMEND_ID:\s*(\d+)\]/g)].map(match => match[1]))
+            );
+            const recommendedPlots = recommendedIds
+                .map(id => plots.find((plot: any) => String(plot.id) === id))
+                .filter(Boolean);
+            aiText = aiText.replace(/\[RECOMMEND_ID:\s*\d+\]/g, '').trim();
 
             setIsTyping(false);
             setChatMessages([
@@ -84,7 +84,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 {
                     sender: 'ai',
                     text: aiText,
-                    recommendedPlot: finalPlot,
+                    recommendedPlots,
                 },
             ]);
         } catch (error) {
@@ -126,7 +126,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
         en: {
             title: "Digital Investment Consultant",
             sync: "E-Auksion Sync Active",
-            mapBtn: "Show on Map",
+            mapBtn: "Show on map",
             pageBtn: "Auction Page",
             starterTitle: "Digital Investment Consultant",
             starterIntro: "Provides official information and recommendations on investment properties in Piskent district.",
@@ -135,7 +135,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
         zh: {
             title: "数字投资顾问",
             sync: "电子拍卖数据同步激活",
-            mapBtn: "在地图上查看",
+            mapBtn: "在地图上显示",
             pageBtn: "拍卖官方页面",
             starterTitle: "数字投资顾问",
             starterIntro: "提供皮斯肯特区投资项目的官方信息和建议。",
@@ -222,16 +222,27 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                                 : 'bg-[#0b1329]/90 border border-slate-800/80 text-slate-200 rounded-tl-none backdrop-blur-sm relative'
                                 }`}>
                                 <div className="whitespace-pre-line">{msg.text}</div>
-                                {msg.sender === 'ai' && msg.recommendedPlot && (
-                                    <div className="mt-3.5 pt-3 border-t border-slate-800/60 flex flex-col sm:flex-row gap-2 justify-end">
-                                        {msg.recommendedPlot.auksionUrl && (
-                                            <a href={msg.recommendedPlot.auksionUrl} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5">
-                                                <span>{labels.pageBtn}</span> 🌐
-                                            </a>
-                                        )}
-                                        <button onClick={() => onSelectPlot(msg.recommendedPlot)} className="px-3.5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md shadow-cyan-500/20">
-                                            <span>{labels.mapBtn}</span> 📍
-                                        </button>
+                                {msg.sender === 'ai' && msg.recommendedPlots?.length > 0 && (
+                                    <div className="mt-3.5 pt-3 border-t border-slate-800/60 space-y-2">
+                                        {msg.recommendedPlots.map((plot: any) => (
+                                            <div key={plot.id} className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                                {plot.name && (
+                                                    <span className="min-w-0 flex-1 truncate text-[10px] font-semibold text-slate-300" title={plot.name}>
+                                                        {plot.name}
+                                                    </span>
+                                                )}
+                                                <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+                                                    {plot.auksionUrl && (
+                                                        <a href={plot.auksionUrl} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5">
+                                                            <span>{labels.pageBtn}</span> 🌐
+                                                        </a>
+                                                    )}
+                                                    <button onClick={() => onSelectPlot(plot)} className="px-3.5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md shadow-cyan-500/20">
+                                                        <span>{labels.mapBtn}</span> 📍
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 )}
                             </div>

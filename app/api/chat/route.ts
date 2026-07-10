@@ -328,7 +328,10 @@ function getIdea(plot: any, lang: string) {
 }
 
 function buildTemplateResponse(plots: any[], lang: string) {
-  const firstPlotId = plots[0]?.id;
+  const recommendationMarkers = plots
+    .filter(plot => plot.id !== undefined && plot.id !== null)
+    .map(plot => `[RECOMMEND_ID:${plot.id}]`)
+    .join('\n');
   const divider = '━━━━━━━━━━━━━━━━━━━━━━';
 
   if (lang === 'ru') {
@@ -343,7 +346,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
       'Почему рекомендуется: объект является одним из наиболее близких вариантов по указанным параметрам.',
     ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
 
-    return `${divider}\n\nРЕКОМЕНДУЕМЫЕ ОБЪЕКТЫ\n\n${divider}\n\n${items}\n\n${divider}\n\nДля получения дополнительной информации вы можете обратиться в отдел инвестиций, промышленности и торговли.\n\nПримечание: Рекомендации сформированы автоматически на основании имеющихся данных. Окончательное решение рекомендуется принимать после дополнительного изучения объекта и консультации с ответственным отделом.\n[RECOMMEND_ID:${firstPlotId}]`;
+    return `${divider}\n\nРЕКОМЕНДУЕМЫЕ ОБЪЕКТЫ\n\n${divider}\n\n${items}\n\n${divider}\n\nДля получения дополнительной информации вы можете обратиться в отдел инвестиций, промышленности и торговли.\n\nПримечание: Рекомендации сформированы автоматически на основании имеющихся данных. Окончательное решение рекомендуется принимать после дополнительного изучения объекта и консультации с ответственным отделом.\n${recommendationMarkers}`;
   }
 
   if (lang === 'en') {
@@ -358,7 +361,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
       'Why recommended: the property is one of the closest available options based on the specified parameters.',
     ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
 
-    return `${divider}\n\nRECOMMENDED PROPERTIES\n\n${divider}\n\n${items}\n\n${divider}\n\nFor additional information, you may contact the Department of Investments, Industry and Trade.\n\nThe recommendations are generated automatically based on available data. Final investment decisions should be made after additional verification and consultation with the responsible department.\n[RECOMMEND_ID:${firstPlotId}]`;
+    return `${divider}\n\nRECOMMENDED PROPERTIES\n\n${divider}\n\n${items}\n\n${divider}\n\nFor additional information, you may contact the Department of Investments, Industry and Trade.\n\nThe recommendations are generated automatically based on available data. Final investment decisions should be made after additional verification and consultation with the responsible department.\n${recommendationMarkers}`;
   }
 
   if (lang === 'zh') {
@@ -373,7 +376,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
       '推荐理由：该项目是根据指定参数筛选出的较为匹配的可用选项之一。',
     ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
 
-    return `${divider}\n\n推荐项目\n\n${divider}\n\n${items}\n\n${divider}\n\n如需更多信息，您可以联系投资、工业和贸易部门。\n\n说明：建议根据现有数据自动生成。最终投资决定建议在进一步核实并咨询相关部门后作出。\n[RECOMMEND_ID:${firstPlotId}]`;
+    return `${divider}\n\n推荐项目\n\n${divider}\n\n${items}\n\n${divider}\n\n如需更多信息，您可以联系投资、工业和贸易部门。\n\n说明：建议根据现有数据自动生成。最终投资决定建议在进一步核实并咨询相关部门后作出。\n${recommendationMarkers}`;
   }
 
   const items = plots.map((plot, index) => [
@@ -387,7 +390,7 @@ function buildTemplateResponse(plots: any[], lang: string) {
     'Nega tavsiya etiladi: obyekt kiritilgan parametrlar bo‘yicha eng yaqin mavjud variantlardan biri hisoblanadi.',
   ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
 
-  return `${divider}\n\nAI INVESTITSIYA MASLAHATCHISI TAVSIYASI\n\n${divider}\n\n${items}\n\n${divider}\n\nQo‘shimcha ma'lumot olish uchun Investitsiyalar, sanoat va savdo bo‘limiga murojaat qilishingiz mumkin.\n\nEslatma: Mazkur tavsiyalar taqdim etilgan ma'lumotlar asosida avtomatik shakllantirilgan. Yakuniy qaror qo‘shimcha o‘rganish va mas'ul bo‘lim bilan maslahatlashuvdan so‘ng qabul qilinishi tavsiya etiladi.\n[RECOMMEND_ID:${firstPlotId}]`;
+  return `${divider}\n\nAI INVESTITSIYA MASLAHATCHISI TAVSIYASI\n\n${divider}\n\n${items}\n\n${divider}\n\nQo‘shimcha ma'lumot olish uchun Investitsiyalar, sanoat va savdo bo‘limiga murojaat qilishingiz mumkin.\n\nEslatma: Mazkur tavsiyalar taqdim etilgan ma'lumotlar asosida avtomatik shakllantirilgan. Yakuniy qaror qo‘shimcha o‘rganish va mas'ul bo‘lim bilan maslahatlashuvdan so‘ng qabul qilinishi tavsiya etiladi.\n${recommendationMarkers}`;
 }
 
 async function loadPlots(req: NextRequest, incomingPlots: unknown) {
