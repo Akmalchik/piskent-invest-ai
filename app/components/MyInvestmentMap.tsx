@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, LayersControl, LayerGroup, Circle, Marker, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, LayersControl, LayerGroup, CircleMarker, Marker, useMap, useMapEvents } from 'react-leaflet';
 import PlotCard from './PlotCard';
 import L from 'leaflet';
 import { useSearchParams } from 'next/navigation';
@@ -278,7 +278,7 @@ export default function MyInvestmentMap({
                 {/* 3. Контроллер для кликов админа */}
                 <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
 
-                {/* Отрисовка цветных круговых зон из координат объектов */}
+                {/* Отрисовка объектов как точек с постоянным размером в пикселях */}
                 {filteredPlots.map((plot: any) => {
                     const center = getPlotCenter(plot);
                     if (!center) return null;
@@ -286,15 +286,16 @@ export default function MyInvestmentMap({
                     const isSelected = selectedPlot?.id === plot.id;
 
                     return (
-                        <Circle
+                        <CircleMarker
                             key={plot.id}
                             center={center}
-                            radius={150}
+                            radius={isSelected ? 10 : 8}
                             pathOptions={{
+                                stroke: true,
                                 color: isSelected ? '#ffffff' : plot.industry === 'Textile' ? '#ec4899' : '#06b6d4',
                                 fillColor: plot.industry === 'Textile' ? '#ec4899' : '#06b6d4',
-                                fillOpacity: isSelected ? 0.65 : 0.4,
-                                weight: isSelected ? 3.5 : 2
+                                fillOpacity: isSelected ? 0.9 : 0.75,
+                                weight: isSelected ? 3 : 2
                             }}
                             eventHandlers={{
                                 click: () => onSelectPlot(withPlotImage(plot)),
