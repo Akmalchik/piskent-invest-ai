@@ -134,6 +134,7 @@ export default function MyInvestmentMap({
     const plotIdFromUrl = searchParams.get('plotId');
     const [statusFilter, setStatusFilter] = useState('Barchasi');
     const [isPanelVisible, setIsPanelVisible] = useState(true);
+    const [isMobilePanelVisible, setIsMobilePanelVisible] = useState(false);
     const [plots, setPlots] = useState<any[]>([]);
     const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
     const [propertyTypeFilter, setPropertyTypeFilter] = useState('all');
@@ -197,7 +198,7 @@ export default function MyInvestmentMap({
     // Локальный словарь для перевода всей панели
     const localDict: Record<string, any> = {
         uz: {
-            hide: "Yashirish", show: "Filtrni ko'rsatish",
+            hide: "Yashirish", show: "Filtrni ko'rsatish", mobileFilters: "🔍 Filtrlar", close: "Yopish",
             statusTitle: "🔍 Holat bo'yicha filtr", indTitle: "🏭 Yo'nalishlar bo'yicha",
             infraTitle: "⚡ Infratuzilma qatlamlari", gas: "Gaz tarmog'i", power: "Elektr tarmog'i", water: "Suv ta'minoti",
             all: "Barchasi", allInd: "Hamma yo'nalishlar",
@@ -208,7 +209,7 @@ export default function MyInvestmentMap({
             logistika: "Logistika va transport", qurilish: "Qurilish materiallari", boshqa: "Boshqa yo'nalishlar"
         },
         ru: {
-            hide: "Скрыть", show: "Показать фильтр",
+            hide: "Скрыть", show: "Показать фильтр", mobileFilters: "🔍 Фильтры", close: "Закрыть",
             statusTitle: "🔍 Фильтр по статусу", indTitle: "🏭 По направлениям",
             infraTitle: "⚡ Инфраструктурные слои", gas: "Газовая сеть", power: "Электросеть", water: "Водоснабжение",
             all: "Все", allInd: "Все направления",
@@ -219,7 +220,7 @@ export default function MyInvestmentMap({
             logistika: "Логистика и транспорт", qurilish: "Строительные материалы", boshqa: "Другие направления"
         },
         en: {
-            hide: "Hide", show: "Show Filter",
+            hide: "Hide", show: "Show Filter", mobileFilters: "🔍 Filters", close: "Close",
             statusTitle: "🔍 Filter by Status", indTitle: "🏭 By Industry Branches",
             infraTitle: "⚡ Infrastructure Layers", gas: "Gas Network", power: "Power Grid", water: "Water Supply",
             all: "All", allInd: "All Industries",
@@ -230,7 +231,7 @@ export default function MyInvestmentMap({
             logistika: "Logistics & Transport", qurilish: "Building Materials", boshqa: "Other Industries"
         },
         zh: {
-            hide: "隐藏", show: "显示 筛选",
+            hide: "隐藏", show: "显示 筛选", mobileFilters: "🔍 筛选", close: "关闭",
             statusTitle: "🔍 按状态过滤", indTitle: "🏭 按行业领域",
             infraTitle: "⚡ 基础建设图层", gas: "天然气管网", power: "电网覆盖", water: "供水系统",
             all: "全部", allInd: "所有行业领域",
@@ -312,9 +313,10 @@ export default function MyInvestmentMap({
 
             {/* Интерфейс фильтров */}
             {!isAdminMode && !selectedPlot && (
+                <>
                 <div
                     onPointerDown={(e) => e.stopPropagation()}
-                    className="absolute top-4 right-4 z-[1000] flex flex-col gap-2 w-72 max-h-[calc(100vh-40px)] pointer-events-auto"
+                    className="absolute top-4 right-4 z-[1000] hidden md:flex flex-col gap-2 w-72 max-h-[calc(100vh-40px)] pointer-events-auto"
                 >
                     <button
                         onClick={() => setIsPanelVisible(!isPanelVisible)}
@@ -396,6 +398,106 @@ export default function MyInvestmentMap({
                         </div>
                     )}
                 </div>
+
+                <div
+                    onPointerDown={(e) => e.stopPropagation()}
+                    className="md:hidden pointer-events-auto"
+                >
+                    {!isMobilePanelVisible && (
+                        <button
+                            onClick={() => setIsMobilePanelVisible(true)}
+                            className="absolute left-4 bottom-4 z-[1000] bg-[#0b1329]/95 backdrop-blur border border-slate-800 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl"
+                        >
+                            {t.mobileFilters}
+                        </button>
+                    )}
+
+                    {isMobilePanelVisible && (
+                        <div className="absolute inset-x-3 bottom-4 z-[1100] max-h-[65vh] overflow-y-auto rounded-2xl border border-slate-800 bg-[#0b1329]/98 backdrop-blur-md p-3.5 shadow-2xl scrollbar-none">
+                            <div className="mb-3 flex items-center justify-between">
+                                <span className="text-xs font-bold text-white">{t.mobileFilters}</span>
+                                <button
+                                    onClick={() => setIsMobilePanelVisible(false)}
+                                    aria-label={t.close}
+                                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800/80 text-lg text-slate-300"
+                                >
+                                    ×
+                                </button>
+                            </div>
+
+                            <div className="flex flex-col gap-3.5">
+                                <div>
+                                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">{t.statusTitle}</h3>
+                                    <div className="grid grid-cols-4 gap-1">
+                                        {['Barchasi', 'Mavjud', 'E-auksion', 'Band'].map((id) => (
+                                            <button
+                                                key={id}
+                                                onClick={() => setStatusFilter(id)}
+                                                className={`py-2 rounded-lg text-[9px] font-bold border text-center transition-all ${statusFilter === id ? 'bg-cyan-600 text-white border-cyan-500' : 'bg-[#040814]/60 text-slate-400 border-slate-800'}`}
+                                            >
+                                                {t.statusLabels[id] || id}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="border-t border-slate-800/50" />
+
+                                <div>
+                                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">{t.propertyTypeTitle}</h3>
+                                    <select
+                                        value={propertyTypeFilter}
+                                        onChange={(e) => setPropertyTypeFilter(e.target.value)}
+                                        className="w-full bg-[#040814]/90 text-slate-300 border border-slate-800 px-3 py-2.5 rounded-xl text-[11px] font-medium outline-none cursor-pointer focus:border-cyan-500 transition-all"
+                                    >
+                                        {['all', 'land', 'building', 'land_building'].map((type) => (
+                                            <option key={type} value={type}>{t.propertyTypeLabels[type]}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="border-t border-slate-800/50" />
+
+                                <div>
+                                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">{t.indTitle}</h3>
+                                    <select
+                                        value={selectedIndustry || ''}
+                                        onChange={(e) => setSelectedIndustry(e.target.value || null)}
+                                        className="w-full bg-[#040814]/90 text-slate-300 border border-slate-800 px-3 py-2.5 rounded-xl text-[11px] font-medium outline-none cursor-pointer focus:border-cyan-500 transition-all"
+                                    >
+                                        <option value="">🔍 {t.all} ({t.allInd})</option>
+                                        <option value="Production">🏭 {t.sanoat}</option>
+                                        <option value="Textile">🧵 {t.tekstil}</option>
+                                        <option value="Agro">🌾 {t.agro}</option>
+                                        <option value="Logistics">📦 {t.logistika}</option>
+                                    </select>
+                                </div>
+
+                                <div className="border-t border-slate-800/50" />
+
+                                <div>
+                                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">{t.infraTitle}</h3>
+                                    <div className="space-y-2">
+                                        {[
+                                            { label: t.gas, percent: "78%", color: "bg-amber-500" },
+                                            { label: t.power, percent: "98%", color: "bg-yellow-400" },
+                                            { label: t.water, percent: "84%", color: "bg-blue-500" }
+                                        ].map((item, idx) => (
+                                            <div key={idx} className="flex flex-col gap-1">
+                                                <div className="flex justify-between items-center text-[10px] text-slate-300">
+                                                    <div className="flex items-center gap-1.5"><span className={`w-1.5 h-1.5 rounded-full ${item.color}`}></span><span>{item.label}</span></div>
+                                                    <span className="font-bold text-slate-400">{item.percent}</span>
+                                                </div>
+                                                <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden"><div className={`h-full ${item.color}`} style={{ width: item.percent }}></div></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+                </>
             )}
 
             {/* Выезжающая шторка карточки */}
