@@ -17,11 +17,21 @@ if (typeof window !== 'undefined') {
 }
 
 // Ловит клики сотрудника отдела инвестиций Пискента
-function MapClickHandler({ isAdminMode, onMapClick }: { isAdminMode: boolean, onMapClick?: (lat: number, lng: number) => void }) {
+function MapClickHandler({
+    isAdminMode,
+    onMapClick,
+    onPublicMapClick,
+}: {
+    isAdminMode: boolean,
+    onMapClick?: (lat: number, lng: number) => void,
+    onPublicMapClick?: () => void,
+}) {
     useMapEvents({
         click(e) {
             if (isAdminMode && onMapClick) {
                 onMapClick(e.latlng.lat, e.latlng.lng);
+            } else {
+                onPublicMapClick?.();
             }
         },
 
@@ -277,7 +287,14 @@ export default function MyInvestmentMap({
                 {/* 2. Контроллер для ссылок (летит к нужному лоту) */}
                 <MapController viewport={viewport} plotId={plotIdFromUrl} plots={plots} />
                 {/* 3. Контроллер для кликов админа */}
-                <MapClickHandler isAdminMode={isAdminMode} onMapClick={onMapClick} />
+                <MapClickHandler
+                    isAdminMode={isAdminMode}
+                    onMapClick={onMapClick}
+                    onPublicMapClick={() => {
+                        setIsMobilePanelVisible(false);
+                        onSelectPlot(null);
+                    }}
+                />
 
                 {/* Отрисовка объектов как точек с постоянным размером в пикселях */}
                 {filteredPlots.map((plot: any) => {
@@ -291,6 +308,7 @@ export default function MyInvestmentMap({
                             key={plot.id}
                             center={center}
                             radius={isSelected ? 10 : 8}
+                            bubblingMouseEvents={false}
                             pathOptions={{
                                 stroke: true,
                                 color: isSelected ? '#ffffff' : plot.industry === 'Textile' ? '#ec4899' : '#06b6d4',
