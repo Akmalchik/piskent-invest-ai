@@ -1,6 +1,6 @@
 'use client';
 /// <reference types="react" />
-import React, { useState, useEffect, type FormEvent } from 'react';
+import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
@@ -31,6 +31,45 @@ const normalizeInfraOption = (value: unknown, options: string[]) => {
     return options.includes(normalizedValue) ? normalizedValue : 'Aniqlanmoqda';
 };
 
+const compressImage = (file: File) => new Promise<File>((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        const scale = Math.min(1, 1200 / image.naturalWidth, 1200 / image.naturalHeight);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+
+        const context = canvas.getContext('2d');
+        if (!context) {
+            reject(new Error('Rasmni siqib bo‘lmadi.'));
+            return;
+        }
+
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        const supportsWebp = canvas.toDataURL('image/webp').startsWith('data:image/webp');
+        const outputType = supportsWebp ? 'image/webp' : 'image/jpeg';
+
+        canvas.toBlob((blob) => {
+            if (!blob) {
+                reject(new Error('Rasmni siqib bo‘lmadi.'));
+                return;
+            }
+
+            const extension = outputType === 'image/webp' ? 'webp' : 'jpg';
+            resolve(new File([blob], `plot-image.${extension}`, { type: outputType }));
+        }, outputType, 0.75);
+    };
+
+    image.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error('Rasm faylini ochib bo‘lmadi.'));
+    };
+    image.src = objectUrl;
+});
+
 export default function AdminPage() {
     // Внутренняя языковая переменная проекта
     const lang = 'uz';
@@ -60,6 +99,8 @@ export default function AdminPage() {
     const [propertyType, setPropertyType] = useState('land');
     const [auksionUrl, setAuksionUrl] = useState('');
     const [imageUrl, setImageUrl] = useState('');
+    const [photoUploadStatus, setPhotoUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+    const [photoUploadMessage, setPhotoUploadMessage] = useState('');
     // Поля инфраструктуры лота
     const [gas, setGas] = useState('Mavjud');
     const [power, setPower] = useState('Mavjud');
@@ -80,6 +121,8 @@ export default function AdminPage() {
         setPropertyType('land');
         setAuksionUrl('');
         setImageUrl('');
+        setPhotoUploadStatus('idle');
+        setPhotoUploadMessage('');
         setGas('Mavjud');
         setPower('Mavjud');
         setWater('Mavjud');
@@ -129,6 +172,53 @@ export default function AdminPage() {
     // Функция срабатывает, когда пользователь производит клик по Leaflet-карте справа
     const handleMapClick = (lat: number, lng: number) => {
         setMarkerCoords([lat, lng]);
+    };
+
+    const handlePhotoUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        event.target.value = '';
+        if (!file) return;
+
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+            setPhotoUploadStatus('error');
+            setPhotoUploadMessage('Faqat JPG, PNG yoki WEBP rasm tanlang.');
+            return;
+        }
+
+        if (file.size > 15 * 1024 * 1024) {
+            setPhotoUploadStatus('error');
+            setPhotoUploadMessage('Fayl juda katta. 15 MB gacha rasm yuklang.');
+            return;
+        }
+
+        setPhotoUploadStatus('uploading');
+        setPhotoUploadMessage('Yuklanmoqda...');
+
+        try {
+            const compressedFile = await compressImage(file);
+            if (compressedFile.size > 2 * 1024 * 1024) {
+                throw new Error('Rasm hajmi katta. Boshqa rasm tanlang.');
+            }
+
+            const formData = new FormData();
+            formData.append('file', compressedFile);
+            const response = await fetch('/api/upload-plot-image', {
+                method: 'POST',
+                body: formData,
+            });
+            const result = await response.json().catch(() => ({}));
+
+            if (!response.ok || !result.imageUrl) {
+                throw new Error(result.error || 'Rasmni yuklab bo‘lmadi.');
+            }
+
+            setImageUrl(result.imageUrl);
+            setPhotoUploadStatus('success');
+            setPhotoUploadMessage('Foto yuklandi');
+        } catch (error) {
+            setPhotoUploadStatus('error');
+            setPhotoUploadMessage(error instanceof Error ? error.message : 'Xatolik yuz berdi');
+        }
     };
 
     const handleSelectPlotForEdit = (plot: any) => {
@@ -392,6 +482,31 @@ export default function AdminPage() {
                             <p className="mt-1 text-[10px] text-slate-500">
                                 Faqat to‘g‘ridan-to‘g‘ri rasm havolasi kiriting: .jpg, .png, .webp
                             </p>
+                            <label className="text-[10px] font-bold text-slate-400 block mt-3 mb-1">
+                                Foto yuklash
+                            </label>
+                            <input
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp"
+                                onChange={handlePhotoUpload}
+                                disabled={photoUploadStatus === 'uploading'}
+                                className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-cyan-900 file:px-3 file:py-1 file:text-xs file:font-bold file:text-cyan-100 disabled:opacity-60"
+                            />
+                            <p className="mt-1 text-[10px] text-slate-500">
+                                JPG, PNG yoki WEBP. Rasm avtomatik siqiladi.
+                            </p>
+                            {photoUploadStatus !== 'idle' && (
+                                <p className={`mt-1 text-[10px] font-bold ${photoUploadStatus === 'error' ? 'text-red-400' : photoUploadStatus === 'success' ? 'text-emerald-400' : 'text-cyan-400'}`}>
+                                    {photoUploadMessage}
+                                </p>
+                            )}
+                            {imageUrl && (
+                                <img
+                                    src={imageUrl}
+                                    alt="Obyekt fotosi"
+                                    className="mt-3 max-h-48 w-full rounded-xl border border-slate-800 object-cover"
+                                />
+                            )}
                         </div>
                         <div>
                             <label className="text-[10px] font-bold text-slate-400 block mb-1">
