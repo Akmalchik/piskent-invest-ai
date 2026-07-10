@@ -10,6 +10,11 @@ const EXTENSIONS: Record<string, string> = {
 
 export async function POST(request: Request) {
     try {
+        const adminSession = request.headers.get('X-Admin-Session')?.trim();
+        if (!adminSession) {
+            return NextResponse.json({ error: 'Avval admin panelga kiring.' }, { status: 401 });
+        }
+
         const formData = await request.formData();
         const file = formData.get('file');
 

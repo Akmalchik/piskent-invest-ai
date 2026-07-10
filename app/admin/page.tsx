@@ -4,6 +4,8 @@ import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 're
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
+const ADMIN_SESSION_KEY = 'piskent_admin_session';
+
 // Загружаем карту динамически для админки, исключая ошибки рендеринга на сервере (SSR)
 const MyInvestmentMap = dynamic(() => import('../components/MyInvestmentMap'), {
     ssr: false,
@@ -78,7 +80,12 @@ export default function AdminPage() {
     const handleLogin = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (inputPassword === 'Piskent2026!') {
-            setIsAuthenticated(true);
+            try {
+                sessionStorage.setItem(ADMIN_SESSION_KEY, `admin-${Date.now()}`);
+                setIsAuthenticated(true);
+            } catch {
+                alert('Avval admin panelga kiring.');
+            }
         } else {
             alert('Секретный код неверный!');
         }
@@ -110,6 +117,14 @@ export default function AdminPage() {
     // Стейты для хранения координат клика и показа успешного баннера
     const [markerCoords, setMarkerCoords] = useState<[number, number] | null>(null);
     const [successMessage, setSuccessMessage] = useState(false);
+
+    useEffect(() => {
+        try {
+            setIsAuthenticated(Boolean(sessionStorage.getItem(ADMIN_SESSION_KEY)?.trim()));
+        } catch {
+            setIsAuthenticated(false);
+        }
+    }, []);
 
     const resetForm = () => {
         setName('');
@@ -195,6 +210,17 @@ export default function AdminPage() {
         setPhotoUploadMessage('Yuklanmoqda...');
 
         try {
+            let adminSession = '';
+            try {
+                adminSession = sessionStorage.getItem(ADMIN_SESSION_KEY)?.trim() || '';
+            } catch {
+                // Обрабатывается общей понятной ошибкой ниже.
+            }
+
+            if (!adminSession) {
+                throw new Error('Avval admin panelga kiring.');
+            }
+
             const compressedFile = await compressImage(file);
             if (compressedFile.size > 2 * 1024 * 1024) {
                 throw new Error('Rasm hajmi katta. Boshqa rasm tanlang.');
@@ -204,6 +230,9 @@ export default function AdminPage() {
             formData.append('file', compressedFile);
             const response = await fetch('/api/upload-plot-image', {
                 method: 'POST',
+                headers: {
+                    'X-Admin-Session': adminSession,
+                },
                 body: formData,
             });
             const result = await response.json().catch(() => ({}));
