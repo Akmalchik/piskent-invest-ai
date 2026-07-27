@@ -258,14 +258,14 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
 
                 {/* Шапка карточки */}
                 <div className="flex justify-between items-start mb-4 gap-2">
-                    <h2 className="text-sm md:text-base font-black text-cyan-400 tracking-wide leading-snug">{plot.name}</h2>
-                    <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-white text-sm bg-slate-800/60 rounded-xl transition-all flex-shrink-0">✕</button>
+                    <h2 className="text-sm md:text-base font-bold text-slate-100 tracking-wide leading-snug">{plot.name}</h2>
+                    <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-white text-sm bg-slate-800/60 border border-slate-700 rounded-lg transition-colors flex-shrink-0">✕</button>
                 </div>
 
                 {/* ========================================================= */}
                 {/* СТРОКА С ЖИВОЙ ФОТОГРАФИЕЙ С САЙТА E-AUKSION               */}
                 {/* ========================================================= */}
-                <div className="w-full h-44 bg-[#040814] rounded-2xl border border-slate-800/80 overflow-hidden mb-4 relative flex items-center justify-center">
+                <div className="w-full h-44 bg-[#050a14] rounded-xl border border-slate-700/60 overflow-hidden mb-4 relative flex items-center justify-center">
                     {plot.image ? (
                         <img
                             src={plot.image}
@@ -283,11 +283,11 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                             <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">{d.noPhoto}</span>
                         </div>
                     )}
-                    <div className="absolute top-3 left-3 bg-cyan-600/90 backdrop-blur-sm text-white text-[9px] font-black uppercase px-2 py-0.5 rounded shadow-md tracking-wider">
+                    <div className="absolute top-3 left-3 bg-emerald-900/90 border border-emerald-600/40 text-emerald-100 text-[9px] font-bold uppercase px-2 py-1 rounded-md tracking-wider">
                         {formatStatus(plot.status)}
                     </div>
                     {ownershipType && (
-                        <div className="absolute top-3 right-3 bg-slate-950/80 backdrop-blur-sm text-white text-[9px] font-black px-2 py-0.5 rounded shadow-md">
+                        <div className="absolute top-3 right-3 bg-slate-950/90 border border-slate-600/60 text-slate-100 text-[9px] font-bold px-2 py-1 rounded-md">
                             {formatOwnershipType(ownershipType)}
                         </div>
                     )}
@@ -328,7 +328,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                 {/* Параметры площади */}
                 <div className="mb-3 space-y-2">
                     {areaRows.map((row) => (
-                        <div key={row.label} className="bg-[#101f42]/40 p-4 rounded-xl border border-slate-800/60">
+                        <div key={row.label} className="bg-[#0a1324] p-4 rounded-lg border border-slate-700/50">
                             <span className="text-[9px] text-slate-400 block font-bold tracking-wide uppercase mb-1">
                                 {row.label}
                             </span>
@@ -339,11 +339,11 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                     ))}
                 </div>
                 {/* Сфера бизнеса */}
-                <div className="bg-[#101f42]/40 p-3 rounded-xl border border-slate-800/60 mb-5">
+                <div className="bg-[#0a1324] p-3 rounded-lg border border-slate-700/50 mb-3">
                     <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">{d.industry}</span>
                     <span className="text-xs md:text-sm font-bold text-cyan-400">{formatIndustry(plot.industry)}</span>
                 </div>
-                <div className="bg-[#101f42]/40 p-3 rounded-xl border border-slate-800/60 mb-5">
+                <div className="bg-[#0a1324] p-3 rounded-lg border border-slate-700/50 mb-5">
                     <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">{d.objectType}</span>
                     <span className="text-xs md:text-sm font-bold text-white">{formatPropertyType(plot.property_type || plot.propertyType)}</span>
                 </div>
@@ -363,7 +363,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                             const valDisplay = formatInfrastructureValue(value);
 
                             return (
-                                <div key={key} className="flex justify-between items-center text-xs bg-[#101f42]/30 px-3 py-2 rounded-lg border border-slate-800/40">
+                                <div key={key} className="flex justify-between items-center text-xs bg-[#0a1324] px-3 py-2 rounded-lg border border-slate-700/40">
                                     <span className="text-slate-400 text-[11px] font-medium">{label}</span>
                                     <span className="font-bold text-[11px] text-slate-200">{valDisplay}</span>
                                 </div>
@@ -376,7 +376,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                     )}
                 </div>
 
-                <div className="mt-4 p-3 rounded-xl border border-cyan-500/20 bg-cyan-500/5">
+                <div className="mt-4 p-3 rounded-lg border border-slate-700/60 bg-[#0a1324]">
                     <span className="text-[10px] font-black text-cyan-400 uppercase tracking-wider block mb-2">{d.contactTitle}</span>
                     <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
                         {d.contactDepartment}
@@ -397,7 +397,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                         href={plot.auksionUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-center text-[10px] md:text-xs uppercase tracking-wider rounded-xl block transition-all shadow-lg shadow-amber-950/20 active:scale-[0.98]"
+                        className="w-full py-3 bg-emerald-700 hover:bg-emerald-600 border border-emerald-600 text-white font-bold text-center text-[10px] md:text-xs uppercase tracking-wider rounded-lg block transition-colors active:scale-[0.98]"
                     >
                         {d.btn}
                     </a>

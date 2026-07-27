@@ -178,10 +178,10 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     if (!isChatLayout) return null;
 
     return (
-        <div className="flex flex-col h-full bg-[#040814] rounded-2xl border border-slate-950 overflow-hidden relative min-h-[400px] shadow-2xl">
-            <div className="p-4 bg-[#0b1329]/90 backdrop-blur-md border-b border-slate-900 flex items-center justify-between">
+        <div className="flex flex-col h-full bg-[#070d18] rounded-xl border border-slate-700/60 overflow-hidden relative min-h-[400px] shadow-lg shadow-black/20">
+            <div className="p-4 bg-[#0a1324] border-b border-slate-700/60 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-gradient-to-tr from-cyan-600 to-blue-500 rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-cyan-500/20 relative animate-pulse">
+                    <div className="w-9 h-9 bg-cyan-950 text-cyan-300 border border-cyan-700/50 rounded-lg flex items-center justify-center font-bold relative">
                         🤖
                         <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#0b1329] rounded-full"></span>
                     </div>
@@ -193,16 +193,16 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                     </div>
                 </div>
                 {chatMessages.length > 0 && (
-                    <button onClick={resetChat} className="text-[10px] font-semibold text-slate-500 hover:text-rose-400 transition-all bg-slate-900/60 px-2.5 py-1 rounded-lg border border-slate-800">
+                    <button onClick={resetChat} className="text-[10px] font-semibold text-slate-400 hover:text-slate-100 transition-colors bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-700/70">
                         {lang === 'ru' ? 'Очистить' : lang === 'zh' ? '清空' : 'Tozalash'}
                     </button>
                 )}
             </div>
 
-            <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gradient-to-b from-[#040814] to-[#060c1f]">
+            <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#070d18]">
                 {isStarterScreen ? (
                     <div className="text-center my-auto flex flex-col items-center justify-center h-full pt-4 animate-fade-in px-4">
-                        <div className="w-12 h-12 bg-gradient-to-b from-cyan-500/10 to-blue-500/5 text-cyan-400 border border-cyan-500/20 rounded-2xl flex items-center justify-center text-xl mb-4 shadow-xl shadow-cyan-950/50">🤖</div>
+                        <div className="w-12 h-12 bg-cyan-950/50 text-cyan-300 border border-cyan-700/40 rounded-xl flex items-center justify-center text-xl mb-4">🤖</div>
                         <h4 className="text-sm font-bold text-white mb-2 tracking-wide">{labels.starterTitle}</h4>
                         <p className="text-[11px] text-slate-400 max-w-xs mb-6 leading-relaxed">
                             {labels.starterIntro}
@@ -210,7 +210,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
 
                         <div className="flex flex-col gap-2 w-full max-w-sm">
                             {starterPrompts.map((prompt) => (
-                                <button key={prompt} onClick={() => handleSendMessage(prompt)} className="p-3 bg-[#0b1329]/80 hover:bg-[#111c3a] border border-slate-900 rounded-xl text-left text-[11px] font-medium text-slate-300 transition-all shadow-md flex items-center gap-2">
+                                <button key={prompt} onClick={() => handleSendMessage(prompt)} className="p-3 bg-[#0a1324] hover:bg-[#0d182b] border border-slate-700/60 rounded-lg text-left text-[11px] font-medium text-slate-300 transition-colors flex items-center gap-2">
                                     <span>{prompt}</span>
                                 </button>
                             ))}
@@ -219,9 +219,9 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 ) : (
                     chatMessages.map((msg, idx) => (
                         <div key={idx} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} animate-fade-in`}>
-                            <div className={`max-w-[85%] p-3.5 rounded-2xl text-xs leading-relaxed shadow-lg ${msg.sender === 'user'
-                                ? 'bg-gradient-to-r from-cyan-600 to-cyan-700 text-white rounded-tr-none'
-                                : 'bg-[#0b1329]/90 border border-slate-800/80 text-slate-200 rounded-tl-none backdrop-blur-sm relative'
+                            <div className={`max-w-[85%] p-3.5 rounded-xl text-xs leading-relaxed ${msg.sender === 'user'
+                                ? 'bg-cyan-800 text-white rounded-tr-sm border border-cyan-700'
+                                : 'bg-[#0a1324] border border-slate-700/60 text-slate-200 rounded-tl-sm relative'
                                 }`}>
                                 <div className="whitespace-pre-line">{msg.text}</div>
                                 {msg.sender === 'ai' && msg.recommendedPlots?.length > 0 && (
@@ -239,7 +239,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                                                             <span>{labels.pageBtn}</span> 🌐
                                                         </a>
                                                     )}
-                                                    <button onClick={() => onSelectPlot(plot)} className="px-3.5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-bold rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md shadow-cyan-500/20">
+                                                    <button onClick={() => onSelectPlot(plot)} className="px-3.5 py-2 bg-cyan-700 hover:bg-cyan-600 text-white font-bold rounded-lg text-[10px] uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
                                                         <span>{labels.mapBtn}</span> 📍
                                                     </button>
                                                 </div>
@@ -263,16 +263,16 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-3 bg-[#0b1329]/80 backdrop-blur-md border-t border-slate-900 flex gap-2">
+            <div className="p-3 bg-[#0a1324] border-t border-slate-700/60 flex gap-2">
                 <input
                     type="text"
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     placeholder={t.inputPlaceholder}
-                    className="flex-1 bg-[#040814] border border-slate-800/80 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-cyan-600 transition-all"
+                    className="flex-1 bg-[#060c18] border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-white focus:outline-none focus:border-cyan-600 transition-colors"
                 />
-                <button onClick={() => handleSendMessage()} className="px-4 bg-cyan-600 hover:bg-cyan-500 rounded-xl text-xs font-bold text-white transition-all shadow-md active:scale-95">
+                <button onClick={() => handleSendMessage()} className="px-4 bg-cyan-700 hover:bg-cyan-600 rounded-lg text-xs font-bold text-white transition-colors active:scale-95">
                     {t.sendBtn}
                 </button>
             </div>

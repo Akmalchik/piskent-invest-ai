@@ -226,21 +226,21 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#030712] text-slate-100 font-sans overflow-hidden flex-col md:flex-row select-none">
+    <div className="flex h-screen w-full bg-[#050a14] text-slate-100 font-sans overflow-hidden flex-col md:flex-row select-none">
 
       {/* ========================================================= */}
       {/* 1. БОКОВОЕ МЕНЮ (SIDEBAR) — БЕЗ ЛИШНИХ ПУНКТОВ            */}
       {/* ========================================================= */}
       <div className={`
-        fixed inset-y-0 left-0 w-64 bg-[#0b1329] border-r border-slate-800 flex flex-col justify-between z-50 transition-transform duration-300
+        fixed inset-y-0 left-0 w-64 bg-[#091120] border-r border-slate-700/60 flex flex-col justify-between z-50 transition-transform duration-300
         md:relative md:transform-none
         ${isMobileMenuOpen ? 'transform-none' : '-translate-x-full md:translate-x-0'}
       `}>
         <div>
           {/* Брендинг */}
-          <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+          <div className="p-5 border-b border-slate-700/60 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center font-bold text-white shadow-lg shadow-cyan-500/30">P</div>
+              <div className="w-8 h-8 bg-cyan-700 rounded-md border border-cyan-500/30 flex items-center justify-center font-bold text-white">P</div>
               <div>
                 <h1 className="font-bold text-sm tracking-wide text-white">Piskent Invest AI</h1>
                 <p className="text-[10px] text-slate-400 uppercase tracking-widest">
@@ -253,20 +253,20 @@ export default function Home() {
 
           {/* Кнопки переключения страниц (ОСТАЛОСЬ СТРОГО ДВА СЕКТОРА) */}
           <nav className="p-4 space-y-1">
-            <button onClick={() => handleTabChange('ai')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${activeTab === 'ai' ? 'bg-cyan-600/20 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:bg-slate-800/50'}`}>
+            <button onClick={() => handleTabChange('ai')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'ai' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
               {localLabels.aiTab}
             </button>
-	            <button onClick={() => handleTabChange('map')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${activeTab === 'map' ? 'bg-cyan-600/20 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:bg-slate-800/50'}`}>
+	            <button onClick={() => handleTabChange('map')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'map' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
 	              {localLabels.mapTab}
 	            </button>
-	            <button onClick={() => handleTabChange('about')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${activeTab === 'about' ? 'bg-cyan-600/20 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:bg-slate-800/50'}`}>
+	            <button onClick={() => handleTabChange('about')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'about' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
 	              {localLabels.aboutTab}
 	            </button>
 	          </nav>
         </div>
 
         {/* Финальный вид подвала: только версия, никакой кнопки админки */}
-        <div className="p-4 border-t border-slate-800">
+        <div className="p-4 border-t border-slate-700/60">
           <div className="text-[10px] text-slate-500 text-center font-medium">
             v1.1 • Piskent tumani
           </div>
@@ -284,9 +284,9 @@ export default function Home() {
       <div className="flex-1 h-full relative flex flex-col overflow-hidden w-full">
 
         {/* АДАПТИВНАЯ ШАПКА САЙТА */}
-        <header className="h-14 w-full bg-[#0b1329]/60 backdrop-blur border-b border-slate-800 flex items-center justify-between px-4 md:px-6 z-20">
+        <header className="h-14 w-full bg-[#091120]/95 backdrop-blur border-b border-slate-700/60 flex items-center justify-between px-4 md:px-6 z-20">
           <div className="flex items-center gap-3">
-            <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 bg-[#132247] rounded-lg text-white border border-slate-800 text-sm">
+            <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 bg-slate-800/70 rounded-lg text-white border border-slate-700 text-sm">
               ☰
             </button>
             <div className="text-[10px] md:text-[11px] text-slate-400 font-medium truncate max-w-[180px] sm:max-w-none">
@@ -295,9 +295,9 @@ export default function Home() {
           </div>
 
           {/* Переключатель языков */}
-          <div className="flex items-center gap-1 bg-[#040814] p-0.5 rounded-lg border border-slate-800">
+          <div className="flex items-center gap-1 bg-[#050a14] p-0.5 rounded-lg border border-slate-700/70">
             {(['uz', 'ru', 'en', 'zh'] as const).map((l) => (
-              <button key={l} onClick={() => setLang(l)} className={`px-2 py-0.5 rounded md:px-2.5 md:py-1 text-[9px] md:text-[10px] font-black uppercase transition-all ${lang === l ? 'bg-cyan-600 text-white shadow-md' : 'text-slate-400'}`}>{l}</button>
+              <button key={l} onClick={() => setLang(l)} className={`px-2 py-0.5 rounded-md md:px-2.5 md:py-1 text-[9px] md:text-[10px] font-bold uppercase transition-colors ${lang === l ? 'bg-cyan-800 text-cyan-50' : 'text-slate-400 hover:text-slate-200'}`}>{l}</button>
             ))}
           </div>
         </header>
@@ -307,7 +307,7 @@ export default function Home() {
 
           {/* ЭКРАН 1: AI MASLAHATCHI */}
           {activeTab === 'ai' && (
-            <div className="w-full h-full p-4 md:p-6 bg-[#070d1e] overflow-y-auto md:overflow-hidden">
+            <div className="w-full h-full p-4 md:p-6 bg-[#060c18] overflow-y-auto md:overflow-hidden">
               <div className="w-full h-[calc(100vh-7rem)] md:h-full min-h-[450px]">
                 <AiConsultant onSelectPlot={handleShowOnMap} lang={lang} isChatLayout={true} />
               </div>
@@ -330,10 +330,10 @@ export default function Home() {
 	          )}
 
 	          {activeTab === 'about' && (
-	            <div className="w-full h-full overflow-y-auto bg-[#070d1e] p-4 md:p-6">
+	            <div className="w-full h-full overflow-y-auto bg-[#060c18] p-4 md:p-6">
 	              <div className="mx-auto max-w-6xl space-y-5">
-		                <div className="relative overflow-hidden rounded-xl border border-slate-800 bg-[#0b1329]">
-		                  <div className="relative grid gap-5 lg:grid-cols-[1fr_280px] p-5 md:p-8 bg-gradient-to-r from-[#0b1329] via-[#0b1329]/95 to-[#0b1329]/75">
+		                <div className="relative overflow-hidden rounded-xl border border-slate-700/60 bg-[#0a1324] shadow-lg shadow-black/10">
+		                  <div className="relative grid gap-5 lg:grid-cols-[1fr_280px] p-5 md:p-8">
 		                    <div>
 		                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.aboutTitle}</span>
 		                      <h2 className="mt-3 max-w-3xl text-2xl md:text-4xl font-black text-white tracking-tight">
@@ -346,7 +346,7 @@ export default function Home() {
 				                        {DISTRICT_PASSPORT.description[lang]}
 				                      </p>
 		                    </div>
-		                    <div className="rounded-xl border border-cyan-500/20 bg-[#071127]/85 p-4">
+		                    <div className="rounded-xl border border-slate-700/60 bg-[#07101e] p-4">
 		                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.mayor}</span>
 		                      <div className="mt-3 flex items-center gap-4 lg:block">
 		                        <div className="h-20 w-20 lg:h-40 lg:w-full rounded-xl bg-slate-800 overflow-hidden flex-shrink-0">
@@ -366,18 +366,18 @@ export default function Home() {
 			                    [t.mahallas, showValue(DISTRICT_PASSPORT.mahallas)],
 			                    [t.areaKm2, formatArea(DISTRICT_PASSPORT.area)],
 			                  ].map(([label, value]) => (
-		                    <div key={String(label)} className="rounded-xl border border-slate-800 bg-[#0b1329] p-4">
+		                    <div key={String(label)} className="rounded-xl border border-slate-700/60 bg-[#0a1324] p-4 shadow-sm shadow-black/10">
 		                      <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</span>
 		                      <span className="mt-2 block text-lg font-black text-cyan-400">{value}</span>
 		                    </div>
 		                  ))}
 			                </div>
 
-		                <div className="rounded-xl border border-slate-800 bg-[#0b1329] p-4 md:p-5">
+		                <div className="rounded-xl border border-slate-700/60 bg-[#0a1324] p-4 md:p-5 shadow-sm shadow-black/10">
 		                  <h3 className="text-xs font-black uppercase tracking-widest text-slate-300 mb-4">{t.investmentSectors}</h3>
 		                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
 		                    {DISTRICT_PASSPORT.investmentSectors.map((sector) => (
-		                      <div key={sector.key} className="rounded-xl border border-slate-800 bg-[#071127] p-3 flex items-center gap-3">
+		                      <div key={sector.key} className="rounded-lg border border-slate-700/50 bg-[#07101e] p-3 flex items-center gap-3">
 		                        <span className="h-8 w-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-sm">{sector.icon}</span>
 		                        <span className="text-xs font-bold text-slate-200 leading-snug">{t[sector.key]}</span>
 		                      </div>
@@ -385,11 +385,11 @@ export default function Home() {
 		                  </div>
 		                </div>
 
-		                <div className="rounded-xl border border-slate-800 bg-[#0b1329] p-4 md:p-5">
+		                <div className="rounded-xl border border-slate-700/60 bg-[#0a1324] p-4 md:p-5 shadow-sm shadow-black/10">
 		                  <h3 className="text-xs font-black uppercase tracking-widest text-slate-300 mb-4">{t.communication}</h3>
 		                  <div className="grid sm:grid-cols-2 xl:grid-cols-5 gap-3">
 		                    {communicationCards.map((item) => (
-		                      <div key={item.title} className="rounded-xl border border-slate-800 bg-[#071127] p-4">
+		                      <div key={item.title} className="rounded-lg border border-slate-700/50 bg-[#07101e] p-4">
 		                        <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 leading-relaxed">{item.title}</span>
 		                        <span className="mt-2 block text-lg font-black text-cyan-400">{item.value}</span>
 		                        {item.detail && <span className="mt-2 block text-[11px] font-medium text-slate-400">{item.detail}</span>}
@@ -398,7 +398,7 @@ export default function Home() {
 		                  </div>
 		                </div>
 
-		                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4 md:p-5">
+		                <div className="rounded-xl border border-emerald-700/30 bg-emerald-950/15 p-4 md:p-5">
 		                  <h3 className="text-xs font-black uppercase tracking-widest text-cyan-400 mb-3">{t.contact}</h3>
 		                  <div className="grid md:grid-cols-3 gap-3">
 		                    {contactRows.map(([label, value]) => (

@@ -9,6 +9,8 @@ function normalizePlots(plots: any[]) {
       area: plot.area,
       industry: plot.industry,
       status: plot.status,
+      property_type: plot.property_type || plot.propertyType || 'land',
+      building_area_m2: plot.building_area_m2 ?? plot.buildingAreaM2 ?? null,
       ownership_type: plot.ownership_type || plot.ownershipType || '',
       infrastructure: plot.infrastructure || {},
       image: plot.image || plot.image_url || plot.photo_url || '',
@@ -24,8 +26,11 @@ function toCompactPlot(plot: any) {
     area: plot.area,
     industry: plot.industry,
     status: plot.status,
+    property_type: plot.property_type || 'land',
+    building_area_m2: plot.building_area_m2 ?? null,
     ownership_type: plot.ownership_type || '',
     infrastructure: plot.infrastructure || {},
+    image: plot.image || '',
     auksionUrl: plot.auksionUrl || '',
   };
 }
@@ -39,6 +44,33 @@ function parseAreaRequest(message: string) {
 function isTestPlot(plot: any) {
   const name = String(plot.name || '').trim().toLowerCase();
   return !name || name === 'test' || name.includes('test');
+}
+
+function hasAvailableInfrastructure(plot: any, fields: string[]) {
+  return fields.some(field => {
+    const value = String(plot.infrastructure?.[field] || '').trim().toLowerCase();
+    return value !== '' && !/mavjud emas|yo['’`]?q|нет|not available|unavailable|不可用/.test(value);
+  });
+}
+
+function getPresentationScore(plot: any, intent: string) {
+  const propertyType = String(plot.property_type || '').toLowerCase();
+  const name = String(plot.name || '').trim();
+  const isEmptyLand = /bo['‘’`]?sh yer|пуст(?:ая|ой) зем|empty land/.test(name.toLowerCase());
+  let score = 0;
+
+  if (plot.image) score += 3;
+  if (Number(plot.building_area_m2) > 0) score += 3;
+  if (propertyType === 'building' || propertyType === 'land_building') score += 3;
+  if (name && !/^(obyekt|объект|property)\s*\d*$/i.test(name)) score += 2;
+  if (plot.auksionUrl) score += 1;
+  score += ['gas', 'power', 'electricity', 'water', 'road']
+    .filter(field => hasAvailableInfrastructure(plot, [field])).length * 0.75;
+  score += [plot.area, plot.industry, plot.status, plot.ownership_type]
+    .filter(value => value !== undefined && value !== null && String(value).trim() !== '').length * 0.25;
+
+  if (isEmptyLand && ['general', 'tourism', 'smallBusiness'].includes(intent)) score -= 6;
+  return score;
 }
 
 function selectRelevantPlots(message: string, availablePlots: any[]) {
@@ -80,13 +112,10 @@ function selectRelevantPlots(message: string, availablePlots: any[]) {
       const nameText = String(plot.name || '').toLowerCase();
       const statusText = String(plot.status || '').toLowerCase();
       const infrastructure = plot.infrastructure || {};
-      const infrastructureText = JSON.stringify(infrastructure).toLowerCase();
       const plotText = `${industryText} ${nameText} ${statusText}`;
-      const hasAvailableInfrastructure = (fields: string[]) => fields.some(field => {
-        const normalizedValue = String(infrastructure[field] || '').trim().toLowerCase();
-        return normalizedValue !== '' && !/mavjud emas|yo['’`]?q|нет|not available|unavailable|不可用/.test(normalizedValue);
-      });
-      const hasBuilding = /building|bino|здани|помещ|цех/.test(plotText);
+      const hasBuilding = ['building', 'land_building'].includes(String(plot.property_type || ''))
+        || Number(plot.building_area_m2) > 0
+        || /building|bino|здани|помещ|цех/.test(plotText);
       const hasLand = /land|yer|земл|участ/.test(plotText);
       const categoryMatch =
         (wantsProduction && /production|sanoat|ishlab chiqarish|производ|industrial|factory|zavod|завод|цех/.test(plotText))
@@ -102,27 +131,24 @@ function selectRelevantPlots(message: string, availablePlots: any[]) {
         if (area < requestedArea * 0.5) score -= 2;
       }
 
-      if (categoryMatch) score += 4;
-      if (wantsTourism && (hasBuilding || hasLand || hasAvailableInfrastructure(['road']))) score += 1;
-      if (wantsProduction && (hasBuilding || hasAvailableInfrastructure(['power', 'electricity', 'road']))) score += 1;
-      if (wantsLogistics && (hasBuilding || hasAvailableInfrastructure(['road']))) score += 1;
-      if (wantsAgro && (hasLand || hasAvailableInfrastructure(['water', 'road']))) score += 1;
-      if ((wantsService || wantsSmallBusiness) && (hasBuilding || hasAvailableInfrastructure(['road']))) score += 1;
+      if (categoryMatch) score += 8;
+      if (wantsTourism && (hasBuilding || hasLand || hasAvailableInfrastructure(plot, ['road']))) score += 2;
+      if (wantsProduction && (hasBuilding || hasAvailableInfrastructure(plot, ['power', 'electricity', 'road']))) score += 2;
+      if (wantsLogistics && (hasBuilding || hasAvailableInfrastructure(plot, ['road']))) score += 2;
+      if (wantsAgro && (hasLand || hasAvailableInfrastructure(plot, ['water', 'road']))) score += 2;
+      if ((wantsService || wantsSmallBusiness) && (hasBuilding || hasAvailableInfrastructure(plot, ['road']))) score += 2;
       if (wantsBuilding && hasBuilding) score += 2;
       if (wantsLand && hasLand) score += 1;
 
       for (const request of infraRequests) {
         if (!request.matched) continue;
 
-        const hasInfrastructure = request.fields.some(field => {
-          const value = infrastructure[field];
-          const normalizedValue = String(value || '').trim().toLowerCase();
-          return normalizedValue !== '' && !/mavjud emas|yo['’`]?q|нет|not available|unavailable|不可用/.test(normalizedValue);
-        });
+        const hasInfrastructure = hasAvailableInfrastructure(plot, request.fields);
 
         score += hasInfrastructure ? 2 : -1;
       }
 
+      score += getPresentationScore(plot, intent);
       return { plot, score, categoryMatch };
     })
     .sort((a, b) => wantsLargest
@@ -136,7 +162,7 @@ function selectRelevantPlots(message: string, availablePlots: any[]) {
   const selected = hasExactMatch
     ? (wantsLargest || isBusinessTask ? scoredPlots : positiveMatches)
     : scoredPlots;
-  const limit = hasExactMatch && (isBusinessTask || wantsLargest || infraRequests.some(item => item.matched)) ? 4 : 3;
+  const limit = 3;
 
   return {
     plots: selected.slice(0, limit).map(item => item.plot),
@@ -148,7 +174,7 @@ function selectRelevantPlots(message: string, availablePlots: any[]) {
 function isRelevantInvestmentQuestion(message: string) {
   const normalizedMessage = message.toLowerCase();
   const investmentKeywords =
-    /piskent|пскент|пискент|皮斯肯特|invest|инвест|投资|obyekt|объект|property|地块|yer|земл|land|土地|lot|лот|uchast|участ|maydon|площад|area|面积|gektar|гектар|公顷|infratuzilma|инфраструктур|infrastructure|基础设施|gaz|газ|天然气|elektr|электр|свет|电力|suv|вода|水|yo['’`]?l|дорога|asfalt|道路|auksion|auction|аукцион|e-auksion|business|biznes|бизнес|业务|sanoat|ishlab chiqarish|производ|factory|zavod|завод|цех|industry|工业|turizm|tourism|туризм|hotel|mehmonxona|гостиниц|酒店|servis|service|сервис|xizmat|кафе|ресторан|umumiy ovqatlanish|logistika|logistics|sklad|склад|warehouse|ombor|物流|agro|агро|ферм|qishloq xo['‘’`]?jaligi|农业|kichik biznes|мал(?:ого|ый) бизнес|small business|торгов|savdo|учебн|training center|textile|текстил|纺织|contact|контакт|aloqa|связ|联系/.test(normalizedMessage);
+    /piskent|пскент|пискент|皮斯肯特|invest|инвест|投资|joy kerak|yaxshi (?:joy|obyekt)|qaysi obyekt|obyekt|объект|property|地块|yer|земл|land|土地|lot|лот|uchast|участ|maydon|площад|area|面积|gektar|гектар|公顷|infratuzilma|инфраструктур|infrastructure|基础设施|gaz|газ|天然气|elektr|электр|свет|电力|suv|вода|水|yo['’`]?l|дорога|asfalt|道路|auksion|auction|аукцион|e-auksion|business|biznes|бизнес|业务|sanoat|ishlab chiqarish|производ|factory|zavod|завод|цех|industry|工业|turizm|tourism|туризм|hotel|mehmonxona|гостиниц|酒店|servis|service|сервис|xizmat|кафе|ресторан|umumiy ovqatlanish|logistika|logistics|sklad|склад|warehouse|ombor|物流|agro|агро|ферм|qishloq xo['‘’`]?jaligi|农业|kichik biznes|мал(?:ого|ый) бизнес|small business|торгов|savdo|учебн|training center|textile|текстил|纺织|contact|контакт|aloqa|связ|联系/.test(normalizedMessage);
 
   return investmentKeywords;
 }
@@ -366,92 +392,129 @@ function getIdea(plot: any, lang: string) {
   return 'Ishlab chiqarish yoki servis loyihasi.';
 }
 
-function buildTemplateResponse(plots: any[], lang: string, intent: string, hasExactMatch: boolean) {
+function getPropertyTypeLabel(plot: any, lang: string) {
+  const type = String(plot.property_type || 'land');
+  const labels: Record<string, Record<string, string>> = {
+    uz: { land: 'yer maydoni', building: 'tayyor bino', land_building: 'bino va yer maydoni' },
+    ru: { land: 'земельный участок', building: 'готовое здание', land_building: 'здание с участком' },
+    en: { land: 'land plot', building: 'existing building', land_building: 'building with land' },
+    zh: { land: '土地', building: '现有建筑', land_building: '建筑及土地' },
+  };
+  return labels[lang]?.[type] || labels.uz[type] || type;
+}
+
+function getShortInfrastructure(plot: any, lang: string) {
+  const available = [
+    { fields: ['gas'], uz: 'gaz', ru: 'газ', en: 'gas', zh: '天然气' },
+    { fields: ['power', 'electricity'], uz: 'elektr', ru: 'электричество', en: 'electricity', zh: '电力' },
+    { fields: ['water'], uz: 'suv', ru: 'вода', en: 'water', zh: '供水' },
+    { fields: ['road'], uz: 'yo‘l', ru: 'дорога', en: 'road', zh: '道路' },
+  ].filter(item => hasAvailableInfrastructure(plot, item.fields));
+
+  if (available.length === 0) {
+    return { uz: 'infratuzilma aniqlashtiriladi', ru: 'инфраструктура уточняется', en: 'infrastructure requires clarification', zh: '基础设施待确认' }[lang] || 'infratuzilma aniqlashtiriladi';
+  }
+  return available.map(item => (item as any)[lang] || item.uz).join(', ');
+}
+
+function getRecommendationReason(plot: any, intent: string, lang: string) {
+  const hasBuilding = ['building', 'land_building'].includes(String(plot.property_type || ''))
+    || Number(plot.building_area_m2) > 0;
+  const hasRoad = hasAvailableInfrastructure(plot, ['road']);
+  const hasPower = hasAvailableInfrastructure(plot, ['power', 'electricity']);
+  const hasWater = hasAvailableInfrastructure(plot, ['water']);
+
+  const reasons: Record<string, Record<string, string>> = {
+    uz: {
+      building: 'Tayyor bino va to‘ldirilgan ma’lumotlari bilan amaliy variant.',
+      production: hasPower ? 'Bino yoki maydon bilan birga elektr ta’minoti ko‘rsatilgan.' : 'Ishlab chiqarish uchun bino yoki yetarli maydon mavjud.',
+      tourism: hasRoad ? 'Bino yoki yer maydoni va kirish yo‘li mavjud.' : 'Bino yoki yer maydoni bor, joylashuv salohiyatini alohida baholash mumkin.',
+      logistics: hasRoad ? 'Ombor yoki logistika uchun yo‘l va maydon jihatidan mos.' : 'Maydoni logistika ssenariysi uchun ko‘rib chiqishga arziydi.',
+      agro: hasWater ? 'Yer maydoni va suv ta’minoti agro loyiha uchun foydali.' : 'Yer maydoni agro loyiha uchun ko‘rib chiqishga mos.',
+      service: 'Bino yoki infratuzilma servis loyihasi uchun amaliy asos beradi.',
+      general: 'Obyekt kartasi nisbatan to‘liq va amaliy foydalanish imkoniyati bor.',
+    },
+    ru: {
+      building: 'Практичный вариант с готовым зданием и достаточно полной карточкой.',
+      production: hasPower ? 'Указано здание или участок вместе с электроснабжением.' : 'Есть здание или достаточная площадь для производственного сценария.',
+      tourism: hasRoad ? 'Есть здание или участок и указана дорожная доступность.' : 'Есть здание или участок; потенциал локации следует оценить отдельно.',
+      logistics: hasRoad ? 'Дорога и площадь подходят для рассмотрения складского сценария.' : 'Площадь позволяет рассмотреть логистический сценарий.',
+      agro: hasWater ? 'Земля и указанное водоснабжение полезны для агропроекта.' : 'Земельную площадь можно рассмотреть для агропроекта.',
+      service: 'Здание или инфраструктура дают практическую основу для сервисного проекта.',
+      general: 'Карточка объекта достаточно полная и подходит для практического рассмотрения.',
+    },
+  };
+  const activeLang = lang === 'ru' ? 'ru' : 'uz';
+  if (intent === 'general' && hasBuilding) return reasons[activeLang].building;
+  return reasons[activeLang][intent] || reasons[activeLang].general;
+}
+
+function buildTemplateResponse(plots: any[], lang: string, intent: string, _hasExactMatch: boolean) {
   const recommendationMarkers = plots
     .filter(plot => plot.id !== undefined && plot.id !== null)
     .map(plot => `[RECOMMEND_ID:${plot.id}]`)
     .join('\n');
-  const advice: Record<string, Record<string, string>> = {
-    ru: {
-      production: 'Для производства обычно важны электричество, дорога и достаточная площадь здания.',
-      tourism: 'Для туризма важны локация и доступность; туристический потенциал требует отдельной оценки места и спроса.',
-      logistics: 'Для склада обычно важны дорога, полезная площадь и удобная логистика.',
-      agro: 'Для фермерского проекта обычно важны земля, вода и подъезд.',
-      service: 'Для сервисного проекта обычно важны локация и доступность.',
-      smallBusiness: 'Для малого бизнеса практичнее начинать с объекта подходящего масштаба и проверенной доступности.',
-      general: 'Перед выбором рекомендуется проверить назначение объекта и актуальность инфраструктуры.',
-    },
-    uz: {
-      production: 'Ishlab chiqarish uchun odatda elektr, yo‘l va binoning yetarli maydoni muhim.',
-      tourism: 'Turizm uchun joylashuv va kirish qulayligi muhim; turistik salohiyat joy va talab bo‘yicha alohida baholanishi kerak.',
-      logistics: 'Ombor uchun odatda yo‘l, foydali maydon va qulay logistika muhim.',
-      agro: 'Fermerlik loyihasi uchun odatda yer, suv va kirish yo‘li muhim.',
-      service: 'Servis loyihasi uchun odatda joylashuv va qulay kirish muhim.',
-      smallBusiness: 'Kichik biznes uchun mos ko‘lamdagi va kirish imkoniyati tekshirilgan obyekt ma’qul.',
-      general: 'Tanlashdan oldin obyekt maqsadi va infratuzilma holatini tekshirish tavsiya etiladi.',
-    },
-    en: {
-      production: 'Production projects generally depend on electricity, road access, and sufficient building area.',
-      tourism: 'Tourism projects depend on location and access; tourism potential requires a separate assessment of the site and demand.',
-      logistics: 'Warehouses generally depend on road access, usable area, and convenient logistics.',
-      agro: 'Agricultural projects generally depend on land, water, and access roads.',
-      service: 'Service projects generally depend on location and accessibility.',
-      smallBusiness: 'For a small business, a suitably sized and accessible property is usually more practical.',
-      general: 'Before choosing, verify the property purpose and current infrastructure.',
-    },
-    zh: {
-      production: '生产项目通常应重点考虑电力、道路和足够的建筑面积。',
-      tourism: '旅游项目应重点考虑位置和交通；旅游潜力需要另行评估地点和市场需求。',
-      logistics: '仓储项目通常应重点考虑道路、可用面积和物流条件。',
-      agro: '农业项目通常应重点考虑土地、水源和进场道路。',
-      service: '服务项目通常应重点考虑位置和交通便利性。',
-      smallBusiness: '小型企业通常更适合规模适当且交通便利的项目。',
-      general: '选择前建议核实项目用途和基础设施的最新情况。',
-    },
-  };
-  const activeLang = ['ru', 'en', 'zh'].includes(lang) ? lang : 'uz';
-  const topics: Record<string, Record<string, string>> = {
-    ru: { production: 'производство', tourism: 'туризм', logistics: 'склад или логистика', agro: 'фермерский проект', service: 'сервис или торговля', smallBusiness: 'малый бизнес' },
-    uz: { production: 'sanoat', tourism: 'turizm', logistics: 'ombor yoki logistika', agro: 'fermerlik loyihasi', service: 'servis yoki savdo', smallBusiness: 'kichik biznes' },
-    en: { production: 'production', tourism: 'tourism', logistics: 'warehousing or logistics', agro: 'agriculture', service: 'services or trade', smallBusiness: 'small business' },
-    zh: { production: '生产', tourism: '旅游', logistics: '仓储或物流', agro: '农业', service: '服务或贸易', smallBusiness: '小型企业' },
-  };
-  const intro = hasExactMatch
-    ? ({ ru: 'По вашему запросу можно рассмотреть следующие объекты:', en: 'The following properties are worth considering for your request:', zh: '根据您的需求，可以考虑以下项目：', uz: 'So‘rovingiz bo‘yicha quyidagi obyektlarni ko‘rib chiqish mumkin:' }[activeLang])
-    : intent !== 'general'
-      ? ({
-        ru: `В базе пока нет отдельного объекта с категорией ${topics.ru[intent]}. Но для такого проекта можно рассмотреть ближайшие варианты:`,
-        en: `The database does not yet have a separate property in the ${topics.en[intent]} category. These closest alternatives may still be considered:`,
-        zh: `数据库中暂时没有单独归类为${topics.zh[intent]}的项目，但可以考虑以下最接近的选项：`,
-        uz: `Bazadagi obyektlar orasida ${topics.uz[intent]} alohida toifa sifatida hozircha yo‘q. Bunday loyiha uchun eng yaqin variantlarni ko‘rib chiqish mumkin:`,
-      }[activeLang])
-      : ({ ru: 'Точного совпадения по запросу не найдено. Но можно рассмотреть ближайшие варианты:', en: 'No exact match was found. However, you can consider these closest alternatives:', zh: '未找到完全匹配的项目，但可以考虑以下最接近的选项：', uz: 'So‘rov bo‘yicha aniq moslik topilmadi. Ammo eng yaqin variantlarni ko‘rib chiqish mumkin:' }[activeLang]);
-  let hasMissingData = false;
-  const items = plots.map((plot, index) => {
-    const details = [
-      plot.area !== undefined && plot.area !== null && plot.area !== '' ? `${plot.area} ${activeLang === 'ru' ? 'га' : activeLang === 'zh' ? '公顷' : 'ha'}` : '',
-      formatInfrastructure(plot.infrastructure, activeLang).replace(/\n/g, ', '),
-    ].filter(Boolean);
-    if (!plot.area || !formatInfrastructure(plot.infrastructure, activeLang)) hasMissingData = true;
-    const idea = getIdea(plot, activeLang);
-    if (activeLang === 'ru') return `${index + 1}. ${plot.name || 'Объект'}${details.length ? ` — ${details.join('; ')}` : ''}; возможный сценарий: ${idea.toLowerCase()}`;
-    if (activeLang === 'en') return `${index + 1}. ${plot.name || 'Property'}${details.length ? ` — ${details.join('; ')}` : ''}; possible use: ${idea.toLowerCase()}`;
-    if (activeLang === 'zh') return `${index + 1}. ${plot.name || '项目'}${details.length ? ` — ${details.join('；')}` : ''}；可考虑用途：${idea}`;
-    return `${index + 1}. ${plot.name || 'Obyekt'}${details.length ? ` — ${details.join('; ')}` : ''}; mumkin bo‘lgan yo‘nalish: ${idea.toLowerCase()}`;
-  });
-  const missing = hasMissingData
-    ? ({ ru: 'По этому объекту часть данных требует уточнения.', en: 'Some data for this property requires clarification.', zh: '该项目的部分数据需要进一步确认。', uz: 'Bu obyekt bo‘yicha ayrim ma’lumotlar aniqlashtirilishi kerak.' }[activeLang])
-    : '';
-  const question = {
-    ru: 'Какой параметр для вас приоритетнее: площадь, тип деятельности или инфраструктура?',
-    en: 'Which is your priority: area, type of activity, or infrastructure?',
-    zh: '您更看重面积、经营类型还是基础设施？',
-    uz: 'Siz uchun qaysi parametr ustuvor: maydon, faoliyat turi yoki infratuzilma?',
-  }[activeLang];
+  const [best, alternative] = plots;
+  const isRu = lang === 'ru';
+  const question = isRu
+    ? 'Уточнение: вам нужен земельный участок или готовое здание?'
+    : 'Aniqlashtirish: Sizga yer maydoni kerakmi yoki tayyor bino?';
+  const lines = [
+    `${isRu ? 'Лучший вариант' : 'Eng yaxshi variant'}: ${best.name}`,
+    `${isRu ? 'Причина' : 'Sabab'}: ${getRecommendationReason(best, intent, lang)}`,
+    alternative ? `${isRu ? 'Альтернатива' : 'Muqobil variant'}: ${alternative.name}` : '',
+    alternative ? `${isRu ? 'Причина' : 'Sabab'}: ${getRecommendationReason(alternative, intent, lang)}` : '',
+    question,
+    recommendationMarkers,
+  ];
+  return lines.filter(Boolean).join('\n');
+}
 
-  return [intro, ...items, advice[activeLang][intent] || advice[activeLang].general, missing, question, recommendationMarkers]
-    .filter(Boolean)
-    .join('\n');
+function isCompareRequest(message: string) {
+  return /solishtir|taqqosla|сравни|сравнить|compare|qaysi (?:yaxshi|ma['’`]?qul)|какой лучше/i.test(message);
+}
+
+function findPlotsForComparison(message: string, plots: any[]) {
+  const normalizedMessage = message.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+  return plots
+    .filter(plot => !isTestPlot(plot))
+    .map(plot => {
+      const tokens = String(plot.name || '').toLowerCase().match(/[\p{L}\p{N}]+/gu) || [];
+      const matchedTokens = tokens.filter(token => normalizedMessage.split(' ').includes(token));
+      return { plot, score: matchedTokens.length, exact: tokens.length > 0 && matchedTokens.length === tokens.length };
+    })
+    .filter(item => item.exact || item.score >= 2 || (item.score === 1 && String(item.plot.name || '').length >= 4))
+    .sort((a, b) => Number(b.exact) - Number(a.exact) || b.score - a.score || getPresentationScore(b.plot, 'general') - getPresentationScore(a.plot, 'general'))
+    .slice(0, 2)
+    .map(item => item.plot);
+}
+
+function buildComparisonResponse(plots: any[], lang: string) {
+  const isRu = lang === 'ru';
+  const formatArea = (value: unknown, unit: string) => value !== undefined && value !== null && value !== ''
+    ? `${value} ${unit}`
+    : (isRu ? 'уточняется' : 'aniqlashtiriladi');
+  const lines = plots.map(plot => {
+    const land = formatArea(plot.area, isRu ? 'га' : 'ga');
+    const building = formatArea(plot.building_area_m2, 'm²');
+    return `${plot.name} — ${isRu ? 'земля' : 'yer'}: ${land}; ${isRu ? 'здание' : 'bino'}: ${building}; ${getPropertyTypeLabel(plot, isRu ? 'ru' : 'uz')}; ${isRu ? 'инфраструктура' : 'infratuzilma'}: ${getShortInfrastructure(plot, isRu ? 'ru' : 'uz')}.`;
+  });
+  const [first, second] = plots;
+  const firstBuilding = Number(first.building_area_m2) || 0;
+  const secondBuilding = Number(second.building_area_m2) || 0;
+  const firstLand = Number(first.area) || 0;
+  const secondLand = Number(second.area) || 0;
+  const buildingChoice = firstBuilding >= secondBuilding ? first : second;
+  const landChoice = firstLand >= secondLand ? first : second;
+  const conclusion = firstBuilding > 0 || secondBuilding > 0
+    ? (isRu
+      ? `Вывод: если важнее готовая площадь здания — ${buildingChoice.name}; если нужен больший земельный участок — ${landChoice.name}.`
+      : `Xulosa: agar tayyor bino maydoni muhim bo‘lsa — ${buildingChoice.name}; kattaroq yer kerak bo‘lsa — ${landChoice.name}.`)
+    : (isRu
+      ? `Вывод: площадь зданий требует уточнения; если приоритетен больший земельный участок — ${landChoice.name}.`
+      : `Xulosa: bino maydoni aniqlashtirilishi kerak; kattaroq yer ustuvor bo‘lsa — ${landChoice.name}.`);
+  const markers = plots.map(plot => `[RECOMMEND_ID:${plot.id}]`).join('\n');
+  return [...lines, conclusion, markers].join('\n');
 }
 
 async function loadPlots(req: NextRequest, incomingPlots: unknown) {
@@ -490,6 +553,12 @@ export async function POST(req: NextRequest) {
     const availablePlots = await loadPlots(req, plots);
     if (availablePlots.length === 0) {
       return NextResponse.json({ error: 'No investment plots available for AI consultation' }, { status: 503 });
+    }
+    if (isCompareRequest(message)) {
+      const comparedPlots = findPlotsForComparison(message, availablePlots);
+      if (comparedPlots.length === 2) {
+        return NextResponse.json({ text: buildComparisonResponse(comparedPlots, lang) });
+      }
     }
     const selection = selectRelevantPlots(message, availablePlots);
     if (selection.plots.length === 0) {

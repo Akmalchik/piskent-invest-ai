@@ -338,7 +338,7 @@ export default function MyInvestmentMap({
                 >
                     <button
                         onClick={() => setIsPanelVisible(!isPanelVisible)}
-                        className="self-end bg-[#0b1329]/95 backdrop-blur border border-slate-800 text-white text-[10px] md:text-[11px] font-semibold px-2.5 py-1.5 rounded-xl flex items-center gap-2 shadow-2xl transition-all flex-shrink-0"
+                        className="self-end bg-[#091120]/95 backdrop-blur border border-slate-700/70 text-slate-100 text-[10px] md:text-[11px] font-semibold px-2.5 py-1.5 rounded-lg flex items-center gap-2 shadow-lg shadow-black/20 transition-colors flex-shrink-0"
                     >
                         <span>{isPanelVisible ? '▶' : '◀'}</span>
                         {isPanelVisible ? t.hide : t.show}
@@ -346,7 +346,7 @@ export default function MyInvestmentMap({
 
                     {isPanelVisible && (
                         <div className="flex flex-col gap-2 overflow-y-auto pr-1 pb-4 scrollbar-none max-h-full">
-                            <div className="bg-[#0b1329]/95 backdrop-blur-md p-3.5 rounded-2xl border border-slate-800 shadow-2xl flex flex-col gap-3.5 flex-shrink-0">
+                            <div className="bg-[#091120]/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-700/70 shadow-lg shadow-black/20 flex flex-col gap-3.5 flex-shrink-0">
                                 <div>
                                     <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">{t.statusTitle}</h3>
                                     <div className="grid grid-cols-4 gap-1">
@@ -354,7 +354,7 @@ export default function MyInvestmentMap({
                                             <button
                                                 key={id}
                                                 onClick={() => setStatusFilter(id)}
-                                                className={`py-1 rounded-lg text-[9px] font-bold border text-center transition-all ${statusFilter === id ? 'bg-cyan-600 text-white border-cyan-500' : 'bg-[#040814]/60 text-slate-400 border-slate-800'}`}
+                                                className={`py-1 rounded-md text-[9px] font-bold border text-center transition-colors ${statusFilter === id ? 'bg-cyan-800 text-cyan-50 border-cyan-700' : 'bg-[#050a14]/70 text-slate-400 border-slate-700/70'}`}
                                             >
                                                 {t.statusLabels[id] || id}
                                             </button>
@@ -395,7 +395,7 @@ export default function MyInvestmentMap({
                                 </div>
                             </div>
 
-                            <div className="bg-[#0b1329]/95 backdrop-blur-md p-3 md:p-4 rounded-2xl border border-slate-800 shadow-2xl flex-shrink-0">
+                            <div className="bg-[#091120]/95 backdrop-blur-md p-3 md:p-4 rounded-xl border border-slate-700/70 shadow-lg shadow-black/20 flex-shrink-0">
                                 <h3 className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">{t.infraTitle}</h3>
                                 <div className="space-y-2">
                                     {[
@@ -424,14 +424,14 @@ export default function MyInvestmentMap({
                     {!isMobilePanelVisible && (
                         <button
                             onClick={() => setIsMobilePanelVisible(true)}
-                            className="absolute left-4 bottom-4 z-[1000] bg-[#0b1329]/95 backdrop-blur border border-slate-800 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl"
+                            className="absolute left-4 bottom-4 z-[1000] bg-[#091120]/95 backdrop-blur border border-slate-700/70 text-white text-xs font-semibold px-4 py-3 rounded-lg shadow-lg shadow-black/20"
                         >
                             {t.mobileFilters}
                         </button>
                     )}
 
                     {isMobilePanelVisible && (
-                        <div className="absolute inset-x-3 bottom-4 z-[1100] max-h-[65vh] overflow-y-auto rounded-2xl border border-slate-800 bg-[#0b1329]/98 backdrop-blur-md p-3.5 shadow-2xl scrollbar-none">
+                        <div className="absolute inset-x-3 bottom-4 z-[1100] max-h-[65vh] overflow-y-auto rounded-xl border border-slate-700/70 bg-[#091120]/98 backdrop-blur-md p-3.5 shadow-xl shadow-black/25 scrollbar-none">
                             <div className="mb-3 flex items-center justify-between">
                                 <span className="text-xs font-bold text-white">{t.mobileFilters}</span>
                                 <button
@@ -451,7 +451,7 @@ export default function MyInvestmentMap({
                                             <button
                                                 key={id}
                                                 onClick={() => setStatusFilter(id)}
-                                                className={`py-2 rounded-lg text-[9px] font-bold border text-center transition-all ${statusFilter === id ? 'bg-cyan-600 text-white border-cyan-500' : 'bg-[#040814]/60 text-slate-400 border-slate-800'}`}
+                                                className={`py-2 rounded-md text-[9px] font-bold border text-center transition-colors ${statusFilter === id ? 'bg-cyan-800 text-cyan-50 border-cyan-700' : 'bg-[#050a14]/70 text-slate-400 border-slate-700/70'}`}
                                             >
                                                 {t.statusLabels[id] || id}
                                             </button>
@@ -520,7 +520,7 @@ export default function MyInvestmentMap({
 
             {/* Выезжающая шторка карточки */}
             {!isAdminMode && selectedPlot && (
-                <div className="fixed md:absolute z-[1000] bg-[#0b1329]/98 backdrop-blur-lg border border-slate-800 shadow-2xl overflow-y-auto animate-fade-in inset-x-0 bottom-0 h-[60vh] rounded-t-3xl md:inset-y-4 md:right-4 md:left-auto md:h-auto md:w-[420px] md:rounded-2xl">
+                <div className="fixed md:absolute z-[1000] bg-[#091120]/98 backdrop-blur-lg border border-slate-700/70 shadow-xl shadow-black/30 overflow-y-auto animate-fade-in inset-x-0 bottom-0 h-[60vh] rounded-t-3xl md:inset-y-4 md:right-4 md:left-auto md:h-auto md:w-[420px] md:rounded-xl">
                     <div className="w-12 h-1 bg-slate-700 rounded-full mx-auto my-3 md:hidden" />
                     <PlotCard plot={withPlotImage(selectedPlot)} onClose={() => onSelectPlot(null)} lang={lang} />
                 </div>
