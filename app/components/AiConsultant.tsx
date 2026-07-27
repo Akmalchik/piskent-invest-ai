@@ -147,18 +147,18 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     const isStarterScreen = chatMessages.length === 0;
     const starterPromptsByLang: Record<string, string[]> = {
         uz: [
-            '🏭 Ishlab chiqarish uchun obyektlar',
-            '💼 Kichik biznes uchun qaysi obyekt yaxshi?',
+            '🏭 Sanoat uchun obyekt',
+            '🏨 Turizm uchun obyekt',
+            '💼 Kichik biznes uchun obyekt',
             '🏢 Bino va yer maydoni',
-            '⚡ Gaz va elektr mavjud obyektlar',
-            '📐 Eng katta obyektlar'
+            '⚡ Gaz va elektr mavjud obyektlar'
         ],
         ru: [
-            '🏭 Объекты для производства',
-            '💼 Что лучше для малого бизнеса?',
-            '🏢 Здания с участком',
-            '⚡ Объекты с газом и электричеством',
-            '📐 Самые крупные объекты'
+            '🏭 Объект под производство',
+            '🏨 Объект под туризм',
+            '💼 Объект для малого бизнеса',
+            '🏢 Здание с участком',
+            '⚡ Объекты с газом и электричеством'
         ],
         en: [
             '🏭 Land area for an industrial project',
