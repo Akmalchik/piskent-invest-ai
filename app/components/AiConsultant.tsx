@@ -71,12 +71,12 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             if (!aiText) throw new Error('Empty response');
 
             const recommendedIds = Array.from(
-                new Set([...aiText.matchAll(/\[RECOMMEND_ID:\s*(\d+)\]/g)].map(match => match[1]))
+                new Set([...aiText.matchAll(/\[RECOMMEND_ID:\s*([^\]\s]+)\]/g)].map(match => match[1]))
             );
             const recommendedPlots = recommendedIds
                 .map(id => plots.find((plot: any) => String(plot.id) === id))
                 .filter(Boolean);
-            aiText = aiText.replace(/\[RECOMMEND_ID:\s*\d+\]/g, '').trim();
+            aiText = aiText.replace(/\[RECOMMEND_ID:\s*[^\]\s]+\]/g, '').trim();
 
             setIsTyping(false);
             setChatMessages([
@@ -147,16 +147,18 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     const isStarterScreen = chatMessages.length === 0;
     const starterPromptsByLang: Record<string, string[]> = {
         uz: [
-            '🏭 Sanoat loyihasi uchun yer kerak',
-            '🏨 Mehmonxona qurish uchun joy toping',
-            '🚛 Logistika uchun obyekt tavsiya qiling',
-            '⚡ Gaz va elektr bor obyektlarni ko‘rsating'
+            '🏭 Ishlab chiqarish uchun obyektlar',
+            '💼 Kichik biznes uchun qaysi obyekt yaxshi?',
+            '🏢 Bino va yer maydoni',
+            '⚡ Gaz va elektr mavjud obyektlar',
+            '📐 Eng katta obyektlar'
         ],
         ru: [
-            '🏭 Земельный участок для промышленного проекта',
-            '🏨 Локация для строительства гостиницы',
-            '🚛 Объект для логистики',
-            '⚡ Объекты с газом и электричеством'
+            '🏭 Объекты для производства',
+            '💼 Что лучше для малого бизнеса?',
+            '🏢 Здания с участком',
+            '⚡ Объекты с газом и электричеством',
+            '📐 Самые крупные объекты'
         ],
         en: [
             '🏭 Land area for an industrial project',

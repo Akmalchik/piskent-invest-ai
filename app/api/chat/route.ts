@@ -47,6 +47,13 @@ function selectRelevantPlots(message: string, availablePlots: any[]) {
   const wantsProduction = /sanoat|производств|factory|zavod|завод/.test(normalizedMessage);
   const wantsHotel = /hotel|mehmonxona|гостиниц|отел/.test(normalizedMessage);
   const wantsLogistics = /logistika|logistics|sklad|склад|логист/.test(normalizedMessage);
+  const wantsAgro = /agro|ферм|qishloq|dehqon|farm|сельск/.test(normalizedMessage);
+  const wantsService = /servis|service|сервис|услуг/.test(normalizedMessage);
+  const wantsSmallBusiness = /kichik biznes|мал(?:ого|ый) бизнес|small business/.test(normalizedMessage);
+  const wantsBuilding = /bino|здани|building/.test(normalizedMessage);
+  const wantsLand = /yer|земл|land|участ/.test(normalizedMessage);
+  const wantsLargest = /eng katta|сам(?:ые|ый) крупн|largest|biggest/.test(normalizedMessage);
+  const isBusinessTask = wantsProduction || wantsHotel || wantsLogistics || wantsAgro || wantsService || wantsSmallBusiness;
   const infraRequests = [
     { key: 'gas', matched: /gaz|газ/.test(normalizedMessage), fields: ['gas'] },
     { key: 'power', matched: /elektr|свет|электрич/.test(normalizedMessage), fields: ['power', 'electricity'] },
@@ -57,18 +64,8 @@ function selectRelevantPlots(message: string, availablePlots: any[]) {
   const compactPlots = availablePlots.map(toCompactPlot);
   const normalPlots = compactPlots.filter(plot => !isTestPlot(plot));
   const candidatePlots = normalPlots.length > 0 ? normalPlots : compactPlots;
-  const areaFilteredPlots = requestedArea === null
-    ? candidatePlots
-    : candidatePlots.filter(plot => {
-      const area = Number(plot.area);
-      return Number.isFinite(area) && area >= requestedArea * 0.5;
-    });
 
-  if (areaFilteredPlots.length === 0) {
-    return [];
-  }
-
-  const scoredPlots = areaFilteredPlots
+  const scoredPlots = candidatePlots
     .map(plot => {
       let score = 0;
       const area = Number(plot.area);
@@ -81,33 +78,53 @@ function selectRelevantPlots(message: string, availablePlots: any[]) {
       if (requestedArea !== null && Number.isFinite(area)) {
         if (Math.abs(area - requestedArea) <= Math.max(1, requestedArea * 0.25)) score += 3;
         if (area >= requestedArea) score += 2;
+        if (area < requestedArea * 0.5) score -= 2;
       }
 
       if (wantsProduction && /production|sanoat|производ|industrial|factory|zavod/.test(`${industryText} ${nameText}`)) score += 2;
       if (wantsHotel && /hotel|mehmonxona|гостиниц|service|servis|tourism|туризм/.test(`${industryText} ${nameText}`)) score += 2;
       if (wantsLogistics && /logistics|logistika|склад|warehouse|road|yo'l|йул|дорог/.test(`${industryText} ${nameText} ${statusText} ${infrastructureText}`)) score += 2;
+      if (wantsAgro && /agro|qishloq|dehqon|farm|ферм|сельск/.test(`${industryText} ${nameText}`)) score += 2;
+      if (wantsService && /service|servis|сервис|услуг|tourism|торгов/.test(`${industryText} ${nameText}`)) score += 2;
+      if (wantsSmallBusiness && /service|servis|сервис|услуг|торгов|building|bino|здани/.test(`${industryText} ${nameText}`)) score += 1;
+      if (wantsBuilding && /building|bino|здани|помещ/.test(`${industryText} ${nameText} ${statusText}`)) score += 2;
+      if (wantsLand && /land|yer|земл|участ/.test(`${industryText} ${nameText} ${statusText}`)) score += 1;
 
       for (const request of infraRequests) {
         if (!request.matched) continue;
 
         const hasInfrastructure = request.fields.some(field => {
           const value = infrastructure[field];
-          return value !== undefined && value !== null && String(value).trim() !== '';
+          const normalizedValue = String(value || '').trim().toLowerCase();
+          return normalizedValue !== '' && !/mavjud emas|yo['’`]?q|нет|not available|unavailable|不可用/.test(normalizedValue);
         });
 
-        if (hasInfrastructure || request.fields.some(field => infrastructureText.includes(field))) {
-          score += 1;
-        }
+        score += hasInfrastructure ? 2 : -1;
       }
 
       return { plot, score };
     })
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => wantsLargest
+      ? (Number(b.plot.area) || 0) - (Number(a.plot.area) || 0)
+      : b.score - a.score || (Number(b.plot.area) || 0) - (Number(a.plot.area) || 0));
 
   const positiveMatches = scoredPlots.filter(item => item.score > 0);
-  const selected = positiveMatches.length > 0 ? positiveMatches : scoredPlots;
+  const hasExactMatch = wantsLargest || positiveMatches.length > 0;
+  const selected = hasExactMatch
+    ? (wantsLargest || isBusinessTask ? scoredPlots : positiveMatches)
+    : scoredPlots;
+  const limit = hasExactMatch && (isBusinessTask || wantsLargest || infraRequests.some(item => item.matched)) ? 4 : 3;
 
-  return selected.slice(0, 3).map(item => item.plot);
+  return {
+    plots: selected.slice(0, limit).map(item => item.plot),
+    hasExactMatch,
+    intent: wantsProduction ? 'production'
+      : wantsLogistics ? 'logistics'
+        : wantsAgro ? 'agro'
+          : wantsService || wantsHotel ? 'service'
+            : wantsSmallBusiness ? 'smallBusiness'
+              : 'general',
+  };
 }
 
 function isRelevantInvestmentQuestion(message: string) {
@@ -141,7 +158,7 @@ function getGreetingResponse(lang: string) {
 
 function getOffTopicResponse(lang: string) {
   if (lang === 'ru') {
-    return 'Извините, я консультирую только по инвестиционным объектам Пискентского района. Укажите площадь, инфраструктуру или направление бизнеса.';
+    return 'Я могу помочь по инвестиционным объектам Пискентского района: подобрать объект по типу деятельности, площади и инфраструктуре.';
   }
 
   if (lang === 'en') {
@@ -157,7 +174,7 @@ function getOffTopicResponse(lang: string) {
 
 function getNoMatchingPlotsResponse(lang: string) {
   if (lang === 'ru') {
-    return 'По вашему запросу точный объект не найден. Но вы можете посмотреть другие доступные объекты на карте.';
+    return 'Точного совпадения по запросу не найдено. Уточните желаемый тип деятельности, площадь или инфраструктуру.';
   }
 
   if (lang === 'en') {
@@ -327,70 +344,75 @@ function getIdea(plot: any, lang: string) {
   return 'Ishlab chiqarish yoki servis loyihasi.';
 }
 
-function buildTemplateResponse(plots: any[], lang: string) {
+function buildTemplateResponse(plots: any[], lang: string, intent: string, hasExactMatch: boolean) {
   const recommendationMarkers = plots
     .filter(plot => plot.id !== undefined && plot.id !== null)
     .map(plot => `[RECOMMEND_ID:${plot.id}]`)
     .join('\n');
-  const divider = '━━━━━━━━━━━━━━━━━━━━━━';
+  const advice: Record<string, Record<string, string>> = {
+    ru: {
+      production: 'Для производства обычно важны электричество, дорога и достаточная площадь здания.',
+      logistics: 'Для склада обычно важны дорога, полезная площадь и удобная логистика.',
+      agro: 'Для фермерского проекта обычно важны земля, вода и подъезд.',
+      service: 'Для сервисного проекта обычно важны локация и доступность.',
+      smallBusiness: 'Для малого бизнеса практичнее начинать с объекта подходящего масштаба и проверенной доступности.',
+      general: 'Перед выбором рекомендуется проверить назначение объекта и актуальность инфраструктуры.',
+    },
+    uz: {
+      production: 'Ishlab chiqarish uchun odatda elektr, yo‘l va binoning yetarli maydoni muhim.',
+      logistics: 'Ombor uchun odatda yo‘l, foydali maydon va qulay logistika muhim.',
+      agro: 'Fermerlik loyihasi uchun odatda yer, suv va kirish yo‘li muhim.',
+      service: 'Servis loyihasi uchun odatda joylashuv va qulay kirish muhim.',
+      smallBusiness: 'Kichik biznes uchun mos ko‘lamdagi va kirish imkoniyati tekshirilgan obyekt ma’qul.',
+      general: 'Tanlashdan oldin obyekt maqsadi va infratuzilma holatini tekshirish tavsiya etiladi.',
+    },
+    en: {
+      production: 'Production projects generally depend on electricity, road access, and sufficient building area.',
+      logistics: 'Warehouses generally depend on road access, usable area, and convenient logistics.',
+      agro: 'Agricultural projects generally depend on land, water, and access roads.',
+      service: 'Service projects generally depend on location and accessibility.',
+      smallBusiness: 'For a small business, a suitably sized and accessible property is usually more practical.',
+      general: 'Before choosing, verify the property purpose and current infrastructure.',
+    },
+    zh: {
+      production: '生产项目通常应重点考虑电力、道路和足够的建筑面积。',
+      logistics: '仓储项目通常应重点考虑道路、可用面积和物流条件。',
+      agro: '农业项目通常应重点考虑土地、水源和进场道路。',
+      service: '服务项目通常应重点考虑位置和交通便利性。',
+      smallBusiness: '小型企业通常更适合规模适当且交通便利的项目。',
+      general: '选择前建议核实项目用途和基础设施的最新情况。',
+    },
+  };
+  const activeLang = ['ru', 'en', 'zh'].includes(lang) ? lang : 'uz';
+  const intro = hasExactMatch
+    ? ({ ru: 'По вашему запросу можно рассмотреть следующие объекты:', en: 'The following properties are worth considering for your request:', zh: '根据您的需求，可以考虑以下项目：', uz: 'So‘rovingiz bo‘yicha quyidagi obyektlarni ko‘rib chiqish mumkin:' }[activeLang])
+    : ({ ru: 'Точного совпадения по запросу не найдено. Но можно рассмотреть ближайшие варианты:', en: 'No exact match was found. However, you can consider these closest alternatives:', zh: '未找到完全匹配的项目，但可以考虑以下最接近的选项：', uz: 'So‘rov bo‘yicha aniq moslik topilmadi. Ammo eng yaqin variantlarni ko‘rib chiqish mumkin:' }[activeLang]);
+  let hasMissingData = false;
+  const items = plots.map((plot, index) => {
+    const details = [
+      plot.area !== undefined && plot.area !== null && plot.area !== '' ? `${plot.area} ${activeLang === 'ru' ? 'га' : activeLang === 'zh' ? '公顷' : 'ha'}` : '',
+      formatInfrastructure(plot.infrastructure, activeLang).replace(/\n/g, ', '),
+    ].filter(Boolean);
+    if (!plot.area || !formatInfrastructure(plot.infrastructure, activeLang)) hasMissingData = true;
+    const idea = getIdea(plot, activeLang);
+    if (activeLang === 'ru') return `${index + 1}. ${plot.name || 'Объект'}${details.length ? ` — ${details.join('; ')}` : ''}; возможный сценарий: ${idea.toLowerCase()}`;
+    if (activeLang === 'en') return `${index + 1}. ${plot.name || 'Property'}${details.length ? ` — ${details.join('; ')}` : ''}; possible use: ${idea.toLowerCase()}`;
+    if (activeLang === 'zh') return `${index + 1}. ${plot.name || '项目'}${details.length ? ` — ${details.join('；')}` : ''}；可考虑用途：${idea}`;
+    return `${index + 1}. ${plot.name || 'Obyekt'}${details.length ? ` — ${details.join('; ')}` : ''}; mumkin bo‘lgan yo‘nalish: ${idea.toLowerCase()}`;
+  });
+  const missing = hasMissingData
+    ? ({ ru: 'По этому объекту часть данных требует уточнения.', en: 'Some data for this property requires clarification.', zh: '该项目的部分数据需要进一步确认。', uz: 'Bu obyekt bo‘yicha ayrim ma’lumotlar aniqlashtirilishi kerak.' }[activeLang])
+    : '';
+  const question = {
+    ru: 'Какой параметр для вас приоритетнее: площадь, тип деятельности или инфраструктура?',
+    en: 'Which is your priority: area, type of activity, or infrastructure?',
+    zh: '您更看重面积、经营类型还是基础设施？',
+    uz: 'Siz uchun qaysi parametr ustuvor: maydon, faoliyat turi yoki infratuzilma?',
+  }[activeLang];
 
-  if (lang === 'ru') {
-    const items = plots.map((plot, index) => [
-      `${index + 1}.`,
-      '',
-      `Наименование: ${plot.name}`,
-      `Площадь: ${plot.area} га`,
-      formatOwnershipType(plot.ownership_type, lang) ? `Тип объекта: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
-      `Инфраструктура:\n${formatInfrastructure(plot.infrastructure, lang)}`,
-      `Рекомендуемый проект: ${getIdea(plot, lang)}`,
-      'Почему рекомендуется: объект является одним из наиболее близких вариантов по указанным параметрам.',
-    ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
-
-    return `${divider}\n\nРЕКОМЕНДУЕМЫЕ ОБЪЕКТЫ\n\n${divider}\n\n${items}\n\n${divider}\n\nДля получения дополнительной информации вы можете обратиться в отдел инвестиций, промышленности и торговли.\n\nПримечание: Рекомендации сформированы автоматически на основании имеющихся данных. Окончательное решение рекомендуется принимать после дополнительного изучения объекта и консультации с ответственным отделом.\n${recommendationMarkers}`;
-  }
-
-  if (lang === 'en') {
-    const items = plots.map((plot, index) => [
-      `${index + 1}.`,
-      '',
-      `Name: ${plot.name}`,
-      `Area: ${plot.area} ha`,
-      formatOwnershipType(plot.ownership_type, lang) ? `Property type: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
-      `Infrastructure:\n${formatInfrastructure(plot.infrastructure, lang)}`,
-      `Recommended project: ${getIdea(plot, lang)}`,
-      'Why recommended: the property is one of the closest available options based on the specified parameters.',
-    ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
-
-    return `${divider}\n\nRECOMMENDED PROPERTIES\n\n${divider}\n\n${items}\n\n${divider}\n\nFor additional information, you may contact the Department of Investments, Industry and Trade.\n\nThe recommendations are generated automatically based on available data. Final investment decisions should be made after additional verification and consultation with the responsible department.\n${recommendationMarkers}`;
-  }
-
-  if (lang === 'zh') {
-    const items = plots.map((plot, index) => [
-      `${index + 1}.`,
-      '',
-      `名称：${plot.name}`,
-      `面积：${plot.area} 公顷`,
-      formatOwnershipType(plot.ownership_type, lang) ? `对象类型：${formatOwnershipType(plot.ownership_type, lang)}` : '',
-      `基础设施：\n${formatInfrastructure(plot.infrastructure, lang)}`,
-      `建议项目：${getIdea(plot, lang)}`,
-      '推荐理由：该项目是根据指定参数筛选出的较为匹配的可用选项之一。',
-    ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
-
-    return `${divider}\n\n推荐项目\n\n${divider}\n\n${items}\n\n${divider}\n\n如需更多信息，您可以联系投资、工业和贸易部门。\n\n说明：建议根据现有数据自动生成。最终投资决定建议在进一步核实并咨询相关部门后作出。\n${recommendationMarkers}`;
-  }
-
-  const items = plots.map((plot, index) => [
-    `${index + 1}.`,
-    '',
-    `Nomi: ${plot.name}`,
-    `Maydoni: ${plot.area} ga`,
-    formatOwnershipType(plot.ownership_type, lang) ? `Obyekt turi: ${formatOwnershipType(plot.ownership_type, lang)}` : '',
-    `Infratuzilma:\n${formatInfrastructure(plot.infrastructure, lang)}`,
-    `Tavsiya etilgan loyiha: ${getIdea(plot, lang)}`,
-    'Nega tavsiya etiladi: obyekt kiritilgan parametrlar bo‘yicha eng yaqin mavjud variantlardan biri hisoblanadi.',
-  ].filter(Boolean).join('\n')).join(`\n\n${divider}\n\n`);
-
-  return `${divider}\n\nAI INVESTITSIYA MASLAHATCHISI TAVSIYASI\n\n${divider}\n\n${items}\n\n${divider}\n\nQo‘shimcha ma'lumot olish uchun Investitsiyalar, sanoat va savdo bo‘limiga murojaat qilishingiz mumkin.\n\nEslatma: Mazkur tavsiyalar taqdim etilgan ma'lumotlar asosida avtomatik shakllantirilgan. Yakuniy qaror qo‘shimcha o‘rganish va mas'ul bo‘lim bilan maslahatlashuvdan so‘ng qabul qilinishi tavsiya etiladi.\n${recommendationMarkers}`;
+  return [intro, ...items, advice[activeLang][intent] || advice[activeLang].general, missing, question, recommendationMarkers]
+    .filter(Boolean)
+    .join('\n');
 }
 
 async function loadPlots(req: NextRequest, incomingPlots: unknown) {
@@ -430,12 +452,12 @@ export async function POST(req: NextRequest) {
     if (availablePlots.length === 0) {
       return NextResponse.json({ error: 'No investment plots available for AI consultation' }, { status: 503 });
     }
-    const relevantPlots = selectRelevantPlots(message, availablePlots);
-    if (relevantPlots.length === 0) {
+    const selection = selectRelevantPlots(message, availablePlots);
+    if (selection.plots.length === 0) {
       return NextResponse.json({ text: getNoMatchingPlotsResponse(lang) });
     }
 
-    return NextResponse.json({ text: buildTemplateResponse(relevantPlots, lang) });
+    return NextResponse.json({ text: buildTemplateResponse(selection.plots, lang, selection.intent, selection.hasExactMatch) });
   } catch (err) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
