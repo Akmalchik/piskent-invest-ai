@@ -12,6 +12,15 @@ const MyInvestmentMap = dynamic(() => import('./components/MyInvestmentMap'), {
 import AiConsultant from './components/AiConsultant';
 
 type Lang = 'uz' | 'ru' | 'en' | 'zh';
+type Tab = 'home' | 'ai' | 'map' | 'about';
+
+const VALID_TABS: Tab[] = ['home', 'ai', 'map', 'about'];
+
+function getTabFromLocation(): Tab {
+  if (typeof window === 'undefined') return 'home';
+  const tab = new URLSearchParams(window.location.search).get('tab');
+  return VALID_TABS.includes(tab as Tab) ? tab as Tab : 'home';
+}
 
 const DISTRICT_PASSPORT = {
   districtName: {
@@ -104,7 +113,7 @@ function AnimatedNumber({ value }: { value: number }) {
 }
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState<Tab>('home');
   const [selectedPlot, setSelectedPlot] = useState(null);
 
   const [mapViewport, setMapViewport] = useState({ center: [40.9022, 69.3444], zoom: 13 });
@@ -115,6 +124,17 @@ export default function Home() {
   const [isAdminMode] = useState<boolean>(false);
   const [adminMarkerCoords, setAdminMarkerCoords] = useState<[number, number] | null>(null);
   const t = (translations as any)[lang] || translations.uz;
+
+  React.useEffect(() => {
+    const syncTabWithUrl = () => {
+      setActiveTab(getTabFromLocation());
+      setIsMobileMenuOpen(false);
+    };
+
+    syncTabWithUrl();
+    window.addEventListener('popstate', syncTabWithUrl);
+    return () => window.removeEventListener('popstate', syncTabWithUrl);
+  }, []);
 
   const showValue = (value: unknown, suffix = '') => {
     const text = String(value ?? '').trim();
@@ -268,13 +288,20 @@ export default function Home() {
     if (plot && plot.polygonCoordinates && plot.polygonCoordinates[0]) {
       setMapViewport({ center: plot.polygonCoordinates[0], zoom: 15 });
       setSelectedPlot(plot);
-      setActiveTab('map');
+      handleTabChange('map');
     }
   };
 
-  const handleTabChange = (tabName: any) => {
+  const handleTabChange = (tabName: Tab) => {
+    if (!VALID_TABS.includes(tabName)) return;
+
     setActiveTab(tabName);
     setIsMobileMenuOpen(false);
+
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('tab') === tabName) return;
+    url.searchParams.set('tab', tabName);
+    window.history.pushState(null, '', `${url.pathname}?${url.searchParams.toString()}${url.hash}`);
   };
 
   const handleMapClick = (lat: number, lng: number) => {
@@ -290,54 +317,54 @@ export default function Home() {
       {/* ========================================================= */}
       {/* 1. БОКОВОЕ МЕНЮ (SIDEBAR) — БЕЗ ЛИШНИХ ПУНКТОВ            */}
       {/* ========================================================= */}
-      <div className={`
-        fixed inset-y-0 left-0 w-64 bg-[#091120] border-r border-slate-700/60 flex flex-col justify-between z-50 transition-transform duration-300
-        md:relative md:transform-none
-        ${isMobileMenuOpen ? 'transform-none' : '-translate-x-full md:translate-x-0'}
-      `}>
-        <div>
-          {/* Брендинг */}
-          <div className="p-5 border-b border-slate-700/60 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-cyan-700 rounded-md border border-cyan-500/30 flex items-center justify-center font-bold text-white">P</div>
-              <div>
-                <h1 className="font-bold text-sm tracking-wide text-white">Piskent Invest AI</h1>
-                <p className="text-[10px] text-slate-400 uppercase tracking-widest">
-                  {lang === 'zh' ? '政府官方门户' : lang === 'ru' ? 'Государственный Портал' : lang === 'en' ? 'Official Portal' : 'Davlat Portali'}
-                </p>
+      {activeTab !== 'home' && (
+        <div className={`
+          fixed inset-y-0 left-0 w-64 bg-[#091120] border-r border-slate-700/60 flex flex-col justify-between z-50 transition-transform duration-300
+          md:relative md:transform-none
+          ${isMobileMenuOpen ? 'transform-none' : '-translate-x-full md:translate-x-0'}
+        `}>
+          <div>
+            {/* Брендинг */}
+            <div className="p-5 border-b border-slate-700/60 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-cyan-700 rounded-md border border-cyan-500/30 flex items-center justify-center font-bold text-white">P</div>
+                <div>
+                  <h1 className="font-bold text-sm tracking-wide text-white">Piskent Invest AI</h1>
+                  <p className="text-[10px] text-slate-400 uppercase tracking-widest">
+                    {lang === 'zh' ? '政府官方门户' : lang === 'ru' ? 'Государственный Портал' : lang === 'en' ? 'Official Portal' : 'Davlat Portali'}
+                  </p>
+                </div>
               </div>
+              <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden text-slate-400 hover:text-white text-lg">✕</button>
             </div>
-            <button onClick={() => setIsMobileMenuOpen(false)} className="md:hidden text-slate-400 hover:text-white text-lg">✕</button>
+
+            <nav className="p-4 space-y-1">
+              <button onClick={() => handleTabChange('home')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-transparent text-xs font-semibold text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-slate-200">
+                <span className="h-2 w-2 rounded-sm border border-current" />
+                {heroLabels.homeTab}
+              </button>
+              <button onClick={() => handleTabChange('ai')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'ai' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
+                {localLabels.aiTab}
+              </button>
+              <button onClick={() => handleTabChange('map')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'map' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
+                {localLabels.mapTab}
+              </button>
+              <button onClick={() => handleTabChange('about')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'about' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
+                {localLabels.aboutTab}
+              </button>
+            </nav>
           </div>
 
-          {/* Кнопки переключения страниц (ОСТАЛОСЬ СТРОГО ДВА СЕКТОРА) */}
-          <nav className="p-4 space-y-1">
-            <button onClick={() => handleTabChange('home')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'home' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
-              <span className="h-2 w-2 rounded-sm border border-current" />
-              {heroLabels.homeTab}
-            </button>
-            <button onClick={() => handleTabChange('ai')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'ai' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
-              {localLabels.aiTab}
-            </button>
-	            <button onClick={() => handleTabChange('map')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'map' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
-	              {localLabels.mapTab}
-	            </button>
-	            <button onClick={() => handleTabChange('about')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'about' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
-	              {localLabels.aboutTab}
-	            </button>
-	          </nav>
-        </div>
-
-        {/* Финальный вид подвала: только версия, никакой кнопки админки */}
-        <div className="p-4 border-t border-slate-700/60">
-          <div className="text-[10px] text-slate-500 text-center font-medium">
-            v1.1 • Piskent tumani
+          <div className="p-4 border-t border-slate-700/60">
+            <div className="text-[10px] text-slate-500 text-center font-medium">
+              v1.1 • Piskent tumani
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Задний фон на мобилках */}
-      {isMobileMenuOpen && (
+      {activeTab !== 'home' && isMobileMenuOpen && (
         <div onClick={() => setIsMobileMenuOpen(false)} className="fixed inset-0 bg-black/50 z-40 md:hidden" />
       )}
 
@@ -349,13 +376,29 @@ export default function Home() {
         {/* АДАПТИВНАЯ ШАПКА САЙТА */}
         <header className="h-14 w-full bg-[#091120]/95 backdrop-blur border-b border-slate-700/60 flex items-center justify-between px-4 md:px-6 z-20">
           <div className="flex items-center gap-3">
-            <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 bg-slate-800/70 rounded-lg text-white border border-slate-700 text-sm">
-              ☰
-            </button>
+            {activeTab !== 'home' && (
+              <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 bg-slate-800/70 rounded-lg text-white border border-slate-700 text-sm">
+                ☰
+              </button>
+            )}
             <div className="text-[10px] md:text-[11px] text-slate-400 font-medium truncate max-w-[180px] sm:max-w-none">
               {localLabels.portalInfo}
             </div>
           </div>
+
+          {activeTab === 'home' && (
+            <nav className="hidden items-center gap-1 lg:flex">
+              <button onClick={() => handleTabChange('map')} className="rounded-lg px-3 py-2 text-[10px] font-semibold text-slate-400 transition-colors hover:bg-slate-800/60 hover:text-cyan-200">
+                {heroLabels.mapButton}
+              </button>
+              <button onClick={() => handleTabChange('ai')} className="rounded-lg px-3 py-2 text-[10px] font-semibold text-slate-400 transition-colors hover:bg-slate-800/60 hover:text-cyan-200">
+                {heroLabels.aiButton}
+              </button>
+              <button onClick={() => handleTabChange('about')} className="rounded-lg px-3 py-2 text-[10px] font-semibold text-slate-400 transition-colors hover:bg-slate-800/60 hover:text-cyan-200">
+                {t.aboutTab}
+              </button>
+            </nav>
+          )}
 
           {/* Переключатель языков */}
           <div className="flex items-center gap-1 bg-[#050a14] p-0.5 rounded-lg border border-slate-700/70">
@@ -375,8 +418,8 @@ export default function Home() {
                 <div className="pointer-events-none absolute -left-32 top-10 h-72 w-72 rounded-full bg-cyan-900/10 blur-3xl" />
                 <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 rounded-full bg-blue-900/10 blur-3xl" />
 
-                <div className="relative mx-auto max-w-7xl">
-                  <div className="grid items-center gap-10 lg:grid-cols-[0.86fr_1.14fr] lg:gap-10 xl:grid-cols-[0.82fr_1.18fr]">
+                <div className="relative mx-auto max-w-[1500px]">
+                  <div className="grid items-center gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-8 xl:grid-cols-[0.78fr_1.22fr] xl:gap-12">
                     <div className="max-w-2xl">
                       <div className="inline-flex items-center gap-2 rounded-full border border-cyan-700/40 bg-cyan-950/30 px-3 py-1.5 text-[10px] font-bold tracking-[0.22em] text-cyan-300">
                         <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
@@ -414,14 +457,24 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="relative mx-auto flex w-full max-w-3xl items-center justify-center py-4 sm:py-6 lg:min-h-[520px] lg:py-0">
+                    <div className="relative mx-auto flex w-full max-w-4xl items-center justify-center py-4 sm:py-6 lg:min-h-[540px] lg:py-0">
                       <div className="pointer-events-none absolute inset-[12%] rounded-[45%] bg-cyan-500/15 blur-[80px]" />
                       <div className="pointer-events-none absolute bottom-[12%] left-[10%] right-[5%] h-16 rounded-[50%] bg-black/65 blur-2xl" />
-                      <img
-                        src="/hero/piskent-hero-map.png"
-                        alt="Piskent Invest AI 3D map"
-                        className="relative z-10 h-auto max-h-[430px] w-full max-w-[680px] object-contain drop-shadow-[0_28px_42px_rgba(0,0,0,0.42)] sm:max-h-[480px] lg:max-h-[540px]"
-                      />
+                      <div className="hero-map-float relative z-10 w-full max-w-[760px] xl:max-w-[840px]">
+                        <img
+                          src="/hero/piskent-hero-map.png"
+                          alt="Piskent Invest AI 3D map"
+                          className="h-auto max-h-[430px] w-full object-contain drop-shadow-[0_28px_42px_rgba(0,0,0,0.42)] sm:max-h-[500px] lg:max-h-[570px]"
+                        />
+                        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+                          <span className="hero-map-pulse left-[28%] top-[31%]" />
+                          <span className="hero-map-pulse hero-map-pulse-delayed left-[56%] top-[47%]" />
+                          <span className="hero-map-pulse hero-map-pulse-late right-[21%] top-[27%]" />
+                          <span className="hero-data-flow hero-data-flow-one hidden sm:block" />
+                          <span className="hero-data-flow hero-data-flow-two hidden sm:block" />
+                          <span className="hero-data-flow hero-data-flow-three hidden sm:block" />
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -551,10 +604,158 @@ export default function Home() {
 	              </div>
 	            </div>
 	          )}
-	        </div>
+		        </div>
 
+        <style jsx>{`
+          .hero-map-float {
+            animation: heroMapFloat 10s ease-in-out infinite;
+            transform-origin: 50% 60%;
+          }
 
-      </div>
+          .hero-map-pulse {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border: 1px solid rgba(207, 250, 254, 0.92);
+            border-radius: 999px;
+            background: rgba(34, 211, 238, 0.88);
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.8);
+            animation: heroMapPulse 8s ease-out infinite;
+          }
+
+          .hero-map-pulse::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border: 1px solid rgba(103, 232, 249, 0.45);
+            border-radius: inherit;
+          }
+
+          .hero-map-pulse-delayed { animation-delay: -2.7s; }
+          .hero-map-pulse-late { animation-delay: -5.4s; }
+
+          .hero-data-flow {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 999px;
+            background: rgba(103, 232, 249, 0.9);
+            box-shadow: 0 0 5px rgba(103, 232, 249, 0.9), 0 0 12px rgba(34, 211, 238, 0.45);
+            opacity: 0;
+          }
+
+          .hero-data-flow::after {
+            content: '';
+            position: absolute;
+            right: 4px;
+            top: 2px;
+            width: 18px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.4));
+            transform: rotate(-18deg);
+            transform-origin: right center;
+          }
+
+          .hero-data-flow-one {
+            left: 24%;
+            top: 63%;
+            animation: heroDataFlowOne 10s ease-in-out infinite;
+          }
+
+          .hero-data-flow-two {
+            left: 43%;
+            top: 69%;
+            animation: heroDataFlowTwo 11.5s ease-in-out -3.8s infinite;
+          }
+
+          .hero-data-flow-three {
+            left: 61%;
+            top: 43%;
+            animation: heroDataFlowThree 9s ease-in-out -6s infinite;
+          }
+
+          @keyframes heroMapFloat {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(0, -6px, 0); }
+          }
+
+          @keyframes heroMapPulse {
+            0%, 55%, 100% {
+              opacity: 0.38;
+              transform: scale(0.78);
+              box-shadow: 0 0 6px rgba(34, 211, 238, 0.45);
+            }
+            18% {
+              opacity: 0.95;
+              transform: scale(1);
+              box-shadow: 0 0 18px rgba(34, 211, 238, 0.75);
+            }
+            34% {
+              opacity: 0.48;
+              transform: scale(1.65);
+            }
+          }
+
+          @keyframes heroDataFlowOne {
+            0%, 100% {
+              opacity: 0;
+              transform: translate3d(0, 0, 0);
+            }
+            18% { opacity: 0.35; }
+            45% { opacity: 0.85; }
+            82% { opacity: 0.45; }
+            92% {
+              opacity: 0;
+              transform: translate3d(150px, -56px, 0);
+            }
+          }
+
+          @keyframes heroDataFlowTwo {
+            0%, 100% {
+              opacity: 0;
+              transform: translate3d(0, 0, 0);
+            }
+            20% { opacity: 0.3; }
+            48% { opacity: 0.75; }
+            84% { opacity: 0.4; }
+            94% {
+              opacity: 0;
+              transform: translate3d(112px, -82px, 0);
+            }
+          }
+
+          @keyframes heroDataFlowThree {
+            0%, 100% {
+              opacity: 0;
+              transform: translate3d(0, 0, 0);
+            }
+            16% { opacity: 0.28; }
+            44% { opacity: 0.72; }
+            80% { opacity: 0.4; }
+            92% {
+              opacity: 0;
+              transform: translate3d(92px, 34px, 0);
+            }
+          }
+
+          @media (max-width: 640px) {
+            .hero-map-float { animation-duration: 12s; }
+            .hero-map-pulse { opacity: 0.55; }
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .hero-map-float,
+            .hero-map-pulse,
+            .hero-data-flow {
+              animation: none;
+            }
+
+            .hero-map-pulse { opacity: 0.5; }
+            .hero-data-flow { opacity: 0.25; }
+          }
+        `}</style>
+
+	      </div>
     </div>
   );
 }
