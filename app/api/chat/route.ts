@@ -69,6 +69,7 @@ function getPresentationScore(plot: any, intent: string) {
   score += [plot.area, plot.industry, plot.status, plot.ownership_type]
     .filter(value => value !== undefined && value !== null && String(value).trim() !== '').length * 0.25;
 
+  if (intent === 'general' && /ferma|ферм|kollej|колледж/.test(name.toLowerCase())) score += 8;
   if (isEmptyLand && ['general', 'tourism', 'smallBusiness'].includes(intent)) score -= 6;
   return score;
 }
@@ -79,7 +80,7 @@ function selectRelevantPlots(message: string, availablePlots: any[]) {
   const wantsProduction = /sanoat|ishlab chiqarish|производств|factory|zavod|завод|цех|industry/.test(normalizedMessage);
   const wantsTourism = /turizm|tourism|туризм|hotel|mehmonxona|гостиниц|отел/.test(normalizedMessage);
   const wantsLogistics = /logistika|logistics|sklad|склад|warehouse|ombor|логист/.test(normalizedMessage);
-  const wantsAgro = /agro|ферм|qishloq xo['‘’`]?jaligi|qishloq|dehqon|farm|сельск/.test(normalizedMessage);
+  const wantsAgro = /agro|ferma|ферм|qishloq xo['‘’`]?jaligi|qishloq|dehqon|farm|сельск/.test(normalizedMessage);
   const wantsService = /servis|service|сервис|услуг|xizmat|кафе|ресторан|umumiy ovqatlanish|торгов|savdo|учебн|training center/.test(normalizedMessage);
   const wantsSmallBusiness = /kichik biznes|мал(?:ого|ый) бизнес|small business/.test(normalizedMessage);
   const wantsBuilding = /bino|здани|building/.test(normalizedMessage);
@@ -180,7 +181,7 @@ function isRelevantInvestmentQuestion(message: string) {
 }
 
 function isCreativeOrRestrictedRequest(message: string) {
-  return /стих|поэм|рассказ|истори[юя]|анекдот|шутк|roleplay|ролевая|эссе|политик|she['’`]?r|hikoya|latifa|hazil|ertak|write a poem|tell (?:me )?a (?:story|joke)/i.test(message);
+  return /стих|поэм|рассказ|истори[юя]|анекдот|шутк|рецепт|recipe|retsept|roleplay|ролевая|эссе|политик|she['’`]?r|hikoya|latifa|hazil|ertak|write a poem|tell (?:me )?a (?:story|joke)/i.test(message);
 }
 
 function isGreetingMessage(message: string) {
@@ -449,7 +450,7 @@ function getRecommendationReason(plot: any, intent: string, lang: string) {
   return reasons[activeLang][intent] || reasons[activeLang].general;
 }
 
-function buildTemplateResponse(plots: any[], lang: string, intent: string, _hasExactMatch: boolean) {
+function buildTemplateResponse(plots: any[], lang: string, intent: string, hasExactMatch: boolean) {
   const recommendationMarkers = plots
     .filter(plot => plot.id !== undefined && plot.id !== null)
     .map(plot => `[RECOMMEND_ID:${plot.id}]`)
@@ -457,9 +458,15 @@ function buildTemplateResponse(plots: any[], lang: string, intent: string, _hasE
   const [best, alternative] = plots;
   const isRu = lang === 'ru';
   const question = isRu
-    ? 'Уточнение: вам нужен земельный участок или готовое здание?'
-    : 'Aniqlashtirish: Sizga yer maydoni kerakmi yoki tayyor bino?';
+    ? 'Уточнение: Вам нужно готовое здание или земельный участок тоже важен?'
+    : 'Aniqlashtirish: Sizga tayyor bino kerakmi yoki yer maydoni ham muhimmi?';
+  const tourismIntro = intent === 'tourism' && !hasExactMatch
+    ? (isRu
+      ? 'Отдельный объект категории «туризм» не выделен. Для такого проекта важны расположение, дорога и готовое здание; можно рассмотреть следующие варианты:'
+      : 'Turizm yo‘nalishi bo‘yicha alohida obyekt ajratilmagan. Lekin bunday loyiha uchun joylashuv, yo‘l va tayyor bino muhim. Quyidagi obyektlarni ko‘rib chiqish mumkin:')
+    : '';
   const lines = [
+    tourismIntro,
     `${isRu ? 'Лучший вариант' : 'Eng yaxshi variant'}: ${best.name}`,
     `${isRu ? 'Причина' : 'Sabab'}: ${getRecommendationReason(best, intent, lang)}`,
     alternative ? `${isRu ? 'Альтернатива' : 'Muqobil variant'}: ${alternative.name}` : '',
@@ -471,7 +478,7 @@ function buildTemplateResponse(plots: any[], lang: string, intent: string, _hasE
 }
 
 function isCompareRequest(message: string) {
-  return /solishtir|taqqosla|сравни|сравнить|compare|qaysi (?:yaxshi|ma['’`]?qul)|какой лучше/i.test(message);
+  return /solishtir|taqqosla|сравни|сравнить|compare|qaysi (?:yaxshi|ma['’`]?qul)|какой лучше|\b(?:yoki|или)\b/i.test(message);
 }
 
 function findPlotsForComparison(message: string, plots: any[]) {
@@ -491,13 +498,9 @@ function findPlotsForComparison(message: string, plots: any[]) {
 
 function buildComparisonResponse(plots: any[], lang: string) {
   const isRu = lang === 'ru';
-  const formatArea = (value: unknown, unit: string) => value !== undefined && value !== null && value !== ''
-    ? `${value} ${unit}`
-    : (isRu ? 'уточняется' : 'aniqlashtiriladi');
   const lines = plots.map(plot => {
-    const land = formatArea(plot.area, isRu ? 'га' : 'ga');
-    const building = formatArea(plot.building_area_m2, 'm²');
-    return `${plot.name} — ${isRu ? 'земля' : 'yer'}: ${land}; ${isRu ? 'здание' : 'bino'}: ${building}; ${getPropertyTypeLabel(plot, isRu ? 'ru' : 'uz')}; ${isRu ? 'инфраструктура' : 'infratuzilma'}: ${getShortInfrastructure(plot, isRu ? 'ru' : 'uz')}.`;
+    const area = plot.area ? `${plot.area} ${isRu ? 'га' : 'ga'}` : (isRu ? 'площадь уточняется' : 'maydoni aniqlashtiriladi');
+    return `${plot.name} — ${getPropertyTypeLabel(plot, isRu ? 'ru' : 'uz')}, ${area}; ${isRu ? 'инфраструктура' : 'infratuzilma'}: ${getShortInfrastructure(plot, isRu ? 'ru' : 'uz')}.`;
   });
   const [first, second] = plots;
   const firstBuilding = Number(first.building_area_m2) || 0;
@@ -515,6 +518,20 @@ function buildComparisonResponse(plots: any[], lang: string) {
       : `Xulosa: bino maydoni aniqlashtirilishi kerak; kattaroq yer ustuvor bo‘lsa — ${landChoice.name}.`);
   const markers = plots.map(plot => `[RECOMMEND_ID:${plot.id}]`).join('\n');
   return [...lines, conclusion, markers].join('\n');
+}
+
+function buildComparisonFallback(plots: any[], lang: string) {
+  const isRu = lang === 'ru';
+  const available = plots
+    .filter(plot => !isTestPlot(plot))
+    .sort((a, b) => getPresentationScore(b, 'general') - getPresentationScore(a, 'general'))
+    .slice(0, 2);
+  const prompt = isRu
+    ? 'Для сравнения напишите названия точнее, например: 1-bino и 2-bino.'
+    : 'Taqqoslash uchun obyekt nomini aniqroq yozing: masalan, 1-bino va 2-bino.';
+  const options = available.map((plot, index) => `${index + 1}. ${plot.name}`);
+  const markers = available.map(plot => `[RECOMMEND_ID:${plot.id}]`).join('\n');
+  return [prompt, ...options, markers].filter(Boolean).join('\n');
 }
 
 async function loadPlots(req: NextRequest, incomingPlots: unknown) {
@@ -546,7 +563,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ text: getGreetingResponse(lang) });
     }
 
-    if (isCreativeOrRestrictedRequest(message) || !isRelevantInvestmentQuestion(message)) {
+    if (isCreativeOrRestrictedRequest(message) || (!isCompareRequest(message) && !isRelevantInvestmentQuestion(message))) {
       return NextResponse.json({ text: getOffTopicResponse(lang) });
     }
 
@@ -559,6 +576,7 @@ export async function POST(req: NextRequest) {
       if (comparedPlots.length === 2) {
         return NextResponse.json({ text: buildComparisonResponse(comparedPlots, lang) });
       }
+      return NextResponse.json({ text: buildComparisonFallback(availablePlots, lang) });
     }
     const selection = selectRelevantPlots(message, availablePlots);
     if (selection.plots.length === 0) {

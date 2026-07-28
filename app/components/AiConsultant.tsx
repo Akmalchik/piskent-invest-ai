@@ -150,15 +150,13 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             '🏭 Sanoat uchun obyekt',
             '🏨 Turizm uchun obyekt',
             '💼 Kichik biznes uchun obyekt',
-            '🏢 Bino va yer maydoni',
-            '⚡ Gaz va elektr mavjud obyektlar'
+            '⚖️ 1-bino va 2-bino solishtir'
         ],
         ru: [
             '🏭 Объект под производство',
             '🏨 Объект под туризм',
             '💼 Объект для малого бизнеса',
-            '🏢 Здание с участком',
-            '⚡ Объекты с газом и электричеством'
+            '⚖️ Сравни 1-bino и 2-bino'
         ],
         en: [
             '🏭 Land area for an industrial project',
