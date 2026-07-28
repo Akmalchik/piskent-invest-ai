@@ -119,38 +119,46 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     const chatLabels: Record<string, any> = {
         uz: {
             title: "AI Investitsiya Maslahatchisi",
-            sync: "E-Auksion Sync Active",
+            sync: "Obyektlar bazasi asosida tavsiya beradi",
             mapBtn: "Xaritada ko‘rsatish",
             pageBtn: "Auksion sahifasi",
+            clear: "Tozalash",
+            loading: "Mos obyektlar saralanmoqda...",
             starterTitle: "AI Investitsiya Maslahatchisi",
-            starterIntro: "Piskent tumanidagi investitsiya obyektlari bo‘yicha savol bering.",
+            starterIntro: "Piskent tumanidagi investitsiya obyektlarini bazadagi ma’lumotlar asosida tanlashga yordam beraman.",
             errorText: "AI Investitsiya Maslahatchisi vaqtincha mavjud emas. Investitsiya obyektlarini xarita orqali ko‘rishingiz mumkin."
         },
         ru: {
             title: "Цифровой инвестиционный консультант",
-            sync: "Синхронизация с E-Auksion Активна",
+            sync: "Подбирает объекты на основе базы",
             mapBtn: "Показать на карте",
             pageBtn: "Страница аукциона",
+            clear: "Очистить",
+            loading: "Подбираются подходящие объекты...",
             starterTitle: "Цифровой инвестиционный консультант",
-            starterIntro: "Предоставляет официальную информацию и рекомендации по инвестиционным объектам Пискентского района.",
+            starterIntro: "Помогу подобрать инвестиционные объекты Пискентского района на основе данных каталога.",
             errorText: "Цифровой инвестиционный консультант временно недоступен. Инвестиционные объекты можно посмотреть на карте."
         },
         en: {
             title: "Digital Investment Consultant",
-            sync: "E-Auksion Sync Active",
+            sync: "Recommends objects based on the database",
             mapBtn: "Show on map",
             pageBtn: "Auction Page",
+            clear: "Clear",
+            loading: "Selecting suitable objects...",
             starterTitle: "Digital Investment Consultant",
-            starterIntro: "Provides official information and recommendations on investment properties in Piskent district.",
+            starterIntro: "I can help select investment properties in Piskent district using the catalogue database.",
             errorText: "The Digital Investment Consultant is temporarily unavailable. Investment properties can be viewed on the map."
         },
         zh: {
             title: "数字投资顾问",
-            sync: "电子拍卖数据同步激活",
+            sync: "基于数据库推荐项目",
             mapBtn: "在地图上显示",
             pageBtn: "拍卖官方页面",
+            clear: "清空",
+            loading: "正在筛选合适项目...",
             starterTitle: "数字投资顾问",
-            starterIntro: "提供皮斯肯特区投资项目的官方信息和建议。",
+            starterIntro: "我可以根据项目数据库帮助筛选皮斯肯特区的投资项目。",
             errorText: "数字投资顾问暂时不可用。您仍然可以在投资地图上查看项目。"
         }
     };
@@ -159,28 +167,28 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     const isStarterScreen = chatMessages.length === 0;
     const starterPromptsByLang: Record<string, string[]> = {
         uz: [
-            '🏭 Sanoat uchun obyekt',
-            '🏨 Turizm uchun obyekt',
-            '💼 Kichik biznes uchun obyekt',
-            '⚖️ 1-bino va 2-bino solishtir'
+            'Yer maydoni kerak',
+            'Tayyor bino kerak',
+            'Sanoat uchun obyekt',
+            'Kichik biznes uchun joy'
         ],
         ru: [
-            '🏭 Объект под производство',
-            '🏨 Объект под туризм',
-            '💼 Объект для малого бизнеса',
-            '⚖️ Сравни 1-bino и 2-bino'
+            'Нужен земельный участок',
+            'Нужно готовое здание',
+            'Объект для производства',
+            'Место для малого бизнеса'
         ],
         en: [
-            '🏭 Land area for an industrial project',
-            '🏨 Location for hotel construction',
-            '🚛 Property for logistics',
-            '⚡ Properties with gas and electricity'
+            'I need a land plot',
+            'I need a ready building',
+            'Property for manufacturing',
+            'Location for a small business'
         ],
         zh: [
-            '🏭 工业项目用地',
-            '🏨 酒店建设选址',
-            '🚛 物流用途项目',
-            '⚡ 具备天然气和电力的项目'
+            '需要土地',
+            '需要现成建筑',
+            '工业生产项目',
+            '小型企业场所'
         ],
     };
     const starterPrompts = starterPromptsByLang[lang] || starterPromptsByLang.uz;
@@ -191,8 +199,13 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
         <div className="flex flex-col h-full bg-[#070d18] rounded-xl border border-slate-700/60 overflow-hidden relative min-h-[400px] shadow-lg shadow-black/20">
             <div className="p-4 bg-[#0a1324] border-b border-slate-700/60 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-cyan-950 text-cyan-300 border border-cyan-700/50 rounded-lg flex items-center justify-center font-bold relative">
-                        🤖
+                    <div className="w-9 h-9 bg-cyan-950 border border-cyan-700/50 rounded-lg flex items-center justify-center relative">
+                        <span className="grid h-4 w-4 grid-cols-2 gap-0.5" aria-hidden="true">
+                            <span className="rounded-[2px] bg-cyan-300/90" />
+                            <span className="rounded-[2px] bg-cyan-300/45" />
+                            <span className="rounded-[2px] bg-cyan-300/45" />
+                            <span className="rounded-[2px] bg-cyan-300/90" />
+                        </span>
                         <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#0b1329] rounded-full"></span>
                     </div>
                     <div>
@@ -204,24 +217,34 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 </div>
                 {chatMessages.length > 0 && (
                     <button onClick={resetChat} className="text-[10px] font-semibold text-slate-400 hover:text-slate-100 transition-colors bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-700/70">
-                        {lang === 'ru' ? 'Очистить' : lang === 'zh' ? '清空' : 'Tozalash'}
+                        {labels.clear}
                     </button>
                 )}
             </div>
 
             <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#070d18]">
                 {isStarterScreen ? (
-                    <div className="text-center my-auto flex flex-col items-center justify-center h-full pt-4 animate-fade-in px-4">
-                        <div className="w-12 h-12 bg-cyan-950/50 text-cyan-300 border border-cyan-700/40 rounded-xl flex items-center justify-center text-xl mb-4">🤖</div>
-                        <h4 className="text-sm font-bold text-white mb-2 tracking-wide">{labels.starterTitle}</h4>
-                        <p className="text-[11px] text-slate-400 max-w-xs mb-6 leading-relaxed">
+                    <div className="text-center my-auto flex flex-col items-center justify-center h-full py-6 animate-fade-in px-4">
+                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-cyan-700/40 bg-cyan-950/40 shadow-inner shadow-cyan-300/5">
+                            <span className="grid h-5 w-5 grid-cols-2 gap-0.5" aria-hidden="true">
+                                <span className="rounded-[2px] bg-cyan-300/90" />
+                                <span className="rounded-[2px] bg-cyan-300/40" />
+                                <span className="rounded-[2px] bg-cyan-300/40" />
+                                <span className="rounded-[2px] bg-cyan-300/90" />
+                            </span>
+                        </div>
+                        <h4 className="mb-2 text-sm font-bold tracking-wide text-white">{labels.starterTitle}</h4>
+                        <p className="mb-6 max-w-sm text-[11px] leading-5 text-slate-400">
                             {labels.starterIntro}
                         </p>
 
-                        <div className="flex flex-col gap-2 w-full max-w-sm">
-                            {starterPrompts.map((prompt) => (
-                                <button key={prompt} onClick={() => handleSendMessage(prompt)} className="p-3 bg-[#0a1324] hover:bg-[#0d182b] border border-slate-700/60 rounded-lg text-left text-[11px] font-medium text-slate-300 transition-colors flex items-center gap-2">
-                                    <span>{prompt}</span>
+                        <div className="grid w-full max-w-xl gap-2 sm:grid-cols-2">
+                            {starterPrompts.map((prompt, index) => (
+                                <button key={prompt} onClick={() => handleSendMessage(prompt)} className="group flex min-h-11 items-center gap-3 rounded-lg border border-slate-700/60 bg-[#0a1324] p-3 text-left text-[11px] font-medium text-slate-300 transition-colors hover:border-cyan-700/50 hover:bg-[#0d182b] hover:text-slate-100">
+                                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-cyan-800/50 bg-cyan-950/40 text-[8px] font-bold text-cyan-400">
+                                        {String(index + 1).padStart(2, '0')}
+                                    </span>
+                                    <span className="leading-4">{prompt}</span>
                                 </button>
                             ))}
                         </div>
@@ -229,16 +252,16 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 ) : (
                     chatMessages.map((msg, idx) => (
                         <div key={idx} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} animate-fade-in`}>
-                            <div className={`max-w-[85%] p-3.5 rounded-xl text-xs leading-relaxed ${msg.sender === 'user'
+                            <div className={`max-w-[88%] p-3.5 rounded-xl text-xs leading-6 ${msg.sender === 'user'
                                 ? 'bg-cyan-800 text-white rounded-tr-sm border border-cyan-700'
                                 : 'bg-[#0a1324] border border-slate-700/60 text-slate-200 rounded-tl-sm relative'
                                 }`}>
                                 {msg.sender === 'ai' && msg.parts?.length > 0 ? (
-                                    <div>
+                                    <div className="space-y-1">
                                         {msg.parts.map((part: any, partIndex: number) => part.type === 'text' ? (
-                                            <div key={`text-${partIndex}`} className="whitespace-pre-line">{part.text.replace(/\*\*/g, '')}</div>
+                                            <div key={`text-${partIndex}`} className="whitespace-pre-wrap py-0.5">{part.text.replace(/\*\*/g, '')}</div>
                                         ) : (
-                                            <div key={`plot-${part.plot.id}-${partIndex}`} className="my-2 flex flex-col sm:flex-row sm:items-center gap-2 border-l-2 border-cyan-700/60 pl-2">
+                                            <div key={`plot-${part.plot.id}-${partIndex}`} className="my-3 flex flex-col gap-2 rounded-r-lg border-l-2 border-cyan-700/60 bg-cyan-950/10 py-1.5 pl-3 pr-1 sm:flex-row sm:items-center">
                                                 <span className="min-w-0 flex-1 truncate text-[10px] font-semibold text-slate-300" title={part.plot.name}>
                                                     {part.plot.name}
                                                 </span>
@@ -249,7 +272,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="whitespace-pre-line">{msg.text}</div>
+                                    <div className="whitespace-pre-wrap">{msg.text}</div>
                                 )}
                             </div>
                         </div>
@@ -257,10 +280,13 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 )}
                 {isTyping && (
                     <div className="flex justify-start animate-fade-in">
-                        <div className="bg-[#0b1329]/80 border border-slate-800/60 px-4 py-3 rounded-2xl rounded-tl-none flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                            <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                            <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                        <div className="flex items-center gap-3 rounded-xl rounded-tl-sm border border-slate-700/60 bg-[#0a1324] px-4 py-3">
+                            <div className="flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></span>
+                                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '250ms' }}></span>
+                                <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '500ms' }}></span>
+                            </div>
+                            <span className="text-[10px] font-medium text-slate-400">{labels.loading}</span>
                         </div>
                     </div>
                 )}
