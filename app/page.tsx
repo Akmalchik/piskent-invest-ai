@@ -104,7 +104,7 @@ function AnimatedNumber({ value }: { value: number }) {
 }
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState('ai');
+  const [activeTab, setActiveTab] = useState('home');
   const [selectedPlot, setSelectedPlot] = useState(null);
 
   const [mapViewport, setMapViewport] = useState({ center: [40.9022, 69.3444], zoom: 13 });
@@ -205,6 +205,65 @@ export default function Home() {
 	    ta: "TA"
 	  };
 
+  const heroLabels = {
+    uz: {
+      homeTab: 'Bosh sahifa',
+      badge: 'PISKENT TUMANI',
+      title: 'Investitsiya imkoniyatlari bir joyda',
+      description: 'Piskent tumanidagi investitsiya obyektlari, yer maydonlari va infratuzilma ma’lumotlarini interaktiv xarita orqali o‘rganing hamda AI maslahatchidan tavsiya oling.',
+      mapButton: 'Investitsiya xaritasi',
+      aiButton: 'AI Maslahatchi',
+      stats: [
+        ['Investitsiya obyektlari', 'Obyektlar katalogi'],
+        ['Yer maydonlari', 'Yer va bino takliflari'],
+        ['Asosiy sohalar', 'Sanoat • Agro • Servis'],
+        ['Axborot ochiqligi', 'Tizimlashtirilgan ma’lumotlar'],
+      ],
+    },
+    ru: {
+      homeTab: 'Главная',
+      badge: 'ПИСКЕНТСКИЙ РАЙОН',
+      title: 'Инвестиционные возможности в одном месте',
+      description: 'Изучайте инвестиционные объекты, земельные участки и инфраструктуру Пискентского района на интерактивной карте и получайте рекомендации AI-консультанта.',
+      mapButton: 'Инвестиционная карта',
+      aiButton: 'AI-консультант',
+      stats: [
+        ['Инвестиционные объекты', 'Каталог объектов'],
+        ['Земельные участки', 'Предложения земли и зданий'],
+        ['Основные отрасли', 'Промышленность • Агро • Сервис'],
+        ['Открытость информации', 'Систематизированные данные'],
+      ],
+    },
+    en: {
+      homeTab: 'Home',
+      badge: 'PISKENT DISTRICT',
+      title: 'Investment opportunities in one place',
+      description: 'Explore investment properties, land plots, and infrastructure data in Piskent district through an interactive map and receive recommendations from the AI consultant.',
+      mapButton: 'Investment map',
+      aiButton: 'AI Consultant',
+      stats: [
+        ['Investment properties', 'Property catalogue'],
+        ['Land plots', 'Land and building offers'],
+        ['Core sectors', 'Industry • Agro • Services'],
+        ['Information openness', 'Structured public data'],
+      ],
+    },
+    zh: {
+      homeTab: '首页',
+      badge: '皮斯肯特区',
+      title: '投资机会一站式平台',
+      description: '通过互动地图了解皮斯肯特区的投资项目、土地和基础设施信息，并获取AI顾问的建议。',
+      mapButton: '投资地图',
+      aiButton: 'AI顾问',
+      stats: [
+        ['投资项目', '项目目录'],
+        ['土地资源', '土地与建筑方案'],
+        ['重点行业', '工业 • 农业 • 服务业'],
+        ['信息公开', '结构化公开数据'],
+      ],
+    },
+  }[lang];
+
   const handleShowOnMap = (plot: any) => {
     if (plot && plot.polygonCoordinates && plot.polygonCoordinates[0]) {
       setMapViewport({ center: plot.polygonCoordinates[0], zoom: 15 });
@@ -253,6 +312,10 @@ export default function Home() {
 
           {/* Кнопки переключения страниц (ОСТАЛОСЬ СТРОГО ДВА СЕКТОРА) */}
           <nav className="p-4 space-y-1">
+            <button onClick={() => handleTabChange('home')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'home' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
+              <span className="h-2 w-2 rounded-sm border border-current" />
+              {heroLabels.homeTab}
+            </button>
             <button onClick={() => handleTabChange('ai')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'ai' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
               {localLabels.aiTab}
             </button>
@@ -304,6 +367,82 @@ export default function Home() {
 
         {/* НАПОЛНЕНИЕ СТРАНИЦ */}
         <div className="flex-1 w-full relative overflow-hidden">
+
+          {/* ЭКРАН 0: LANDING / HERO */}
+          {activeTab === 'home' && (
+            <div className="h-full w-full overflow-y-auto bg-[#050b16]">
+              <section className="relative min-h-full overflow-hidden px-4 py-8 sm:px-6 md:px-8 lg:px-10 lg:py-10">
+                <div className="pointer-events-none absolute -left-32 top-10 h-72 w-72 rounded-full bg-cyan-900/10 blur-3xl" />
+                <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 rounded-full bg-blue-900/10 blur-3xl" />
+
+                <div className="relative mx-auto max-w-7xl">
+                  <div className="grid items-center gap-10 lg:grid-cols-[0.86fr_1.14fr] lg:gap-10 xl:grid-cols-[0.82fr_1.18fr]">
+                    <div className="max-w-2xl">
+                      <div className="inline-flex items-center gap-2 rounded-full border border-cyan-700/40 bg-cyan-950/30 px-3 py-1.5 text-[10px] font-bold tracking-[0.22em] text-cyan-300">
+                        <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+                        {heroLabels.badge}
+                      </div>
+
+                      <p className="mt-6 text-sm font-semibold tracking-[0.18em] text-slate-400">Piskent Invest AI</p>
+                      <h1 className="mt-3 max-w-3xl text-3xl font-bold leading-[1.12] tracking-tight text-white sm:text-4xl lg:text-5xl xl:text-[3.5rem]">
+                        {heroLabels.title}
+                      </h1>
+                      <p className="mt-5 max-w-xl text-sm leading-7 text-slate-400 sm:text-base">
+                        {heroLabels.description}
+                      </p>
+
+                      <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                        <button
+                          onClick={() => handleTabChange('map')}
+                          className="inline-flex min-h-11 items-center justify-center gap-3 rounded-lg border border-cyan-600 bg-cyan-700 px-5 py-3 text-xs font-bold text-white shadow-lg shadow-cyan-950/20 transition-colors hover:bg-cyan-600"
+                        >
+                          <span className="h-2 w-2 rounded-full border-2 border-white" />
+                          {heroLabels.mapButton}
+                        </button>
+                        <button
+                          onClick={() => handleTabChange('ai')}
+                          className="inline-flex min-h-11 items-center justify-center gap-3 rounded-lg border border-slate-600/80 bg-slate-900/70 px-5 py-3 text-xs font-bold text-slate-100 transition-colors hover:border-cyan-700/60 hover:bg-slate-800"
+                        >
+                          <span className="grid h-4 w-4 grid-cols-2 gap-0.5">
+                            <span className="rounded-[2px] bg-cyan-400/80" />
+                            <span className="rounded-[2px] bg-cyan-400/40" />
+                            <span className="rounded-[2px] bg-cyan-400/40" />
+                            <span className="rounded-[2px] bg-cyan-400/80" />
+                          </span>
+                          {heroLabels.aiButton}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="relative mx-auto flex w-full max-w-3xl items-center justify-center py-4 sm:py-6 lg:min-h-[520px] lg:py-0">
+                      <div className="pointer-events-none absolute inset-[12%] rounded-[45%] bg-cyan-500/15 blur-[80px]" />
+                      <div className="pointer-events-none absolute bottom-[12%] left-[10%] right-[5%] h-16 rounded-[50%] bg-black/65 blur-2xl" />
+                      <img
+                        src="/hero/piskent-hero-map.png"
+                        alt="Piskent Invest AI 3D map"
+                        className="relative z-10 h-auto max-h-[430px] w-full max-w-[680px] object-contain drop-shadow-[0_28px_42px_rgba(0,0,0,0.42)] sm:max-h-[480px] lg:max-h-[540px]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-10 grid grid-cols-2 gap-3 lg:mt-5 lg:grid-cols-4">
+                    {heroLabels.stats.map(([label, value], index) => (
+                      <div key={label} className="group relative overflow-hidden rounded-2xl border border-slate-700/60 bg-gradient-to-br from-[#0b1728]/95 to-[#07101d]/95 p-4 shadow-[0_16px_36px_rgba(0,0,0,0.18)] backdrop-blur sm:p-5">
+                        <div className="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/25 to-transparent" />
+                        <div className="flex items-center gap-3">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-cyan-700/40 bg-cyan-950/45 text-[9px] font-bold text-cyan-300 shadow-inner shadow-cyan-300/5">
+                            {String(index + 1).padStart(2, '0')}
+                          </span>
+                          <span className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-500">{label}</span>
+                        </div>
+                        <p className="mt-3 text-xs font-semibold leading-5 text-slate-200 sm:text-sm">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            </div>
+          )}
 
           {/* ЭКРАН 1: AI MASLAHATCHI */}
           {activeTab === 'ai' && (
