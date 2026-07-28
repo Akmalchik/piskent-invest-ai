@@ -471,6 +471,67 @@ function fallbackReason(plot: Plot, intent: string, lang: Lang) {
   return reasons[lang][intent] || reasons[lang].general;
 }
 
+function generalReason(plot: Plot, lang: Lang) {
+  const name = normalizeText(plot.name);
+  const type = normalizeText(plot.property_type);
+  const industry = normalizeText(plot.industry);
+  const hasBuilding = ['building', 'land_building'].includes(type) || Number(plot.building_area_m2) > 0;
+  const isLarge = Number(plot.area) >= 5;
+
+  if (/kollej|колледж/.test(name)) {
+    return {
+      uz: 'katta maydoni sababli yirik loyiha uchun ko‘rib chiqish mumkin.',
+      ru: 'благодаря большой площади можно рассмотреть для крупного проекта.',
+      en: 'its large area makes it worth considering for a larger project.',
+      zh: '面积较大，可考虑用于较大型项目。',
+    }[lang];
+  }
+  if (/ferma|ферм/.test(name) || /agro|qishloq|farm|сельск/.test(industry)) {
+    return {
+      uz: 'mavjud infratuzilmasi bilan agro yoki ishlab chiqarish loyihasi uchun ko‘rib chiqish mumkin.',
+      ru: 'имеющаяся инфраструктура позволяет рассмотреть объект для аграрного или производственного проекта.',
+      en: 'its recorded infrastructure makes it worth considering for an agricultural or production project.',
+      zh: '已记录的基础设施使其可用于农业或生产项目的初步评估。',
+    }[lang];
+  }
+  if (isLarge) {
+    return {
+      uz: 'katta maydoni sababli yirik loyiha uchun ko‘rib chiqish mumkin.',
+      ru: 'благодаря большой площади можно рассмотреть для крупного проекта.',
+      en: 'its large area makes it worth considering for a larger project.',
+      zh: '面积较大，可考虑用于较大型项目。',
+    }[lang];
+  }
+  if (hasBuilding) {
+    return {
+      uz: 'tayyor bino sifatida kichikroq ishlab chiqarish yoki servis loyihasi uchun ko‘rib chiqish mumkin.',
+      ru: 'готовое здание можно рассмотреть для небольшого производственного или сервисного проекта.',
+      en: 'the existing building can be considered for a smaller production or service project.',
+      zh: '现有建筑可考虑用于较小型的生产或服务项目。',
+    }[lang];
+  }
+  return {
+    uz: 'yer maydoni va mavjud kommunikatsiyalari bo‘yicha dastlabki variant sifatida ko‘rib chiqish mumkin.',
+    ru: 'можно рассмотреть как первоначальный вариант с учётом площади участка и указанных коммуникаций.',
+    en: 'it can be considered as an initial option based on its land area and recorded utilities.',
+    zh: '可根据土地面积和已记录的配套设施作为初步选项。',
+  }[lang];
+}
+
+function composeGeneralAnswer(selected: Plot[], lang: Lang) {
+  const plots = selected.slice(0, 3);
+  const blocks = plots.map(plot =>
+    `**${plot.name}** — ${generalReason(plot, lang)}\n\n${infraLines(plot, lang)}\n\n[RECOMMEND_ID:${plot.id}]`
+  );
+  const ending = {
+    uz: `Xulosa: agar tayyor infratuzilma muhim bo‘lsa, yuqoridagi obyektlarni dastlabki tanlov sifatida ko‘rib chiqish mumkin.\n\n${generalQuestion(lang)}`,
+    ru: `Вывод: если важна готовая инфраструктура, перечисленные объекты можно рассмотреть как первоначальный выбор.\n\n${generalQuestion(lang)}`,
+    en: `Conclusion: if existing infrastructure is important, the properties above can be considered as an initial shortlist.\n\n${generalQuestion(lang)}`,
+    zh: `结论：如果现有基础设施很重要，可以将上述项目作为初步候选。\n\n${generalQuestion(lang)}`,
+  }[lang];
+  return [generalIntro(lang, plots.length), ...blocks, ending].join('\n\n');
+}
+
 function fallbackAnswer(candidates: Plot[], intent: string, lang: Lang) {
   const selected = candidates.slice(0, 3);
   const categoryIntro = intent !== 'general' && !selected.some(plot => {
@@ -615,12 +676,18 @@ export async function POST(req: NextRequest) {
 
     const provider = await askProvider(message, lang, candidates, intent, isDetailedRequest(message), scope);
     if (provider) {
+      if (intent === 'general') {
+        return NextResponse.json({ text: composeGeneralAnswer(provider.selected, lang) });
+      }
       const formatted = formatProviderAnswer(provider.answer, lang, intent, provider.selected.length);
       return NextResponse.json({ text: attachMarkers(formatted, provider.selected, intent) });
     }
 
     if (intent === 'compare') {
       return NextResponse.json({ text: comparisonFallback(candidates, lang) });
+    }
+    if (intent === 'general') {
+      return NextResponse.json({ text: composeGeneralAnswer(candidates, lang) });
     }
     const fallback = fallbackAnswer(candidates, intent, lang);
     return NextResponse.json({ text: fallback.answer });
