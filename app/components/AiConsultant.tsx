@@ -67,27 +67,22 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
             const data = await response.json();
-            let aiText = data.text || '';
+            let aiText = data.answer || data.text || '';
             if (!aiText) throw new Error('Empty response');
 
-            const recommendedIds = Array.from(
-                new Set([...aiText.matchAll(/\[RECOMMEND_ID:\s*([^\]\s]+)\]/g)].map(match => match[1]))
-            );
+            const legacyMarkerRegex = /\[RECOMMEND_ID:\s*([^\]\s]+)\]|\[SHOW_MAP:\s*([^\]\s]+)\]|\[\[map:\s*([^\]\s]+)\]\]/gi;
+            const legacyIds = [...String(data.text || aiText).matchAll(legacyMarkerRegex)]
+                .map(match => match[1] || match[2] || match[3]);
+            const structuredIds = Array.isArray(data.recommendedIds)
+                ? data.recommendedIds.map((id: unknown) => String(id))
+                : [];
+            const recommendedIds = Array.from(new Set(structuredIds.length > 0 ? structuredIds : legacyIds));
+            const apiObjects = Array.isArray(data.recommendedObjects) ? data.recommendedObjects : [];
             const recommendedPlots = recommendedIds
-                .map(id => plots.find((plot: any) => String(plot.id) === id))
+                .map(id => plots.find((plot: any) => String(plot.id) === id)
+                    || apiObjects.find((plot: any) => String(plot.id) === id))
                 .filter(Boolean);
-            const messageParts: any[] = [];
-            const markerRegex = /\[RECOMMEND_ID:\s*([^\]\s]+)\]/g;
-            let cursor = 0;
-            for (const match of aiText.matchAll(markerRegex)) {
-                const index = match.index ?? 0;
-                if (index > cursor) messageParts.push({ type: 'text', text: aiText.slice(cursor, index) });
-                const plot = plots.find((item: any) => String(item.id) === match[1]);
-                if (plot) messageParts.push({ type: 'recommendation', plot });
-                cursor = index + match[0].length;
-            }
-            if (cursor < aiText.length) messageParts.push({ type: 'text', text: aiText.slice(cursor) });
-            aiText = aiText.replace(markerRegex, '').replace(/\*\*/g, '').trim();
+            aiText = aiText.replace(legacyMarkerRegex, '').replace(/\*\*/g, '').trim();
 
             setIsTyping(false);
             setChatMessages([
@@ -96,7 +91,6 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                     sender: 'ai',
                     text: aiText,
                     recommendedPlots,
-                    parts: messageParts,
                 },
             ]);
         } catch (error) {
@@ -256,23 +250,20 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                                 ? 'bg-cyan-800 text-white rounded-tr-sm border border-cyan-700'
                                 : 'bg-[#0a1324] border border-slate-700/60 text-slate-200 rounded-tl-sm relative'
                                 }`}>
-                                {msg.sender === 'ai' && msg.parts?.length > 0 ? (
-                                    <div className="space-y-1">
-                                        {msg.parts.map((part: any, partIndex: number) => part.type === 'text' ? (
-                                            <div key={`text-${partIndex}`} className="whitespace-pre-wrap py-0.5">{part.text.replace(/\*\*/g, '')}</div>
-                                        ) : (
-                                            <div key={`plot-${part.plot.id}-${partIndex}`} className="my-3 flex flex-col gap-2 rounded-r-lg border-l-2 border-cyan-700/60 bg-cyan-950/10 py-1.5 pl-3 pr-1 sm:flex-row sm:items-center">
-                                                <span className="min-w-0 flex-1 truncate text-[10px] font-semibold text-slate-300" title={part.plot.name}>
-                                                    {part.plot.name}
-                                                </span>
-                                                <button onClick={() => onSelectPlot(part.plot)} className="px-3.5 py-2 bg-cyan-700 hover:bg-cyan-600 text-white font-bold rounded-lg text-[10px] uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
-                                                    <span>{labels.mapBtn}</span> 📍
-                                                </button>
-                                            </div>
+                                <div className="whitespace-pre-wrap">{msg.text}</div>
+                                {msg.sender === 'ai' && msg.recommendedPlots?.length > 0 && (
+                                    <div className="mt-3 space-y-2 border-t border-slate-700/60 pt-3">
+                                        {msg.recommendedPlots.map((plot: any) => (
+                                            <button
+                                                key={String(plot.id)}
+                                                onClick={() => onSelectPlot(plot)}
+                                                className="flex w-full items-center justify-between gap-2 rounded-lg bg-cyan-700 px-3.5 py-2 text-left text-[10px] font-bold text-white transition-colors hover:bg-cyan-600"
+                                            >
+                                                <span>{labels.mapBtn}: {plot.name}</span>
+                                                <span aria-hidden="true">📍</span>
+                                            </button>
                                         ))}
                                     </div>
-                                ) : (
-                                    <div className="whitespace-pre-wrap">{msg.text}</div>
                                 )}
                             </div>
                         </div>

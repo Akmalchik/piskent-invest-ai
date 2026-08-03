@@ -13,6 +13,7 @@ type Plot = {
   ownership_type: string;
   infrastructure: Record<string, unknown>;
   auksionUrl: string;
+  polygonCoordinates: unknown;
 };
 
 const CONTACT = {
@@ -47,6 +48,7 @@ function normalizePlots(plots: any[]): Plot[] {
       ownership_type: String(plot.ownership_type || plot.ownershipType || ''),
       infrastructure: plot.infrastructure || {},
       auksionUrl: String(plot.auksionUrl || plot.auksion_url || plot.auction_url || ''),
+      polygonCoordinates: plot.polygonCoordinates || plot.polygon_coords || null,
     }))
     .filter(plot => !/^test$/i.test(plot.name));
 }
@@ -628,6 +630,22 @@ function attachMarkers(answer: string, selected: Plot[], intent: string) {
   return result;
 }
 
+function chatResponse(answer: string, selected: Plot[] = []) {
+  const recommendedObjects = selected.map(plot => ({
+    id: String(plot.id),
+    name: plot.name,
+    polygonCoordinates: plot.polygonCoordinates,
+  }));
+
+  return NextResponse.json({
+    // Keep `text` and embedded markers for older clients.
+    text: answer,
+    answer: answer.replace(/\[(?:RECOMMEND_ID|SHOW_MAP):[^\]]+\]|\[\[map:[^\]]+\]\]/gi, '').trim(),
+    recommendedIds: recommendedObjects.map(plot => plot.id),
+    recommendedObjects,
+  });
+}
+
 async function loadPlots(req: NextRequest) {
   const response = await fetch(new URL('/api/save-plots', req.nextUrl.origin), { cache: 'no-store' });
   if (!response.ok) throw new Error(`Plots source error: ${response.status}`);
@@ -642,27 +660,27 @@ export async function POST(req: NextRequest) {
     const lang = normalizeLang(body.lang);
     if (!message) return NextResponse.json({ error: 'Invalid message' }, { status: 400 });
 
-    if (isGreeting(message)) return NextResponse.json({ text: localText(lang, 'greeting') });
-    if (isContactRequest(message)) return NextResponse.json({ text: localText(lang, 'contact') });
-    if (!isPriceRequest(message) && isOffTopic(message)) return NextResponse.json({ text: localText(lang, 'offTopic') });
+    if (isGreeting(message)) return chatResponse(localText(lang, 'greeting'));
+    if (isContactRequest(message)) return chatResponse(localText(lang, 'contact'));
+    if (!isPriceRequest(message) && isOffTopic(message)) return chatResponse(localText(lang, 'offTopic'));
 
     const plots = await loadPlots(req);
-    if (plots.length === 0) return NextResponse.json({ text: localText(lang, 'notFound') });
+    if (plots.length === 0) return chatResponse(localText(lang, 'notFound'));
     const explicitlyNamed = findNamedPlots(message, plots, 3);
 
     if (isPriceRequest(message)) {
-      if (explicitlyNamed.length === 0) return NextResponse.json({ text: priceClarification(lang) });
-      return NextResponse.json({ text: priceAnswer(explicitlyNamed[0], lang) });
+      if (explicitlyNamed.length === 0) return chatResponse(priceClarification(lang));
+      return chatResponse(priceAnswer(explicitlyNamed[0], lang), explicitlyNamed.slice(0, 1));
     }
 
     if (isShowOnMapRequest(message)) {
-      if (explicitlyNamed.length === 0) return NextResponse.json({ text: localText(lang, 'notFound') });
-      return NextResponse.json({ text: `${explicitlyNamed[0].name}\n[RECOMMEND_ID:${explicitlyNamed[0].id}]` });
+      if (explicitlyNamed.length === 0) return chatResponse(localText(lang, 'notFound'));
+      return chatResponse(`${explicitlyNamed[0].name}\n[RECOMMEND_ID:${explicitlyNamed[0].id}]`, explicitlyNamed.slice(0, 1));
     }
 
     const intent = getIntent(message);
     if (intent === 'compare' && explicitlyNamed.length < 2) {
-      return NextResponse.json({ text: comparisonClarification(lang) });
+      return chatResponse(comparisonClarification(lang));
     }
 
     const isSpecific = intent !== 'compare' && explicitlyNamed.length === 1 && !asksForAlternatives(message);
@@ -672,25 +690,26 @@ export async function POST(req: NextRequest) {
       : isSpecific
         ? explicitlyNamed.slice(0, 1)
         : selectCandidates(message, plots, intent);
-    if (candidates.length === 0) return NextResponse.json({ text: localText(lang, 'notFound') });
+    if (candidates.length === 0) return chatResponse(localText(lang, 'notFound'));
 
     const provider = await askProvider(message, lang, candidates, intent, isDetailedRequest(message), scope);
     if (provider) {
       if (intent === 'general') {
-        return NextResponse.json({ text: composeGeneralAnswer(provider.selected, lang) });
+        return chatResponse(composeGeneralAnswer(provider.selected, lang), provider.selected);
       }
       const formatted = formatProviderAnswer(provider.answer, lang, intent, provider.selected.length);
-      return NextResponse.json({ text: attachMarkers(formatted, provider.selected, intent) });
+      return chatResponse(attachMarkers(formatted, provider.selected, intent), provider.selected);
     }
 
     if (intent === 'compare') {
-      return NextResponse.json({ text: comparisonFallback(candidates, lang) });
+      return chatResponse(comparisonFallback(candidates, lang), candidates);
     }
     if (intent === 'general') {
-      return NextResponse.json({ text: composeGeneralAnswer(candidates, lang) });
+      const selected = candidates.slice(0, 3);
+      return chatResponse(composeGeneralAnswer(selected, lang), selected);
     }
     const fallback = fallbackAnswer(candidates, intent, lang);
-    return NextResponse.json({ text: fallback.answer });
+    return chatResponse(fallback.answer, fallback.selected);
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
