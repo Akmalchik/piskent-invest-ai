@@ -187,6 +187,57 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     };
     const starterPrompts = starterPromptsByLang[lang] || starterPromptsByLang.uz;
 
+    const renderAiMessage = (message: any) => {
+        const recommendedPlots = Array.isArray(message.recommendedPlots) ? message.recommendedPlots : [];
+        if (recommendedPlots.length === 0) {
+            return <div className="whitespace-pre-wrap">{message.text}</div>;
+        }
+
+        const placedPlotIds = new Set<string>();
+        return (
+            <div className="space-y-0.5">
+                {String(message.text).split('\n').map((line, lineIndex) => {
+                    const plot = recommendedPlots.find((item: any) => {
+                        const id = String(item.id);
+                        return !placedPlotIds.has(id) && line.includes(String(item.name));
+                    });
+
+                    if (!plot) {
+                        return line ? (
+                            <div key={`line-${lineIndex}`} className="whitespace-pre-wrap">{line}</div>
+                        ) : (
+                            <div key={`line-${lineIndex}`} className="h-2" aria-hidden="true" />
+                        );
+                    }
+
+                    placedPlotIds.add(String(plot.id));
+                    return (
+                        <div
+                            key={`plot-${plot.id}-${lineIndex}`}
+                            className="my-2 flex flex-col gap-2 rounded-lg border border-slate-700/60 bg-slate-950/25 px-3 py-2.5 sm:flex-row sm:items-start sm:justify-between"
+                        >
+                            <div className="min-w-0 flex-1 whitespace-pre-wrap font-semibold leading-5 text-slate-100">
+                                {line}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => onSelectPlot(plot)}
+                                aria-label={`${labels.mapBtn}: ${plot.name}`}
+                                className="inline-flex h-7 shrink-0 items-center justify-center gap-1.5 self-start rounded-full border border-cyan-700/60 bg-cyan-950/50 px-2.5 text-[9px] font-semibold text-cyan-200 shadow-sm shadow-black/20 transition-colors hover:border-cyan-500/70 hover:bg-cyan-900/60 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a1324]"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5" aria-hidden="true">
+                                    <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z" stroke="currentColor" strokeWidth="1.8" />
+                                    <circle cx="12" cy="10" r="2" stroke="currentColor" strokeWidth="1.8" />
+                                </svg>
+                                <span>{labels.mapBtn}</span>
+                            </button>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+
     if (!isChatLayout) return null;
 
     return (
@@ -250,20 +301,8 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                                 ? 'bg-cyan-800 text-white rounded-tr-sm border border-cyan-700'
                                 : 'bg-[#0a1324] border border-slate-700/60 text-slate-200 rounded-tl-sm relative'
                                 }`}>
-                                <div className="whitespace-pre-wrap">{msg.text}</div>
-                                {msg.sender === 'ai' && msg.recommendedPlots?.length > 0 && (
-                                    <div className="mt-3 space-y-2 border-t border-slate-700/60 pt-3">
-                                        {msg.recommendedPlots.map((plot: any) => (
-                                            <button
-                                                key={String(plot.id)}
-                                                onClick={() => onSelectPlot(plot)}
-                                                className="flex w-full items-center justify-between gap-2 rounded-lg bg-cyan-700 px-3.5 py-2 text-left text-[10px] font-bold text-white transition-colors hover:bg-cyan-600"
-                                            >
-                                                <span>{labels.mapBtn}: {plot.name}</span>
-                                                <span aria-hidden="true">📍</span>
-                                            </button>
-                                        ))}
-                                    </div>
+                                {msg.sender === 'ai' ? renderAiMessage(msg) : (
+                                    <div className="whitespace-pre-wrap">{msg.text}</div>
                                 )}
                             </div>
                         </div>
