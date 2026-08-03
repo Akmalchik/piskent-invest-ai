@@ -492,6 +492,9 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
+                  <p className="mx-auto mt-6 max-w-3xl text-center text-[10px] leading-5 text-slate-500 sm:text-xs">
+                    Piskent Invest AI — Piskent tumani investitsiya obyektlari, yer maydonlari va binolari haqida ma’lumot beruvchi raqamli investitsiya portali.
+                  </p>
                 </div>
               </section>
             </div>
