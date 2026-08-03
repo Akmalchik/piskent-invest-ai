@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import fs from 'fs';
 import path from 'path';
+import { verifyAdminSession } from '@/lib/adminAuth';
 
 const PLOTS_CACHE_TTL_MS = 60_000;
 let plotsCache: { data: any[]; expiresAt: number } | null = null;
@@ -150,6 +151,10 @@ export async function GET() {
 }
 // 2. МЕТОД POST: Сохранение изменений координат из формы админки (ОДИН ЭКЗЕМПЛЯР)
 export async function POST(request: Request) {
+    if (!(await verifyAdminSession())) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const incomingData = await request.json();
 
@@ -178,6 +183,10 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+    if (!(await verifyAdminSession())) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const incomingData = await request.json();
 
@@ -205,6 +214,10 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+    if (!(await verifyAdminSession())) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const incomingData = await request.json();
 

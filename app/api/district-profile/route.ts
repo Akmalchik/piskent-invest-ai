@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { verifyAdminSession } from '@/lib/adminAuth';
 
 const DEFAULT_PROFILE = {
     id: 1,
@@ -77,6 +78,10 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
+    if (!(await verifyAdminSession())) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
         const body = await request.json();
         const updateData = ALLOWED_FIELDS.reduce((acc: Record<string, unknown>, field) => {

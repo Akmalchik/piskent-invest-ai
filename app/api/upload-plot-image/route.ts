@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { verifyAdminSession } from '@/lib/adminAuth';
 
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const EXTENSIONS: Record<string, string> = {
@@ -9,12 +10,11 @@ const EXTENSIONS: Record<string, string> = {
 };
 
 export async function POST(request: Request) {
-    try {
-        const adminSession = request.headers.get('X-Admin-Session')?.trim();
-        if (!adminSession) {
-            return NextResponse.json({ error: 'Avval admin panelga kiring.' }, { status: 401 });
-        }
+    if (!(await verifyAdminSession())) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
+    try {
         const formData = await request.formData();
         const file = formData.get('file');
 
@@ -24,6 +24,10 @@ export async function POST(request: Request) {
 
         if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
             return NextResponse.json({ error: 'Faqat JPG, PNG yoki WEBP rasm yuklash mumkin.' }, { status: 400 });
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            return NextResponse.json({ error: 'Rasm hajmi 5 MB dan oshmasligi kerak.' }, { status: 413 });
         }
 
         const extension = EXTENSIONS[file.type];

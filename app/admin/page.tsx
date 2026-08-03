@@ -4,8 +4,6 @@ import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 're
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
-const ADMIN_SESSION_KEY = 'piskent_admin_session';
-
 // Загружаем карту динамически для админки, исключая ошибки рендеринга на сервере (SSR)
 const MyInvestmentMap = dynamic(() => import('../components/MyInvestmentMap'), {
     ssr: false,
@@ -77,17 +75,28 @@ export default function AdminPage() {
     const lang = 'uz';
     const [inputPassword, setInputPassword] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const handleLogin = (e: FormEvent<HTMLFormElement>) => {
+    const [isSessionChecked, setIsSessionChecked] = useState(false);
+    const [loginError, setLoginError] = useState('');
+    const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (inputPassword === 'Piskent2026!') {
-            try {
-                sessionStorage.setItem(ADMIN_SESSION_KEY, `admin-${Date.now()}`);
-                setIsAuthenticated(true);
-            } catch {
-                alert('Avval admin panelga kiring.');
+        setLoginError('');
+
+        try {
+            const response = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: inputPassword }),
+            });
+
+            if (!response.ok) {
+                setLoginError(response.status === 401 ? 'Секретный код неверный!' : 'Не удалось выполнить вход.');
+                return;
             }
-        } else {
-            alert('Секретный код неверный!');
+
+            setInputPassword('');
+            setIsAuthenticated(true);
+        } catch {
+            setLoginError('Не удалось выполнить вход.');
         }
     };
 
@@ -119,11 +128,11 @@ export default function AdminPage() {
     const [successMessage, setSuccessMessage] = useState(false);
 
     useEffect(() => {
-        try {
-            setIsAuthenticated(Boolean(sessionStorage.getItem(ADMIN_SESSION_KEY)?.trim()));
-        } catch {
-            setIsAuthenticated(false);
-        }
+        fetch('/api/admin/session', { cache: 'no-store' })
+            .then(response => response.ok ? response.json() : { authenticated: false })
+            .then(data => setIsAuthenticated(Boolean(data.authenticated)))
+            .catch(() => setIsAuthenticated(false))
+            .finally(() => setIsSessionChecked(true));
     }, []);
 
     const resetForm = () => {
@@ -210,17 +219,6 @@ export default function AdminPage() {
         setPhotoUploadMessage('Yuklanmoqda...');
 
         try {
-            let adminSession = '';
-            try {
-                adminSession = sessionStorage.getItem(ADMIN_SESSION_KEY)?.trim() || '';
-            } catch {
-                // Обрабатывается общей понятной ошибкой ниже.
-            }
-
-            if (!adminSession) {
-                throw new Error('Avval admin panelga kiring.');
-            }
-
             const compressedFile = await compressImage(file);
             if (compressedFile.size > 2 * 1024 * 1024) {
                 throw new Error('Rasm hajmi katta. Boshqa rasm tanlang.');
@@ -230,9 +228,6 @@ export default function AdminPage() {
             formData.append('file', compressedFile);
             const response = await fetch('/api/upload-plot-image', {
                 method: 'POST',
-                headers: {
-                    'X-Admin-Session': adminSession,
-                },
                 body: formData,
             });
             const result = await response.json().catch(() => ({}));
@@ -429,6 +424,14 @@ export default function AdminPage() {
     };
 
     // 1. Добавляем проверку условия перед твоим новым кодом:
+    if (!isSessionChecked) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-slate-900 p-4 font-sans text-sm text-slate-400">
+                Проверка сессии...
+            </div>
+        );
+    }
+
     if (!isAuthenticated) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-slate-900 p-4 font-sans">
@@ -446,6 +449,10 @@ export default function AdminPage() {
                         onChange={(e) => setInputPassword(e.target.value)}
                         className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition mb-4 text-black"
                     />
+
+                    {loginError && (
+                        <p className="mb-4 text-xs font-medium text-red-400" role="alert">{loginError}</p>
+                    )}
 
                     <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl text-sm transition-all shadow-lg shadow-emerald-900/20">
                         Войти в систему
