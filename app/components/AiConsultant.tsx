@@ -10,8 +10,11 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     const [chatMessages, setChatMessages] = useState<any[]>([]);
     const [plots, setPlots] = useState<any[]>([]);
     const [isTyping, setIsTyping] = useState(false);
+    const [isCoolingDown, setIsCoolingDown] = useState(false);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const requestInFlightRef = useRef(false);
+    const cooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -26,6 +29,10 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
         setChatInput("");
         setIsTyping(false);
     }, [lang]);
+
+    useEffect(() => () => {
+        if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
+    }, []);
 
     // Загружаем те же нормализованные данные, что использует карта
     useEffect(() => {
@@ -49,13 +56,20 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     }, [isChatLayout]);
 
     const handleSendMessage = async (textToSend?: string) => {
-        const messageText = textToSend || chatInput;
-        if (!messageText.trim()) return;
+        if (requestInFlightRef.current || isTyping || isCoolingDown) return;
+
+        const messageText = (textToSend ?? chatInput).trim();
+        if (!messageText) return;
+        if (messageText.length > 800) {
+            setChatMessages([...chatMessages, { sender: 'ai', text: labels.messageTooLong }]);
+            return;
+        }
 
         const newMessages = [...chatMessages, { sender: 'user', text: messageText }];
         setChatMessages(newMessages);
         setChatInput("");
         setIsTyping(true);
+        requestInFlightRef.current = true;
 
         try {
             const response = await fetch('/api/chat', {
@@ -64,9 +78,19 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 body: JSON.stringify({ message: messageText, plots, lang }),
             });
 
-            if (!response.ok) throw new Error(`API Error: ${response.status}`);
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                const errorText = data.code === 'MESSAGE_TOO_LONG'
+                    ? labels.messageTooLong
+                    : data.code === 'RATE_LIMITED'
+                        ? `${labels.rateLimited}${data.retryAfter ? ` (${data.retryAfter}s)` : ''}`
+                        : data.code === 'INVALID_MESSAGE'
+                            ? labels.invalidMessage
+                            : labels.errorText;
+                setChatMessages([...newMessages, { sender: 'ai', text: errorText }]);
+                return;
+            }
 
-            const data = await response.json();
             let aiText = data.answer || data.text || '';
             if (!aiText) throw new Error('Empty response');
 
@@ -84,7 +108,6 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 .filter(Boolean);
             aiText = aiText.replace(legacyMarkerRegex, '').replace(/\*\*/g, '').trim();
 
-            setIsTyping(false);
             setChatMessages([
                 ...newMessages,
                 {
@@ -95,7 +118,6 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             ]);
         } catch (error) {
             console.error('AI chat request failed:', error);
-            setIsTyping(false);
             setChatMessages([
                 ...newMessages,
                 {
@@ -103,6 +125,15 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                     text: labels.errorText,
                 }
             ]);
+        } finally {
+            requestInFlightRef.current = false;
+            setIsTyping(false);
+            setIsCoolingDown(true);
+            if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
+            cooldownTimerRef.current = setTimeout(() => {
+                setIsCoolingDown(false);
+                cooldownTimerRef.current = null;
+            }, 3000);
         }
     };
 
@@ -118,6 +149,10 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             pageBtn: "Auksion sahifasi",
             clear: "Tozalash",
             loading: "Mos obyektlar saralanmoqda...",
+            messageTooLong: "Xabar juda uzun. Iltimos, qisqaroq yozing.",
+            rateLimited: "So‘rovlar ko‘payib ketdi. Bir necha soniyadan keyin qayta urinib ko‘ring.",
+            invalidMessage: "Xabar matni noto‘g‘ri.",
+            disclaimer: "Javoblar ma’lumot uchun. Narx va huquqiy holatni rasmiy manbadan aniqlashtiring.",
             starterTitle: "AI Investitsiya Maslahatchisi",
             starterIntro: "Piskent tumanidagi investitsiya obyektlarini bazadagi ma’lumotlar asosida tanlashga yordam beraman.",
             errorText: "AI Investitsiya Maslahatchisi vaqtincha mavjud emas. Investitsiya obyektlarini xarita orqali ko‘rishingiz mumkin."
@@ -129,6 +164,10 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             pageBtn: "Страница аукциона",
             clear: "Очистить",
             loading: "Подбираются подходящие объекты...",
+            messageTooLong: "Сообщение слишком длинное. Напишите короче.",
+            rateLimited: "Слишком много запросов. Повторите через несколько секунд.",
+            invalidMessage: "Некорректный текст сообщения.",
+            disclaimer: "Ответы носят справочный характер. Цены и правовой статус уточняйте в официальном источнике.",
             starterTitle: "Цифровой инвестиционный консультант",
             starterIntro: "Помогу подобрать инвестиционные объекты Пискентского района на основе данных каталога.",
             errorText: "Цифровой инвестиционный консультант временно недоступен. Инвестиционные объекты можно посмотреть на карте."
@@ -140,6 +179,10 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             pageBtn: "Auction Page",
             clear: "Clear",
             loading: "Selecting suitable objects...",
+            messageTooLong: "The message is too long. Please make it shorter.",
+            rateLimited: "Too many requests. Please try again in a few seconds.",
+            invalidMessage: "Invalid message text.",
+            disclaimer: "Answers are for informational purposes. Prices and legal status should be verified with the official source.",
             starterTitle: "Digital Investment Consultant",
             starterIntro: "I can help select investment properties in Piskent district using the catalogue database.",
             errorText: "The Digital Investment Consultant is temporarily unavailable. Investment properties can be viewed on the map."
@@ -151,6 +194,10 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             pageBtn: "拍卖官方页面",
             clear: "清空",
             loading: "正在筛选合适项目...",
+            messageTooLong: "消息过长，请简短输入。",
+            rateLimited: "请求过多，请稍后再试。",
+            invalidMessage: "消息文本无效。",
+            disclaimer: "回答仅供参考。价格和法律状态请以官方来源为准。",
             starterTitle: "数字投资顾问",
             starterIntro: "我可以根据项目数据库帮助筛选皮斯肯特区的投资项目。",
             errorText: "数字投资顾问暂时不可用。您仍然可以在投资地图上查看项目。"
@@ -285,7 +332,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
 
                         <div className="grid w-full max-w-xl gap-2 sm:grid-cols-2">
                             {starterPrompts.map((prompt, index) => (
-                                <button key={prompt} onClick={() => handleSendMessage(prompt)} className="group flex min-h-11 items-center gap-3 rounded-lg border border-slate-700/60 bg-[#0a1324] p-3 text-left text-[11px] font-medium text-slate-300 transition-colors hover:border-cyan-700/50 hover:bg-[#0d182b] hover:text-slate-100">
+                                <button key={prompt} disabled={isTyping || isCoolingDown} onClick={() => handleSendMessage(prompt)} className="group flex min-h-11 items-center gap-3 rounded-lg border border-slate-700/60 bg-[#0a1324] p-3 text-left text-[11px] font-medium text-slate-300 transition-colors hover:border-cyan-700/50 hover:bg-[#0d182b] hover:text-slate-100 disabled:cursor-not-allowed disabled:opacity-50">
                                     <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-cyan-800/50 bg-cyan-950/40 text-[8px] font-bold text-cyan-400">
                                         {String(index + 1).padStart(2, '0')}
                                     </span>
@@ -323,18 +370,31 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
                 <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-3 bg-[#0a1324] border-t border-slate-700/60 flex gap-2">
-                <input
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                    placeholder={t.inputPlaceholder}
-                    className="flex-1 bg-[#060c18] border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-white focus:outline-none focus:border-cyan-600 transition-colors"
-                />
-                <button onClick={() => handleSendMessage()} className="px-4 bg-cyan-700 hover:bg-cyan-600 rounded-lg text-xs font-bold text-white transition-colors active:scale-95">
-                    {t.sendBtn}
-                </button>
+            <div className="border-t border-slate-700/60 bg-[#0a1324] p-3">
+                <div className="flex gap-2">
+                    <div className="relative flex-1">
+                        <input
+                            type="text"
+                            value={chatInput}
+                            maxLength={800}
+                            onChange={(e) => setChatInput(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            placeholder={t.inputPlaceholder}
+                            className="w-full bg-[#060c18] border border-slate-700 rounded-lg px-3.5 py-2 pr-12 text-xs text-white focus:outline-none focus:border-cyan-600 transition-colors"
+                        />
+                        {chatInput.length > 650 && (
+                            <span className="absolute inset-y-0 right-3 flex items-center text-[9px] tabular-nums text-slate-500" aria-live="polite">
+                                {chatInput.length}/800
+                            </span>
+                        )}
+                    </div>
+                    <button disabled={isTyping || isCoolingDown} onClick={() => handleSendMessage()} className="px-4 bg-cyan-700 hover:bg-cyan-600 rounded-lg text-xs font-bold text-white transition-colors active:scale-95 disabled:cursor-not-allowed disabled:bg-cyan-900 disabled:text-cyan-200/60">
+                        {t.sendBtn}
+                    </button>
+                </div>
+                <p className="mt-2 text-[9px] leading-4 text-slate-500">
+                    {labels.disclaimer}
+                </p>
             </div>
         </div>
     );

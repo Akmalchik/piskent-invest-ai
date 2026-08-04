@@ -34,6 +34,44 @@ const LANGUAGE_NAMES: Record<Lang, string> = {
   zh: 'Chinese',
 };
 
+const MAX_MESSAGE_LENGTH = 800;
+const RATE_LIMIT_MAX_REQUESTS = 10;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const MAX_TRACKED_IPS = 5_000;
+const rateLimitStore = new Map<string, { count: number; windowStartedAt: number }>();
+
+function requestIp(req: NextRequest) {
+  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || req.headers.get('x-real-ip')?.trim()
+    || 'unknown';
+}
+
+function checkRateLimit(req: NextRequest) {
+  const now = Date.now();
+
+  for (const [ip, entry] of rateLimitStore) {
+    if (now - entry.windowStartedAt >= RATE_LIMIT_WINDOW_MS) rateLimitStore.delete(ip);
+  }
+
+  const ip = requestIp(req);
+  const existing = rateLimitStore.get(ip);
+  if (!existing) {
+    if (rateLimitStore.size >= MAX_TRACKED_IPS) {
+      const oldestIp = rateLimitStore.keys().next().value;
+      if (oldestIp) rateLimitStore.delete(oldestIp);
+    }
+    rateLimitStore.set(ip, { count: 1, windowStartedAt: now });
+    return null;
+  }
+
+  if (existing.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return Math.max(1, Math.ceil((existing.windowStartedAt + RATE_LIMIT_WINDOW_MS - now) / 1000));
+  }
+
+  existing.count += 1;
+  return null;
+}
+
 function normalizePlots(plots: any[]): Plot[] {
   return plots
     .filter(plot => plot?.id !== undefined && String(plot.name || '').trim())
@@ -654,11 +692,37 @@ async function loadPlots(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const retryAfter = checkRateLimit(req);
+  if (retryAfter !== null) {
+    return NextResponse.json(
+      { error: 'Too many requests', code: 'RATE_LIMITED', retryAfter },
+      { status: 429, headers: { 'Retry-After': String(retryAfter) } },
+    );
+  }
+
   try {
-    const body = await req.json();
-    const message = typeof body.message === 'string' ? body.message.trim() : '';
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid message', code: 'INVALID_MESSAGE' }, { status: 400 });
+    }
+
+    if (typeof body?.message !== 'string') {
+      return NextResponse.json({ error: 'Invalid message', code: 'INVALID_MESSAGE' }, { status: 400 });
+    }
+
+    const message = body.message.trim();
     const lang = normalizeLang(body.lang);
-    if (!message) return NextResponse.json({ error: 'Invalid message' }, { status: 400 });
+    if (!message) {
+      return NextResponse.json({ error: 'Invalid message', code: 'INVALID_MESSAGE' }, { status: 400 });
+    }
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      return NextResponse.json(
+        { error: 'Message too long', code: 'MESSAGE_TOO_LONG', maxLength: MAX_MESSAGE_LENGTH },
+        { status: 400 },
+      );
+    }
 
     if (isGreeting(message)) return chatResponse(localText(lang, 'greeting'));
     if (isContactRequest(message)) return chatResponse(localText(lang, 'contact'));
