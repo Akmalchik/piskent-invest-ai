@@ -3192,7 +3192,7 @@
     "industry": "Agro",
     "status": "E-auksion",
     "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/a99690c4109321c4adc96c988307d89c_S.jpg",
+    "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80",
     "infrastructure": {
       "gas": "Mavjud emas",
       "power": "40 кВт",
@@ -3227,7 +3227,7 @@
     "industry": "Agro",
     "status": "E-auksion",
     "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/c7895a09d7d864b7d6761b62cb4c2c81_S.jpg",
+    "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80",
     "infrastructure": {
       "gas": "Mavjud emas",
       "power": "40 кВт",
@@ -3262,7 +3262,7 @@
     "industry": "Agro",
     "status": "E-auksion",
     "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/e75f62832461bb934fee98027b8638b7_S.jpg",
+    "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80",
     "infrastructure": {
       "gas": "Mavjud emas",
       "power": "40 кВт",
@@ -3297,7 +3297,7 @@
     "industry": "Agro",
     "status": "E-auksion",
     "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/43df80f69b1d5a6167005f93df422987_S.jpg",
+    "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80",
     "infrastructure": {
       "gas": "Mavjud emas",
       "power": "40 кВт",
@@ -3332,7 +3332,7 @@
     "industry": "Agro",
     "status": "E-auksion",
     "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/da3e758684f7fda1e314bebe513140ae_S.jpg",
+    "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80",
     "infrastructure": {
       "gas": "Mavjud emas",
       "power": "40 кВт",
@@ -4480,21 +4480,21 @@
     ]
   },
   {
-    "id": 24769260,
-    "name": "KA1727250014/97-1 yer uchastkasi",
+    "id": 25003142,
+    "name": "KA1727250014/49-1 yer uchastkasi",
     "area": 0.65,
-    "budget": 1727250014971,
+    "budget": 1727250014491,
     "industry": "Agro",
     "status": "E-auksion",
     "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/32db3dc3a1e01425706be5949f87488a_S.jpg",
+    "image": "https://media.e-auksion.uz/i/ee8894fb838598377aa7670aa5a6b896_S.jpg",
     "infrastructure": {
       "gas": "Mavjud emas",
       "power": "40 кВт",
       "water": "Mavjud emas",
       "road": "Asfalt"
     },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=24769260",
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=25003142",
     "polygonCoordinates": [
       [
         40.9044,
@@ -4515,21 +4515,21 @@
     ]
   },
   {
-    "id": 24905625,
-    "name": "KA1727250008/7-1 yer uchastkasi",
+    "id": 25003548,
+    "name": "KA1727250022/48-1 yer uchastkasi",
     "area": 0.65,
-    "budget": 172725000871,
+    "budget": 1727250022481,
     "industry": "Agro",
     "status": "E-auksion",
     "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/547dedd54eb2c1088162cf89d4f742da_S.jpeg",
+    "image": "https://media.e-auksion.uz/i/f5d3436eef9bb97b3f3d01f68b1146d1_S.jpg",
     "infrastructure": {
       "gas": "Mavjud emas",
       "power": "40 кВт",
       "water": "Mavjud emas",
       "road": "Asfalt"
     },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=24905625",
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=25003548",
     "polygonCoordinates": [
       [
         40.9044,
@@ -4546,6 +4546,76 @@
       [
         40.9044,
         69.3518
+      ]
+    ]
+  },
+  {
+    "id": 25003533,
+    "name": "KA1727250022/28-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250022281,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/6b14d4c5f90b088276fc1e4880289a46_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=25003533",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.3522
+      ],
+      [
+        40.9054,
+        69.3522
+      ],
+      [
+        40.9054,
+        69.3536
+      ],
+      [
+        40.9044,
+        69.3536
+      ]
+    ]
+  },
+  {
+    "id": 25003542,
+    "name": "KA1727250022/42-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250022421,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/c20b2e923dbcad4d990f0114cf3a5d58_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=25003542",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.354
+      ],
+      [
+        40.9054,
+        69.354
+      ],
+      [
+        40.9054,
+        69.3554
+      ],
+      [
+        40.9044,
+        69.3554
       ]
     ]
   }
