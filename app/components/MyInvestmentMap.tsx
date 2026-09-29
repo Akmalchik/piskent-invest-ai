@@ -263,8 +263,10 @@ export default function MyInvestmentMap({
                 <LayersControl>
                     <LayersControl.BaseLayer checked name="Clean map / Oddiy xarita">
                         <TileLayer
-                            attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-                            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            maxZoom={19}
+                            className="dark-map-tiles"
                         />
                     </LayersControl.BaseLayer>
                     <LayersControl.BaseLayer name="Satellite hybrid / Sun’iy yo‘ldosh">
