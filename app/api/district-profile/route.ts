@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import { verifyAdminSession } from '@/lib/adminAuth';
 
 const DEFAULT_PROFILE = {
@@ -58,6 +58,7 @@ const ALLOWED_FIELDS = [
 
 export async function GET() {
     try {
+        const supabase = getSupabaseClient();
         const { data, error } = await supabase
             .from('district_profile')
             .select('*')
@@ -83,6 +84,7 @@ export async function PATCH(request: Request) {
     }
 
     try {
+        const supabase = getSupabaseClient();
         const body = await request.json();
         const updateData = ALLOWED_FIELDS.reduce((acc: Record<string, unknown>, field) => {
             if (Object.prototype.hasOwnProperty.call(body || {}, field)) {

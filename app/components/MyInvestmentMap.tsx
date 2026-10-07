@@ -146,47 +146,53 @@ export default function MyInvestmentMap({
     const [isPanelVisible, setIsPanelVisible] = useState(true);
     const [isMobilePanelVisible, setIsMobilePanelVisible] = useState(false);
     const [plots, setPlots] = useState<any[]>([]);
+    const [dataNotice, setDataNotice] = useState<string | null>(null);
     const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
     const [propertyTypeFilter, setPropertyTypeFilter] = useState('all');
 
-    /*  // 1. ИСПРАВЛЕНО: Загружаем живые данные из нашего парсера e-auksion
-      useEffect(() => {
-          fetch('/scraped_plots.json')
-              .then(res => {
-                  if (res.ok) return res.json();
-                  throw new Error('No scraped data');
-              })
-              .then(data => {
-                  if (data && data.length > 0) {
-                      setPlots(data);
-                  } else {
-                      loadFallbackPlots();
-                  }
-              })
-              .catch(() => {
-                  setPlots([]); // Теперь при ошибке карта будет пустой, а не рисовать солдатика
-              });
-  
-          // ЗАМЕНИ ТАКУЮ ФУНКЦИЮ НА ЭТУ:
-          function loadFallbackPlots() {
-              // Просто ничего не делаем или задаем пустой массив, 
-              // не глядя на localStorage
-              setPlots([]);
-          }
-      }, [lang]);
-      */
     useEffect(() => {
-        fetch('/api/save-plots')
-            .then(res => res.json())
-            .then(data => {
-                if (Array.isArray(data)) {
+        let isCancelled = false;
+
+        async function loadPlots() {
+            try {
+                const response = await fetch('/api/save-plots', { cache: 'no-store' });
+                if (!response.ok) throw new Error(`API returned ${response.status}`);
+
+                const data = await response.json();
+                if (!Array.isArray(data)) throw new Error('API response is not an array');
+
+                if (!isCancelled) {
                     setPlots(data.map(withPlotImage));
+                    setDataNotice(
+                        response.headers.get('X-Data-Source') === 'local-fallback'
+                            ? 'База временно недоступна. Показаны резервные данные.'
+                            : null
+                    );
                 }
-            })
-            .catch(err => {
-                console.error('Ошибка загрузки лотов:', err);
-                setPlots([]);
-            });
+            } catch (apiError) {
+                console.error('Ошибка API лотов, загружаем локальные данные:', apiError);
+
+                try {
+                    const fallbackResponse = await fetch('/scraped_plots.json', { cache: 'no-store' });
+                    if (!fallbackResponse.ok) throw new Error(`Fallback returned ${fallbackResponse.status}`);
+                    const fallbackData = await fallbackResponse.json();
+                    if (!Array.isArray(fallbackData)) throw new Error('Fallback is not an array');
+
+                    if (!isCancelled) {
+                        setPlots(fallbackData.map(withPlotImage));
+                        setDataNotice('База временно недоступна. Показаны резервные данные.');
+                    }
+                } catch (fallbackError) {
+                    console.error('Ошибка резервных данных:', fallbackError);
+                    if (!isCancelled) setDataNotice('Не удалось загрузить объекты карты.');
+                }
+            }
+        }
+
+        loadPlots();
+        return () => {
+            isCancelled = true;
+        };
     }, []);
 
     // ОБЪЕДИНЕННЫЙ ФИЛЬТР
@@ -257,6 +263,11 @@ export default function MyInvestmentMap({
 
     return (
         <div className="w-full h-full relative">
+            {dataNotice && (
+                <div className="absolute left-1/2 top-3 z-[1200] max-w-[calc(100%-2rem)] -translate-x-1/2 rounded-lg border border-amber-500/40 bg-amber-950/95 px-3 py-2 text-center text-xs text-amber-100 shadow-lg">
+                    {dataNotice}
+                </div>
+            )}
 
             <MapContainer center={defaultCenter} zoom={defaultZoom} className="h-full w-full z-0" zoomControl={false}>
 

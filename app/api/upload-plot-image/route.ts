@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import { verifyAdminSession } from '@/lib/adminAuth';
 
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
@@ -15,6 +15,7 @@ export async function POST(request: Request) {
     }
 
     try {
+        const supabase = getSupabaseClient();
         const formData = await request.formData();
         const file = formData.get('file');
 
