@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/supabase';
+import { getSupabaseAdminClient, getSupabaseClient } from '@/lib/supabase';
 import { verifyAdminSession } from '@/lib/adminAuth';
+import { hasAcceptableJsonSize, isSameOriginRequest } from '@/lib/requestSecurity';
 
 const DEFAULT_PROFILE = {
     id: 1,
@@ -79,12 +80,18 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
+    if (!isSameOriginRequest(request)) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+    if (!hasAcceptableJsonSize(request)) {
+        return NextResponse.json({ error: 'Request too large' }, { status: 413 });
+    }
     if (!(await verifyAdminSession())) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     try {
-        const supabase = getSupabaseClient();
+        const supabase = getSupabaseAdminClient();
         const body = await request.json();
         const updateData = ALLOWED_FIELDS.reduce((acc: Record<string, unknown>, field) => {
             if (Object.prototype.hasOwnProperty.call(body || {}, field)) {

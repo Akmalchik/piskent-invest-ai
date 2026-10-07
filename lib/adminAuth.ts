@@ -5,7 +5,7 @@ export const ADMIN_SESSION_COOKIE = 'piskent_admin_session';
 export const ADMIN_SESSION_MAX_AGE_SECONDS = 8 * 60 * 60;
 
 function getSigningSecret() {
-    return process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || '';
+    return process.env.ADMIN_SESSION_SECRET || '';
 }
 
 function sign(payload: string, secret: string) {

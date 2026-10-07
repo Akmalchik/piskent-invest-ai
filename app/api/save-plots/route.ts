@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/supabase';
+import { getSupabaseAdminClient, getSupabaseClient } from '@/lib/supabase';
 import fs from 'fs';
 import path from 'path';
 import { verifyAdminSession } from '@/lib/adminAuth';
+import { hasAcceptableJsonSize, isSameOriginRequest } from '@/lib/requestSecurity';
 
 const PLOTS_CACHE_TTL_MS = 60_000;
 let plotsCache: { data: any[]; expiresAt: number; source: string } | null = null;
@@ -63,6 +64,13 @@ function normalizePlot(plot: any) {
 function normalizePlotForDb(plot: any) {
     const dbPlot = normalizePlot(plot);
 
+    if (dbPlot.image && !isAllowedHttpsUrl(dbPlot.image)) {
+        throw new Error('Ссылка на изображение должна использовать HTTPS');
+    }
+    if (dbPlot.auksionUrl && !isAllowedAuctionUrl(dbPlot.auksionUrl)) {
+        throw new Error('Ссылка на аукцион должна вести на e-auksion.uz по HTTPS');
+    }
+
     delete dbPlot.image_url;
     delete dbPlot.polygon_coords;
     delete dbPlot.auksion_url;
@@ -76,8 +84,38 @@ function normalizePlotForDb(plot: any) {
     };
 }
 
+function isAllowedHttpsUrl(value: string) {
+    try {
+        return new URL(value).protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
+function isAllowedAuctionUrl(value: string) {
+    try {
+        const url = new URL(value);
+        return url.protocol === 'https:' && (url.hostname === 'e-auksion.uz' || url.hostname.endsWith('.e-auksion.uz'));
+    } catch {
+        return false;
+    }
+}
+
+async function authorizeMutation(request: Request) {
+    if (!isSameOriginRequest(request)) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+    if (!hasAcceptableJsonSize(request)) {
+        return NextResponse.json({ error: 'Request too large' }, { status: 413 });
+    }
+    if (!(await verifyAdminSession())) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    return null;
+}
+
 function readLocalPlots() {
-    const filePath = path.join(process.cwd(), 'public', 'scraped_plots.json');
+    const filePath = path.join(process.cwd(), 'public', 'fallback_plots.json');
     const parsedData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
     if (!Array.isArray(parsedData)) {
@@ -129,12 +167,11 @@ export async function GET() {
 }
 // 2. МЕТОД POST: Сохранение изменений координат из формы админки (ОДИН ЭКЗЕМПЛЯР)
 export async function POST(request: Request) {
-    if (!(await verifyAdminSession())) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const authError = await authorizeMutation(request);
+    if (authError) return authError;
 
     try {
-        const supabase = getSupabaseClient();
+        const supabase = getSupabaseAdminClient();
         const incomingData = await request.json();
 
         if (!incomingData) {
@@ -144,6 +181,10 @@ export async function POST(request: Request) {
         const plotsToSave = Array.isArray(incomingData)
             ? incomingData.map(normalizePlotForDb)
             : normalizePlotForDb(incomingData);
+
+        if (Array.isArray(plotsToSave) && plotsToSave.length > 500) {
+            return NextResponse.json({ success: false, error: 'Слишком много объектов' }, { status: 400 });
+        }
 
         const { error } = await supabase
             .from('piskent_plots')
@@ -162,12 +203,11 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-    if (!(await verifyAdminSession())) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const authError = await authorizeMutation(request);
+    if (authError) return authError;
 
     try {
-        const supabase = getSupabaseClient();
+        const supabase = getSupabaseAdminClient();
         const incomingData = await request.json();
 
         if (!incomingData || !incomingData.id) {
@@ -194,12 +234,11 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-    if (!(await verifyAdminSession())) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const authError = await authorizeMutation(request);
+    if (authError) return authError;
 
     try {
-        const supabase = getSupabaseClient();
+        const supabase = getSupabaseAdminClient();
         const incomingData = await request.json();
 
         if (!incomingData || incomingData.id === undefined || incomingData.id === null) {

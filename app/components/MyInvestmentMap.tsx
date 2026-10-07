@@ -173,7 +173,7 @@ export default function MyInvestmentMap({
                 console.error('Ошибка API лотов, загружаем локальные данные:', apiError);
 
                 try {
-                    const fallbackResponse = await fetch('/scraped_plots.json', { cache: 'no-store' });
+                    const fallbackResponse = await fetch('/fallback_plots.json', { cache: 'no-store' });
                     if (!fallbackResponse.ok) throw new Error(`Fallback returned ${fallbackResponse.status}`);
                     const fallbackData = await fallbackResponse.json();
                     if (!Array.isArray(fallbackData)) throw new Error('Fallback is not an array');

@@ -684,8 +684,11 @@ function chatResponse(answer: string, selected: Plot[] = []) {
   });
 }
 
-async function loadPlots(req: NextRequest) {
-  const response = await fetch(new URL('/api/save-plots', req.nextUrl.origin), { cache: 'no-store' });
+async function loadPlots() {
+  const configuredOrigin = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.SITE_URL || 'http://127.0.0.1:3000';
+  const response = await fetch(new URL('/api/save-plots', configuredOrigin), { cache: 'no-store' });
   if (!response.ok) throw new Error(`Plots source error: ${response.status}`);
   const data = await response.json();
   return normalizePlots(Array.isArray(data) ? data : []);
@@ -728,7 +731,7 @@ export async function POST(req: NextRequest) {
     if (isContactRequest(message)) return chatResponse(localText(lang, 'contact'));
     if (!isPriceRequest(message) && isOffTopic(message)) return chatResponse(localText(lang, 'offTopic'));
 
-    const plots = await loadPlots(req);
+    const plots = await loadPlots();
     if (plots.length === 0) return chatResponse(localText(lang, 'notFound'));
     const explicitlyNamed = findNamedPlots(message, plots, 3);
 
