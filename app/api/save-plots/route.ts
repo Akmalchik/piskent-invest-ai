@@ -1,3 +1,4 @@
+import type { PlotRecord } from '@/lib/plotTypes';
 import { NextResponse } from 'next/server';
 import { getSupabaseAdminClient, getSupabaseClient } from '@/lib/supabase';
 import fs from 'fs';
@@ -6,10 +7,10 @@ import { verifyAdminSession } from '@/lib/adminAuth';
 import { hasAcceptableJsonSize, isSameOriginRequest } from '@/lib/requestSecurity';
 
 const PLOTS_CACHE_TTL_MS = 60_000;
-let plotsCache: { data: any[]; expiresAt: number; source: string } | null = null;
+let plotsCache: { data: PlotRecord[]; expiresAt: number; source: string } | null = null;
 const PROPERTY_TYPES = ['land', 'building', 'land_building'];
 
-function jsonWithCache(data: any[], source = 'supabase') {
+function jsonWithCache(data: PlotRecord[], source = 'supabase') {
     return NextResponse.json(data, {
         headers: {
             'Cache-Control': 'no-store',
@@ -18,7 +19,7 @@ function jsonWithCache(data: any[], source = 'supabase') {
     });
 }
 
-function rememberPlots(data: any[], source = 'supabase') {
+function rememberPlots(data: PlotRecord[], source = 'supabase') {
     plotsCache = {
         data,
         expiresAt: Date.now() + PLOTS_CACHE_TTL_MS,
@@ -30,7 +31,7 @@ function clearPlotsCache() {
     plotsCache = null;
 }
 
-function getPlotImage(plot: any) {
+function getPlotImage(plot: PlotRecord) {
     return plot.image || plot.image_url || plot.photo_url || null;
 }
 
@@ -46,7 +47,7 @@ function normalizeBuildingArea(value: unknown) {
     return Number.isFinite(numericValue) ? numericValue : null;
 }
 
-function normalizePlot(plot: any) {
+function normalizePlot(plot: PlotRecord) {
     const incomingPropertyType = plot.property_type !== undefined ? plot.property_type : plot.propertyType;
     const incomingBuildingArea = plot.building_area_m2 !== undefined ? plot.building_area_m2 : plot.buildingAreaM2;
 
@@ -61,7 +62,7 @@ function normalizePlot(plot: any) {
     };
 }
 
-function normalizePlotForDb(plot: any) {
+function normalizePlotForDb(plot: PlotRecord) {
     const dbPlot = normalizePlot(plot);
 
     if (dbPlot.image && !isAllowedHttpsUrl(dbPlot.image)) {
@@ -194,9 +195,9 @@ export async function POST(request: Request) {
 
         clearPlotsCache();
         return NextResponse.json({ success: true, message: 'Координаты лотов успешно обновлены!' });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: `Ошибка записи в Supabase: ${error.message}` },
+            { success: false, error: `Ошибка записи в Supabase: ${error instanceof Error ? error.message : 'Unknown error'}` },
             { status: 500 }
         );
     }
@@ -225,9 +226,9 @@ export async function PATCH(request: Request) {
 
         clearPlotsCache();
         return NextResponse.json({ success: true, message: 'Объект успешно обновлен!' });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: `Ошибка обновления в Supabase: ${error.message}` },
+            { success: false, error: `Ошибка обновления в Supabase: ${error instanceof Error ? error.message : 'Unknown error'}` },
             { status: 500 }
         );
     }
@@ -254,9 +255,9 @@ export async function DELETE(request: Request) {
 
         clearPlotsCache();
         return NextResponse.json({ success: true, message: 'Объект успешно удален!' });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: `Ошибка удаления в Supabase: ${error.message}` },
+            { success: false, error: `Ошибка удаления в Supabase: ${error instanceof Error ? error.message : 'Unknown error'}` },
             { status: 500 }
         );
     }

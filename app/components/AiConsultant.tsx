@@ -2,13 +2,21 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { translations } from './translations';
+import type { PlotRecord } from '@/lib/plotTypes';
 
-export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout = false }: any) {
-    const t = (translations as any)[lang] || translations['uz'];
+type ChatProps = { onSelectPlot: (plot: PlotRecord) => void; lang?: string; isChatLayout?: boolean };
+type ChatMessage = { sender: string; text: string; recommendedPlots?: PlotRecord[] };
+
+export default function AiConsultant(props: ChatProps) {
+    return <AiConsultantSession key={props.lang || 'uz'} {...props} />;
+}
+
+function AiConsultantSession({ onSelectPlot, lang = 'uz', isChatLayout = false }: ChatProps) {
+    const t = translations[lang as keyof typeof translations] || translations['uz'];
 
     const [chatInput, setChatInput] = useState("");
-    const [chatMessages, setChatMessages] = useState<any[]>([]);
-    const [plots, setPlots] = useState<any[]>([]);
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+    const [plots, setPlots] = useState<PlotRecord[]>([]);
     const [isTyping, setIsTyping] = useState(false);
     const [isCoolingDown, setIsCoolingDown] = useState(false);
 
@@ -23,12 +31,6 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     useEffect(() => {
         scrollToBottom();
     }, [chatMessages, isTyping]);
-
-    useEffect(() => {
-        setChatMessages([]);
-        setChatInput("");
-        setIsTyping(false);
-    }, [lang]);
 
     useEffect(() => () => {
         if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
@@ -103,8 +105,8 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
             const recommendedIds = Array.from(new Set(structuredIds.length > 0 ? structuredIds : legacyIds));
             const apiObjects = Array.isArray(data.recommendedObjects) ? data.recommendedObjects : [];
             const recommendedPlots = recommendedIds
-                .map(id => plots.find((plot: any) => String(plot.id) === id)
-                    || apiObjects.find((plot: any) => String(plot.id) === id))
+                .map(id => plots.find((plot: PlotRecord) => String(plot.id) === id)
+                    || apiObjects.find((plot: PlotRecord) => String(plot.id) === id))
                 .filter(Boolean);
             aiText = aiText.replace(legacyMarkerRegex, '').replace(/\*\*/g, '').trim();
 
@@ -141,7 +143,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
         setChatMessages([]);
     };
 
-    const chatLabels: Record<string, any> = {
+    const chatLabels: Record<string, Record<string, string>> = {
         uz: {
             title: "AI Investitsiya Maslahatchisi",
             sync: "Obyektlar bazasi asosida tavsiya beradi",
@@ -234,7 +236,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
     };
     const starterPrompts = starterPromptsByLang[lang] || starterPromptsByLang.uz;
 
-    const renderAiMessage = (message: any) => {
+    const renderAiMessage = (message: ChatMessage) => {
         const recommendedPlots = Array.isArray(message.recommendedPlots) ? message.recommendedPlots : [];
         if (recommendedPlots.length === 0) {
             return <div className="whitespace-pre-wrap">{message.text}</div>;
@@ -244,7 +246,7 @@ export default function AiConsultant({ onSelectPlot, lang = 'uz', isChatLayout =
         return (
             <div className="space-y-0.5">
                 {String(message.text).split('\n').map((line, lineIndex) => {
-                    const plot = recommendedPlots.find((item: any) => {
+                    const plot = recommendedPlots.find((item: PlotRecord) => {
                         const id = String(item.id);
                         return !placedPlotIds.has(id) && line.includes(String(item.name));
                     });

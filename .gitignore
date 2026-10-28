@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local duplicate checkout; preserve on disk, never publish
+/piskent-invest-ai/

@@ -6,7 +6,7 @@ export default function Dashboard({ lang }: { lang: string }) {
     return (
         <div className="p-6 bg-[#070d1e] h-full text-white overflow-y-auto">
             <h2 className="text-xl font-bold">Investitsiya tahlil paneli</h2>
-            <p className="text-xs text-slate-400 mt-1">Piskent tumanidagi umumiy investitsiya ko'rsatkichlari (Demo)</p>
+            <p className="text-xs text-slate-400 mt-1">Piskent tumanidagi umumiy investitsiya ko&apos;rsatkichlari (Demo)</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                 <div className="bg-[#0b1329] p-4 rounded-xl border border-slate-800">
                     <span className="text-[10px] text-slate-400 block">MAVJUD YERLAR</span>

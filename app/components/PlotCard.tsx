@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
+import type { PlotRecord } from '@/lib/plotTypes';
 
-export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: () => void, lang: string }) {
+export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | null, onClose: () => void, lang: string }) {
     if (!plot) return null;
 
     // Сверхточный словарь локализации для карточки лота на 4 языка
-    const cardDict: Record<string, any> = {
+    const cardDict = {
         uz: {
             area: "MAYDONI",
             jobs: "ISH O'RINLARI",
@@ -105,7 +106,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
         }
     };
 
-    const d = cardDict[lang] || cardDict['uz'];
+    const d = cardDict[lang as keyof typeof cardDict] || cardDict['uz'];
 
     const formatIndustry = (industry: unknown) => {
         const rawIndustry = String(industry || '').trim();
@@ -298,10 +299,10 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                 {/* ========================================================= */}
                 {(() => {
                     let score = 50;
-                    if (plot.area > 2) score += 15;
-                    if (plot.area > 10) score += 10;
+                    if (Number(plot.area) > 2) score += 15;
+                    if (Number(plot.area) > 10) score += 10;
                     if (plot.infrastructure?.gas === 'Mavjud') score += 10;
-                    if (plot.infrastructure?.power && !plot.infrastructure.power.includes("Yo'q")) score += 10;
+                    if (plot.infrastructure?.power && !String(plot.infrastructure.power).includes("Yo'q")) score += 10;
                     if (plot.infrastructure?.water === 'Mavjud') score += 10;
                     if (plot.infrastructure?.road === 'Asfalt') score += 10;
                     if (score > 100) score = 100;
@@ -352,7 +353,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: any, onClose: 
                 <h3 className="text-[10px] font-bold text-slate-400 uppercase mb-2.5 tracking-wider">{d.infraTitle}</h3>
                 <div className="space-y-1.5">
                     {plot.infrastructure ? (
-                        Object.entries(plot.infrastructure).map(([key, value]: [string, any]) => {
+                        Object.entries(plot.infrastructure).map(([key, value]: [string, unknown]) => {
                             // Переводим названия сетей на лету
                             let label = key;
                             if (key === 'gas') label = d.gas;

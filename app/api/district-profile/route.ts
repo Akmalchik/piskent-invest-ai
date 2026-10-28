@@ -71,9 +71,9 @@ export async function GET() {
         return NextResponse.json({ ...DEFAULT_PROFILE, ...(data || {}) }, {
             headers: { 'Cache-Control': 'no-store' },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: `Ошибка чтения паспорта района: ${error.message}` },
+            { success: false, error: `Ошибка чтения паспорта района: ${error instanceof Error ? error.message : 'Unknown error'}` },
             { status: 500 }
         );
     }
@@ -109,9 +109,9 @@ export async function PATCH(request: Request) {
         if (error) throw error;
 
         return NextResponse.json({ success: true, profile: { ...DEFAULT_PROFILE, ...data } });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: `Ошибка обновления паспорта района: ${error.message}` },
+            { success: false, error: `Ошибка обновления паспорта района: ${error instanceof Error ? error.message : 'Unknown error'}` },
             { status: 500 }
         );
     }

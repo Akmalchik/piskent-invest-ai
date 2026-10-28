@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
+import type { PlotRecord, MapViewport } from '@/lib/plotTypes';
 import { translations } from './components/translations';
 
 // Загружаем карту динамически только в браузере
@@ -114,16 +115,16 @@ function AnimatedNumber({ value }: { value: number }) {
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('home');
-  const [selectedPlot, setSelectedPlot] = useState(null);
+  const [selectedPlot, setSelectedPlot] = useState<PlotRecord | null>(null);
 
-  const [mapViewport, setMapViewport] = useState({ center: [40.9022, 69.3444], zoom: 13 });
+  const [mapViewport, setMapViewport] = useState<MapViewport>({ center: [40.9022, 69.3444], zoom: 13 });
   const [lang, setLang] = useState<Lang>('uz');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Стейты управления скрытым режимом админа
   const [isAdminMode] = useState<boolean>(false);
   const [adminMarkerCoords, setAdminMarkerCoords] = useState<[number, number] | null>(null);
-  const t = (translations as any)[lang] || translations.uz;
+  const t = translations[lang] || translations.uz;
 
   React.useEffect(() => {
     const syncTabWithUrl = () => {
@@ -284,7 +285,7 @@ export default function Home() {
     },
   }[lang];
 
-  const handleShowOnMap = (plot: any) => {
+  const handleShowOnMap = (plot: PlotRecord) => {
     if (plot && plot.polygonCoordinates && plot.polygonCoordinates[0]) {
       setMapViewport({ center: plot.polygonCoordinates[0], zoom: 15 });
       setSelectedPlot(plot);
@@ -574,7 +575,7 @@ export default function Home() {
 		                    {DISTRICT_PASSPORT.investmentSectors.map((sector) => (
 		                      <div key={sector.key} className="rounded-lg border border-slate-700/50 bg-[#07101e] p-3 flex items-center gap-3">
 		                        <span className="h-8 w-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-sm">{sector.icon}</span>
-		                        <span className="text-xs font-bold text-slate-200 leading-snug">{t[sector.key]}</span>
+		                        <span className="text-xs font-bold text-slate-200 leading-snug">{t[sector.key as keyof typeof t]}</span>
 		                      </div>
 		                    ))}
 		                  </div>

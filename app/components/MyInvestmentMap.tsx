@@ -3,12 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, LayersControl, LayerGroup, CircleMarker, Marker, useMap, useMapEvents } from 'react-leaflet';
 import PlotCard from './PlotCard';
+import type { PlotRecord, MapViewport } from '@/lib/plotTypes';
 import L from 'leaflet';
 import { useSearchParams } from 'next/navigation';
 
 // Фикс для дефолтных иконок Leaflet, чтобы они не ломались при сборке Next.js
 if (typeof window !== 'undefined') {
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    delete (L.Icon.Default.prototype as L.Icon.Default & { _getIconUrl?: unknown })._getIconUrl;
     L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
         iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
@@ -39,7 +40,7 @@ function MapClickHandler({
     return null;
 }
 
-function toLatLng(value: any): [number, number] | null {
+function toLatLng(value: unknown): [number, number] | null {
     if (!Array.isArray(value) || value.length < 2) return null;
 
     const lat = Number(value[0]);
@@ -49,7 +50,7 @@ function toLatLng(value: any): [number, number] | null {
     return [lat, lng];
 }
 
-function getPlotCenter(plot: any): [number, number] | null {
+function getPlotCenter(plot: PlotRecord): [number, number] | null {
     const lat = Number(plot.lat);
     const lng = Number(plot.lng);
 
@@ -64,7 +65,7 @@ function getPlotCenter(plot: any): [number, number] | null {
     if (firstPoint) return firstPoint;
 
     const points = rawCoordinates
-        .map((point: any) => toLatLng(point))
+        .map((point: unknown) => toLatLng(point))
         .filter(Boolean) as [number, number][];
 
     if (points.length === 0) return null;
@@ -80,11 +81,11 @@ function getPlotCenter(plot: any): [number, number] | null {
 
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80";
 
-function getPlotImage(plot: any) {
+function getPlotImage(plot: PlotRecord) {
     return plot.image || plot.image_url || plot.photo_url || DEFAULT_IMAGE;
 }
 
-function withPlotImage(plot: any) {
+function withPlotImage(plot: PlotRecord) {
     return {
         ...plot,
         image: getPlotImage(plot),
@@ -96,7 +97,7 @@ function normalizePropertyType(value: unknown) {
     return ['building', 'land_building'].includes(normalizedValue) ? normalizedValue : 'land';
 }
 
-function MapController({ viewport, plotId, plots }: { viewport?: any, plotId: string | null, plots: any[] }) {
+function MapController({ viewport, plotId, plots }: { viewport?: MapViewport | null, plotId: string | null, plots: PlotRecord[] }) {
     const map = useMap();
 
     // 1. Логика зума (твоя старая)
@@ -130,9 +131,9 @@ export default function MyInvestmentMap({
     onMapClick,
     adminMarkerCoords
 }: {
-    viewport: any,
-    selectedPlot: any,
-    onSelectPlot: any,
+    viewport: MapViewport | null | undefined,
+    selectedPlot: PlotRecord | null,
+    onSelectPlot: (plot: PlotRecord | null) => void,
     lang: string,
     isAdminMode?: boolean,
     onMapClick?: (lat: number, lng: number) => void,
@@ -145,7 +146,7 @@ export default function MyInvestmentMap({
     const [statusFilter, setStatusFilter] = useState('Barchasi');
     const [isPanelVisible, setIsPanelVisible] = useState(true);
     const [isMobilePanelVisible, setIsMobilePanelVisible] = useState(false);
-    const [plots, setPlots] = useState<any[]>([]);
+    const [plots, setPlots] = useState<PlotRecord[]>([]);
     const [dataNotice, setDataNotice] = useState<string | null>(null);
     const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
     const [propertyTypeFilter, setPropertyTypeFilter] = useState('all');
@@ -212,7 +213,7 @@ export default function MyInvestmentMap({
     });
 
     // Локальный словарь для перевода всей панели
-    const localDict: Record<string, any> = {
+    const localDict = {
         uz: {
             hide: "Yashirish", show: "Filtrni ko'rsatish", mobileFilters: "🔍 Filtrlar", close: "Yopish",
             statusTitle: "🔍 Holat bo'yicha filtr", indTitle: "🏭 Yo'nalishlar bo'yicha",
@@ -259,7 +260,7 @@ export default function MyInvestmentMap({
         }
     };
 
-    const t = localDict[lang] || localDict['uz'];
+    const t = localDict[lang as keyof typeof localDict] || localDict['uz'];
 
     return (
         <div className="w-full h-full relative">
@@ -310,7 +311,7 @@ export default function MyInvestmentMap({
                 />
 
                 {/* Отрисовка объектов как точек с постоянным размером в пикселях */}
-                {filteredPlots.map((plot: any) => {
+                {filteredPlots.map((plot: PlotRecord) => {
                     const center = getPlotCenter(plot);
                     if (!center) return null;
 
@@ -369,7 +370,7 @@ export default function MyInvestmentMap({
                                                 onClick={() => setStatusFilter(id)}
                                                 className={`py-1 rounded-md text-[9px] font-bold border text-center transition-colors ${statusFilter === id ? 'bg-cyan-800 text-cyan-50 border-cyan-700' : 'bg-[#050a14]/70 text-slate-400 border-slate-700/70'}`}
                                             >
-                                                {t.statusLabels[id] || id}
+                                                {t.statusLabels[id as keyof typeof t.statusLabels] || id}
                                             </button>
                                         ))}
                                     </div>
@@ -385,7 +386,7 @@ export default function MyInvestmentMap({
                                         className="w-full bg-[#040814]/90 text-slate-300 border border-slate-800 px-3 py-2 rounded-xl text-[11px] font-medium outline-none cursor-pointer focus:border-cyan-500 transition-all"
                                     >
                                         {['all', 'land', 'building', 'land_building'].map((type) => (
-                                            <option key={type} value={type}>{t.propertyTypeLabels[type]}</option>
+                                            <option key={type} value={type}>{t.propertyTypeLabels[type as keyof typeof t.propertyTypeLabels]}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -466,7 +467,7 @@ export default function MyInvestmentMap({
                                                 onClick={() => setStatusFilter(id)}
                                                 className={`py-2 rounded-md text-[9px] font-bold border text-center transition-colors ${statusFilter === id ? 'bg-cyan-800 text-cyan-50 border-cyan-700' : 'bg-[#050a14]/70 text-slate-400 border-slate-700/70'}`}
                                             >
-                                                {t.statusLabels[id] || id}
+                                                {t.statusLabels[id as keyof typeof t.statusLabels] || id}
                                             </button>
                                         ))}
                                     </div>
@@ -482,7 +483,7 @@ export default function MyInvestmentMap({
                                         className="w-full bg-[#040814]/90 text-slate-300 border border-slate-800 px-3 py-2.5 rounded-xl text-[11px] font-medium outline-none cursor-pointer focus:border-cyan-500 transition-all"
                                     >
                                         {['all', 'land', 'building', 'land_building'].map((type) => (
-                                            <option key={type} value={type}>{t.propertyTypeLabels[type]}</option>
+                                            <option key={type} value={type}>{t.propertyTypeLabels[type as keyof typeof t.propertyTypeLabels]}</option>
                                         ))}
                                     </select>
                                 </div>

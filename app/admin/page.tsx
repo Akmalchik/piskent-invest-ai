@@ -2,6 +2,7 @@
 /// <reference types="react" />
 import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react';
 import Link from 'next/link';
+import type { PlotRecord } from '@/lib/plotTypes';
 import dynamic from 'next/dynamic';
 
 // Загружаем карту динамически для админки, исключая ошибки рендеринга на сервере (SSR)
@@ -101,8 +102,8 @@ export default function AdminPage() {
     };
 
     // Стейты для управления массивом лотов и выбранным ID лота
-    const [plots, setPlots] = useState<any[]>([]);
-    const [editingPlot, setEditingPlot] = useState<any | null>(null);
+    const [plots, setPlots] = useState<PlotRecord[]>([]);
+    const [editingPlot, setEditingPlot] = useState<PlotRecord | null>(null);
     const [mapRefreshKey, setMapRefreshKey] = useState(0);
     const [isMounted, setIsMounted] = useState(false);
     // Поля формы для ручного создания нового объекта (оригинальная верстка и стейты Акмаля)
@@ -158,7 +159,6 @@ export default function AdminPage() {
     // Главный хук инициализации данных ГИС
     useEffect(() => {
         if (!isAuthenticated) {
-            setIsMounted(false);
             return;
         }
 
@@ -172,7 +172,7 @@ export default function AdminPage() {
 
                 console.log('TOTAL:', data.length);
 
-                const ids = data.map((x: any) => x.id);
+                const ids = data.map((x: PlotRecord) => x.id);
                 console.log('UNIQUE:', new Set(ids).size);
 
                 if (Array.isArray(data) && data.length > 0) {
@@ -245,7 +245,8 @@ export default function AdminPage() {
         }
     };
 
-    const handleSelectPlotForEdit = (plot: any) => {
+    const handleSelectPlotForEdit = (plot: PlotRecord | null) => {
+        if (!plot) { setEditingPlot(null); return; }
         const infrastructure = plot.infrastructure || {};
         const polygonCoordinates = plot.polygonCoordinates || plot.polygon_coords;
         const firstPoint = Array.isArray(polygonCoordinates?.[0])
@@ -278,9 +279,8 @@ export default function AdminPage() {
     // СПОСОБ №2: СОЗДАНИЕ СОВЕРШЕННО НОВОГО ЛОТА ЧЕРЕЗ ФОРМУ ВРУЧНУЮ
     const handleSavePlot = async (e: React.FormEvent) => {
         e.preventDefault();
-        const isEditing = Boolean(editingPlot);
 
-        if (isEditing) {
+        if (editingPlot) {
             if (!name || !area || !imageUrl) {
                 alert('Заполните обязательные поля (Название, Площадь, Фото)!');
                 return;
@@ -321,8 +321,8 @@ export default function AdminPage() {
                     setMapRefreshKey(prev => prev + 1);
                     setTimeout(() => setSuccessMessage(false), 4000);
                 }
-            } catch (err: any) {
-                alert(`Ошибка при сохранении изменений: ${err.message}`);
+            } catch (err: unknown) {
+                alert(`Ошибка при сохранении изменений: ${err instanceof Error ? err.message : 'Unknown error'}`);
             }
             return;
         }
@@ -337,7 +337,7 @@ export default function AdminPage() {
         const offset = 0.0015;
 
         // Строим четыре точки полигона для новой зоны
-        const generatedPolygon = [
+        const generatedPolygon: [number, number][] = [
             [lat, lng],
             [lat + offset, lng],
             [lat + offset, lng + offset * 1.5],
@@ -345,7 +345,7 @@ export default function AdminPage() {
         ];
 
         // Формируем структуру нового объекта
-        const newPlot = {
+        const newPlot: PlotRecord = {
             id: Date.now(), // Уникальный ID на базе времени создания
             name,
             area: parseFloat(area),
@@ -387,8 +387,8 @@ export default function AdminPage() {
                 setMapRefreshKey(prev => prev + 1);
                 setTimeout(() => setSuccessMessage(false), 4000);
             }
-        } catch (err: any) {
-            alert(`Ошибка при добавлении нового лота: ${err.message}`);
+        } catch (err: unknown) {
+            alert(`Ошибка при добавлении нового лота: ${err instanceof Error ? err.message : 'Unknown error'}`);
         }
     };
 
@@ -418,8 +418,8 @@ export default function AdminPage() {
                 setMapRefreshKey(prev => prev + 1);
                 setTimeout(() => setSuccessMessage(false), 4000);
             }
-        } catch (err: any) {
-            alert(`Ошибка при удалении объекта: ${err.message}`);
+        } catch (err: unknown) {
+            alert(`Ошибка при удалении объекта: ${err instanceof Error ? err.message : 'Unknown error'}`);
         }
     };
 
@@ -561,8 +561,8 @@ export default function AdminPage() {
                                 <label className="text-[10px] font-bold text-slate-400 block mb-1">ОТРАСЛЬ БИЗНЕСА</label>
                                 <select value={industry} onChange={(e) => setIndustry(e.target.value)} className="w-full bg-[#040814] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none cursor-pointer">
                                     <option value="Production">Sanoat (Производство)</option>
-                                    <option value="Textile">To'qimachilik (Текстиль)</option>
-                                    <option value="Agro">Qishloq xo'jaligi (Агро)</option>
+                                    <option value="Textile">To&apos;qimachilik (Текстиль)</option>
+                                    <option value="Agro">Qishloq xo&apos;jaligi (Агро)</option>
                                     <option value="Logistics">Logistika (Транспорт)</option>
                                 </select>
                             </div>

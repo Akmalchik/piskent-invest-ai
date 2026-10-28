@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-require-imports: off -- Standalone Node CommonJS script; package.json does not declare ESM. */
 const { chromium } = require('playwright');
 const fs = require('fs');
 
