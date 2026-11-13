@@ -1,1300 +1,5 @@
 [
   {
-    "id": 26743084,
-    "name": "KA1727250007/9-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 172725000791,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/b4fd59f5b9f2cdc8f8d3829e1d7d2d65_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26743084",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.336
-      ],
-      [
-        40.89,
-        69.336
-      ],
-      [
-        40.89,
-        69.3374
-      ],
-      [
-        40.889,
-        69.3374
-      ]
-    ]
-  },
-  {
-    "id": 26739615,
-    "name": "KA1727250022/80-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022801,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/d31bec8714b9cd56c879b53436176a2f_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739615",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.3378
-      ],
-      [
-        40.89,
-        69.3378
-      ],
-      [
-        40.89,
-        69.3392
-      ],
-      [
-        40.889,
-        69.3392
-      ]
-    ]
-  },
-  {
-    "id": 26739623,
-    "name": "KA1727250022/90-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022901,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/67d36060a0da2d75697e180ba26f0020_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739623",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.3396
-      ],
-      [
-        40.89,
-        69.3396
-      ],
-      [
-        40.89,
-        69.34100000000001
-      ],
-      [
-        40.889,
-        69.34100000000001
-      ]
-    ]
-  },
-  {
-    "id": 26739634,
-    "name": "KA1727250021/59-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250021591,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/8a753b114dd29202b526b5fe59ae0b63_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739634",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.3414
-      ],
-      [
-        40.89,
-        69.3414
-      ],
-      [
-        40.89,
-        69.3428
-      ],
-      [
-        40.889,
-        69.3428
-      ]
-    ]
-  },
-  {
-    "id": 26739613,
-    "name": "KA1727250022/78-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022781,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/d324f00a05bd072467d1af477e9bf994_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739613",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.3432
-      ],
-      [
-        40.89,
-        69.3432
-      ],
-      [
-        40.89,
-        69.3446
-      ],
-      [
-        40.889,
-        69.3446
-      ]
-    ]
-  },
-  {
-    "id": 26739624,
-    "name": "KA1727250022/91-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022911,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/bf25b225493ad7ee1c724f2c37b63205_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739624",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.345
-      ],
-      [
-        40.89,
-        69.345
-      ],
-      [
-        40.89,
-        69.3464
-      ],
-      [
-        40.889,
-        69.3464
-      ]
-    ]
-  },
-  {
-    "id": 26739632,
-    "name": "KA1727250006/30-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250006301,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/2a0fb39de9d8757512352949c2f44a9e_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739632",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.3468
-      ],
-      [
-        40.89,
-        69.3468
-      ],
-      [
-        40.89,
-        69.3482
-      ],
-      [
-        40.889,
-        69.3482
-      ]
-    ]
-  },
-  {
-    "id": 26739620,
-    "name": "KA1727250022/85-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022851,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/9d70a8b003468fad352a36e7b065d612_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739620",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.3486
-      ],
-      [
-        40.89,
-        69.3486
-      ],
-      [
-        40.89,
-        69.35000000000001
-      ],
-      [
-        40.889,
-        69.35000000000001
-      ]
-    ]
-  },
-  {
-    "id": 26739637,
-    "name": "KA1727250019/14-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250019141,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/33f61f2baad54f38ea719d43015a29e5_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739637",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.3504
-      ],
-      [
-        40.89,
-        69.3504
-      ],
-      [
-        40.89,
-        69.3518
-      ],
-      [
-        40.889,
-        69.3518
-      ]
-    ]
-  },
-  {
-    "id": 26739616,
-    "name": "KA1727250022/81-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022811,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/7e840a0fe0c19a490b77c5741d0cc484_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739616",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.3522
-      ],
-      [
-        40.89,
-        69.3522
-      ],
-      [
-        40.89,
-        69.3536
-      ],
-      [
-        40.889,
-        69.3536
-      ]
-    ]
-  },
-  {
-    "id": 26739625,
-    "name": "KA1727250022/92-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022921,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/5bbb1438f63c073815e96e12241eeafb_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739625",
-    "polygonCoordinates": [
-      [
-        40.889,
-        69.354
-      ],
-      [
-        40.89,
-        69.354
-      ],
-      [
-        40.89,
-        69.3554
-      ],
-      [
-        40.889,
-        69.3554
-      ]
-    ]
-  },
-  {
-    "id": 26739630,
-    "name": "KA1727250006/28-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250006281,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/cc0eb6ddb7d6a9a7bf9d6f1494ffa479_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739630",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.336
-      ],
-      [
-        40.8914,
-        69.336
-      ],
-      [
-        40.8914,
-        69.3374
-      ],
-      [
-        40.8904,
-        69.3374
-      ]
-    ]
-  },
-  {
-    "id": 26739638,
-    "name": "KA1727250019/15-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250019151,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/cb8718f712d3b7f0ca73c25c8f57c618_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739638",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.3378
-      ],
-      [
-        40.8914,
-        69.3378
-      ],
-      [
-        40.8914,
-        69.3392
-      ],
-      [
-        40.8904,
-        69.3392
-      ]
-    ]
-  },
-  {
-    "id": 26743085,
-    "name": "KA1727250007/11-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250007111,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/d2527e18f6d4fad8e4be5a4de19c51a2_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26743085",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.3396
-      ],
-      [
-        40.8914,
-        69.3396
-      ],
-      [
-        40.8914,
-        69.34100000000001
-      ],
-      [
-        40.8904,
-        69.34100000000001
-      ]
-    ]
-  },
-  {
-    "id": 26739614,
-    "name": "KA1727250022/79-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022791,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/23a0ef1539ee1546b1966a73a943fcaa_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739614",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.3414
-      ],
-      [
-        40.8914,
-        69.3414
-      ],
-      [
-        40.8914,
-        69.3428
-      ],
-      [
-        40.8904,
-        69.3428
-      ]
-    ]
-  },
-  {
-    "id": 26739622,
-    "name": "KA1727250022/89-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022891,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/eec7bc17329ebc27fa2a9a2623e6fb9c_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739622",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.3432
-      ],
-      [
-        40.8914,
-        69.3432
-      ],
-      [
-        40.8914,
-        69.3446
-      ],
-      [
-        40.8904,
-        69.3446
-      ]
-    ]
-  },
-  {
-    "id": 26739636,
-    "name": "KA1727250021/61-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250021611,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/422fee64ebb5f241adb3405dab51960c_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739636",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.345
-      ],
-      [
-        40.8914,
-        69.345
-      ],
-      [
-        40.8914,
-        69.3464
-      ],
-      [
-        40.8904,
-        69.3464
-      ]
-    ]
-  },
-  {
-    "id": 26739725,
-    "name": "KA1727250013/10-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250013101,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/cef876572e4d00bfe44fec0aa267a26f_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739725",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.3468
-      ],
-      [
-        40.8914,
-        69.3468
-      ],
-      [
-        40.8914,
-        69.3482
-      ],
-      [
-        40.8904,
-        69.3482
-      ]
-    ]
-  },
-  {
-    "id": 26743086,
-    "name": "KA1727250007/10-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250007101,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/4b99d716498f36d289a2ca4c46c3d493_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26743086",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.3486
-      ],
-      [
-        40.8914,
-        69.3486
-      ],
-      [
-        40.8914,
-        69.35000000000001
-      ],
-      [
-        40.8904,
-        69.35000000000001
-      ]
-    ]
-  },
-  {
-    "id": 26739627,
-    "name": "KA1727250022/94-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022941,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/f30c3ce7355a3d350c8a2bce50b04d8f_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739627",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.3504
-      ],
-      [
-        40.8914,
-        69.3504
-      ],
-      [
-        40.8914,
-        69.3518
-      ],
-      [
-        40.8904,
-        69.3518
-      ]
-    ]
-  },
-  {
-    "id": 26739629,
-    "name": "KA1727250006/27-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250006271,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/692509be3fa5fe788cdc1d3796f25a39_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739629",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.3522
-      ],
-      [
-        40.8914,
-        69.3522
-      ],
-      [
-        40.8914,
-        69.3536
-      ],
-      [
-        40.8904,
-        69.3536
-      ]
-    ]
-  },
-  {
-    "id": 26739641,
-    "name": "KA1727250019/20-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250019201,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/e613b1d8a91f43877e768ae30a12cec8_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739641",
-    "polygonCoordinates": [
-      [
-        40.8904,
-        69.354
-      ],
-      [
-        40.8914,
-        69.354
-      ],
-      [
-        40.8914,
-        69.3554
-      ],
-      [
-        40.8904,
-        69.3554
-      ]
-    ]
-  },
-  {
-    "id": 26739621,
-    "name": "KA1727250022/88-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022881,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/71b035e3dd4b8729f899de566bf98095_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739621",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.336
-      ],
-      [
-        40.8928,
-        69.336
-      ],
-      [
-        40.8928,
-        69.3374
-      ],
-      [
-        40.8918,
-        69.3374
-      ]
-    ]
-  },
-  {
-    "id": 26739633,
-    "name": "KA1727250021/58-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250021581,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/5c8ebb2924a3cacde416b5aff28505a7_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739633",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.3378
-      ],
-      [
-        40.8928,
-        69.3378
-      ],
-      [
-        40.8928,
-        69.3392
-      ],
-      [
-        40.8918,
-        69.3392
-      ]
-    ]
-  },
-  {
-    "id": 26739639,
-    "name": "KA1727250019/16-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250019161,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/c11903b12271cc0ec97200707f0d4cca_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739639",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.3396
-      ],
-      [
-        40.8928,
-        69.3396
-      ],
-      [
-        40.8928,
-        69.34100000000001
-      ],
-      [
-        40.8918,
-        69.34100000000001
-      ]
-    ]
-  },
-  {
-    "id": 26739724,
-    "name": "KA1727250013/9-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 172725001391,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/36a85ca57dc39cd3ee0d376d6ee5120c_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739724",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.3414
-      ],
-      [
-        40.8928,
-        69.3414
-      ],
-      [
-        40.8928,
-        69.3428
-      ],
-      [
-        40.8918,
-        69.3428
-      ]
-    ]
-  },
-  {
-    "id": 26739619,
-    "name": "KA1727250022/84-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022841,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/adc8b8cf1c820d0881db6c159df59207_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739619",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.3432
-      ],
-      [
-        40.8928,
-        69.3432
-      ],
-      [
-        40.8928,
-        69.3446
-      ],
-      [
-        40.8918,
-        69.3446
-      ]
-    ]
-  },
-  {
-    "id": 26739631,
-    "name": "KA1727250006/29-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250006291,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/a6c42f324c5d88828457c8bd3dc2cf8e_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739631",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.345
-      ],
-      [
-        40.8928,
-        69.345
-      ],
-      [
-        40.8928,
-        69.3464
-      ],
-      [
-        40.8918,
-        69.3464
-      ]
-    ]
-  },
-  {
-    "id": 26739640,
-    "name": "KA1727250019/18-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250019181,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/8b479e6ea28605582cdb115ca9ae95be_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739640",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.3468
-      ],
-      [
-        40.8928,
-        69.3468
-      ],
-      [
-        40.8928,
-        69.3482
-      ],
-      [
-        40.8918,
-        69.3482
-      ]
-    ]
-  },
-  {
-    "id": 26739618,
-    "name": "KA1727250022/83-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022831,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/9da3a8e07daa599bdfa8da0847ddf27d_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739618",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.3486
-      ],
-      [
-        40.8928,
-        69.3486
-      ],
-      [
-        40.8928,
-        69.35000000000001
-      ],
-      [
-        40.8918,
-        69.35000000000001
-      ]
-    ]
-  },
-  {
-    "id": 26739628,
-    "name": "KA1727250022/95-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022951,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/624185185ff4751b05435d185781a86d_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739628",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.3504
-      ],
-      [
-        40.8928,
-        69.3504
-      ],
-      [
-        40.8928,
-        69.3518
-      ],
-      [
-        40.8918,
-        69.3518
-      ]
-    ]
-  },
-  {
-    "id": 26739642,
-    "name": "KA1727250019/19-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250019191,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/1219b99c95324ef6436a661d01d2330a_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739642",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.3522
-      ],
-      [
-        40.8928,
-        69.3522
-      ],
-      [
-        40.8928,
-        69.3536
-      ],
-      [
-        40.8918,
-        69.3536
-      ]
-    ]
-  },
-  {
-    "id": 26739617,
-    "name": "KA1727250022/82-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022821,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/d3cf195ff3bfbfe213ac218759a66ab0_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739617",
-    "polygonCoordinates": [
-      [
-        40.8918,
-        69.354
-      ],
-      [
-        40.8928,
-        69.354
-      ],
-      [
-        40.8928,
-        69.3554
-      ],
-      [
-        40.8918,
-        69.3554
-      ]
-    ]
-  },
-  {
-    "id": 26739626,
-    "name": "KA1727250022/93-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250022931,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/c50d3fa5f804453689a6652e8c42e179_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739626",
-    "polygonCoordinates": [
-      [
-        40.8932,
-        69.336
-      ],
-      [
-        40.8942,
-        69.336
-      ],
-      [
-        40.8942,
-        69.3374
-      ],
-      [
-        40.8932,
-        69.3374
-      ]
-    ]
-  },
-  {
-    "id": 26739635,
-    "name": "KA1727250021/60-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250021601,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/4bb9d1b4f06047bdaf88b5e88cc3090d_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739635",
-    "polygonCoordinates": [
-      [
-        40.8932,
-        69.3378
-      ],
-      [
-        40.8942,
-        69.3378
-      ],
-      [
-        40.8942,
-        69.3392
-      ],
-      [
-        40.8932,
-        69.3392
-      ]
-    ]
-  },
-  {
-    "id": 26739726,
-    "name": "KA1727250028/14-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250028141,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/8f923ea039f6552bdf373ed32798c08a_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739726",
-    "polygonCoordinates": [
-      [
-        40.8932,
-        69.3396
-      ],
-      [
-        40.8942,
-        69.3396
-      ],
-      [
-        40.8942,
-        69.34100000000001
-      ],
-      [
-        40.8932,
-        69.34100000000001
-      ]
-    ]
-  },
-  {
-    "id": 26739723,
-    "name": "KA1727250005/31-1 yer uchastkasi",
-    "area": 0.65,
-    "budget": 1727250005311,
-    "industry": "Agro",
-    "status": "E-auksion",
-    "jobs": 14,
-    "image": "https://media.e-auksion.uz/i/aeddea3a8cb34e3e2937749cdb7a09d5_S.jpeg",
-    "infrastructure": {
-      "gas": "Mavjud emas",
-      "power": "40 кВт",
-      "water": "Mavjud emas",
-      "road": "Asfalt"
-    },
-    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26739723",
-    "polygonCoordinates": [
-      [
-        40.8932,
-        69.3414
-      ],
-      [
-        40.8942,
-        69.3414
-      ],
-      [
-        40.8942,
-        69.3428
-      ],
-      [
-        40.8932,
-        69.3428
-      ]
-    ]
-  },
-  {
     "id": 26770660,
     "name": "MG1727250026/15 yer uchastkasi",
     "area": 0.65,
@@ -1312,20 +17,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26770660",
     "polygonCoordinates": [
       [
-        40.8932,
-        69.3432
+        40.889,
+        69.336
       ],
       [
-        40.8942,
-        69.3432
+        40.89,
+        69.336
       ],
       [
-        40.8942,
-        69.3446
+        40.89,
+        69.3374
       ],
       [
-        40.8932,
-        69.3446
+        40.889,
+        69.3374
       ]
     ]
   },
@@ -1347,20 +52,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773216",
     "polygonCoordinates": [
       [
-        40.8932,
-        69.345
+        40.889,
+        69.3378
       ],
       [
-        40.8942,
-        69.345
+        40.89,
+        69.3378
       ],
       [
-        40.8942,
-        69.3464
+        40.89,
+        69.3392
       ],
       [
-        40.8932,
-        69.3464
+        40.889,
+        69.3392
       ]
     ]
   },
@@ -1382,20 +87,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773224",
     "polygonCoordinates": [
       [
-        40.8932,
-        69.3468
+        40.889,
+        69.3396
       ],
       [
-        40.8942,
-        69.3468
+        40.89,
+        69.3396
       ],
       [
-        40.8942,
-        69.3482
+        40.89,
+        69.34100000000001
       ],
       [
-        40.8932,
-        69.3482
+        40.889,
+        69.34100000000001
       ]
     ]
   },
@@ -1417,20 +122,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773242",
     "polygonCoordinates": [
       [
-        40.8932,
-        69.3486
+        40.889,
+        69.3414
       ],
       [
-        40.8942,
-        69.3486
+        40.89,
+        69.3414
       ],
       [
-        40.8942,
-        69.35000000000001
+        40.89,
+        69.3428
       ],
       [
-        40.8932,
-        69.35000000000001
+        40.889,
+        69.3428
       ]
     ]
   },
@@ -1452,20 +157,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773250",
     "polygonCoordinates": [
       [
-        40.8932,
-        69.3504
+        40.889,
+        69.3432
       ],
       [
-        40.8942,
-        69.3504
+        40.89,
+        69.3432
       ],
       [
-        40.8942,
-        69.3518
+        40.89,
+        69.3446
       ],
       [
-        40.8932,
-        69.3518
+        40.889,
+        69.3446
       ]
     ]
   },
@@ -1487,20 +192,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773217",
     "polygonCoordinates": [
       [
-        40.8932,
-        69.3522
+        40.889,
+        69.345
       ],
       [
-        40.8942,
-        69.3522
+        40.89,
+        69.345
       ],
       [
-        40.8942,
-        69.3536
+        40.89,
+        69.3464
       ],
       [
-        40.8932,
-        69.3536
+        40.889,
+        69.3464
       ]
     ]
   },
@@ -1522,20 +227,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773236",
     "polygonCoordinates": [
       [
-        40.8932,
-        69.354
+        40.889,
+        69.3468
       ],
       [
-        40.8942,
-        69.354
+        40.89,
+        69.3468
       ],
       [
-        40.8942,
-        69.3554
+        40.89,
+        69.3482
       ],
       [
-        40.8932,
-        69.3554
+        40.889,
+        69.3482
       ]
     ]
   },
@@ -1557,20 +262,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773243",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.336
+        40.889,
+        69.3486
       ],
       [
-        40.8956,
-        69.336
+        40.89,
+        69.3486
       ],
       [
-        40.8956,
-        69.3374
+        40.89,
+        69.35000000000001
       ],
       [
-        40.894600000000004,
-        69.3374
+        40.889,
+        69.35000000000001
       ]
     ]
   },
@@ -1592,20 +297,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773260",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.3378
+        40.889,
+        69.3504
       ],
       [
-        40.8956,
-        69.3378
+        40.89,
+        69.3504
       ],
       [
-        40.8956,
-        69.3392
+        40.89,
+        69.3518
       ],
       [
-        40.894600000000004,
-        69.3392
+        40.889,
+        69.3518
       ]
     ]
   },
@@ -1627,20 +332,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773219",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.3396
+        40.889,
+        69.3522
       ],
       [
-        40.8956,
-        69.3396
+        40.89,
+        69.3522
       ],
       [
-        40.8956,
-        69.34100000000001
+        40.89,
+        69.3536
       ],
       [
-        40.894600000000004,
-        69.34100000000001
+        40.889,
+        69.3536
       ]
     ]
   },
@@ -1662,20 +367,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773226",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.3414
+        40.889,
+        69.354
       ],
       [
-        40.8956,
-        69.3414
+        40.89,
+        69.354
       ],
       [
-        40.8956,
-        69.3428
+        40.89,
+        69.3554
       ],
       [
-        40.894600000000004,
-        69.3428
+        40.889,
+        69.3554
       ]
     ]
   },
@@ -1697,20 +402,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773233",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.3432
+        40.8904,
+        69.336
       ],
       [
-        40.8956,
-        69.3432
+        40.8914,
+        69.336
       ],
       [
-        40.8956,
-        69.3446
+        40.8914,
+        69.3374
       ],
       [
-        40.894600000000004,
-        69.3446
+        40.8904,
+        69.3374
       ]
     ]
   },
@@ -1732,20 +437,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773239",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.345
+        40.8904,
+        69.3378
       ],
       [
-        40.8956,
-        69.345
+        40.8914,
+        69.3378
       ],
       [
-        40.8956,
-        69.3464
+        40.8914,
+        69.3392
       ],
       [
-        40.894600000000004,
-        69.3464
+        40.8904,
+        69.3392
       ]
     ]
   },
@@ -1767,20 +472,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773247",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.3468
+        40.8904,
+        69.3396
       ],
       [
-        40.8956,
-        69.3468
+        40.8914,
+        69.3396
       ],
       [
-        40.8956,
-        69.3482
+        40.8914,
+        69.34100000000001
       ],
       [
-        40.894600000000004,
-        69.3482
+        40.8904,
+        69.34100000000001
       ]
     ]
   },
@@ -1802,20 +507,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773254",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.3486
+        40.8904,
+        69.3414
       ],
       [
-        40.8956,
-        69.3486
+        40.8914,
+        69.3414
       ],
       [
-        40.8956,
-        69.35000000000001
+        40.8914,
+        69.3428
       ],
       [
-        40.894600000000004,
-        69.35000000000001
+        40.8904,
+        69.3428
       ]
     ]
   },
@@ -1837,20 +542,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773212",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.3504
+        40.8904,
+        69.3432
       ],
       [
-        40.8956,
-        69.3504
+        40.8914,
+        69.3432
       ],
       [
-        40.8956,
-        69.3518
+        40.8914,
+        69.3446
       ],
       [
-        40.894600000000004,
-        69.3518
+        40.8904,
+        69.3446
       ]
     ]
   },
@@ -1872,20 +577,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773222",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.3522
+        40.8904,
+        69.345
       ],
       [
-        40.8956,
-        69.3522
+        40.8914,
+        69.345
       ],
       [
-        40.8956,
-        69.3536
+        40.8914,
+        69.3464
       ],
       [
-        40.894600000000004,
-        69.3536
+        40.8904,
+        69.3464
       ]
     ]
   },
@@ -1907,20 +612,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773231",
     "polygonCoordinates": [
       [
-        40.894600000000004,
-        69.354
+        40.8904,
+        69.3468
       ],
       [
-        40.8956,
-        69.354
+        40.8914,
+        69.3468
       ],
       [
-        40.8956,
-        69.3554
+        40.8914,
+        69.3482
       ],
       [
-        40.894600000000004,
-        69.3554
+        40.8904,
+        69.3482
       ]
     ]
   },
@@ -1942,20 +647,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773248",
     "polygonCoordinates": [
       [
-        40.896,
-        69.336
+        40.8904,
+        69.3486
       ],
       [
-        40.897,
-        69.336
+        40.8914,
+        69.3486
       ],
       [
-        40.897,
-        69.3374
+        40.8914,
+        69.35000000000001
       ],
       [
-        40.896,
-        69.3374
+        40.8904,
+        69.35000000000001
       ]
     ]
   },
@@ -1977,20 +682,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773256",
     "polygonCoordinates": [
       [
-        40.896,
-        69.3378
+        40.8904,
+        69.3504
       ],
       [
-        40.897,
-        69.3378
+        40.8914,
+        69.3504
       ],
       [
-        40.897,
-        69.3392
+        40.8914,
+        69.3518
       ],
       [
-        40.896,
-        69.3392
+        40.8904,
+        69.3518
       ]
     ]
   },
@@ -2012,20 +717,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773218",
     "polygonCoordinates": [
       [
-        40.896,
-        69.3396
+        40.8904,
+        69.3522
       ],
       [
-        40.897,
-        69.3396
+        40.8914,
+        69.3522
       ],
       [
-        40.897,
-        69.34100000000001
+        40.8914,
+        69.3536
       ],
       [
-        40.896,
-        69.34100000000001
+        40.8904,
+        69.3536
       ]
     ]
   },
@@ -2047,20 +752,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773230",
     "polygonCoordinates": [
       [
-        40.896,
-        69.3414
+        40.8904,
+        69.354
       ],
       [
-        40.897,
-        69.3414
+        40.8914,
+        69.354
       ],
       [
-        40.897,
-        69.3428
+        40.8914,
+        69.3554
       ],
       [
-        40.896,
-        69.3428
+        40.8904,
+        69.3554
       ]
     ]
   },
@@ -2082,20 +787,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773238",
     "polygonCoordinates": [
       [
-        40.896,
-        69.3432
+        40.8918,
+        69.336
       ],
       [
-        40.897,
-        69.3432
+        40.8928,
+        69.336
       ],
       [
-        40.897,
-        69.3446
+        40.8928,
+        69.3374
       ],
       [
-        40.896,
-        69.3446
+        40.8918,
+        69.3374
       ]
     ]
   },
@@ -2117,20 +822,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773249",
     "polygonCoordinates": [
       [
-        40.896,
-        69.345
+        40.8918,
+        69.3378
       ],
       [
-        40.897,
-        69.345
+        40.8928,
+        69.3378
       ],
       [
-        40.897,
-        69.3464
+        40.8928,
+        69.3392
       ],
       [
-        40.896,
-        69.3464
+        40.8918,
+        69.3392
       ]
     ]
   },
@@ -2152,20 +857,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773258",
     "polygonCoordinates": [
       [
-        40.896,
-        69.3468
+        40.8918,
+        69.3396
       ],
       [
-        40.897,
-        69.3468
+        40.8928,
+        69.3396
       ],
       [
-        40.897,
-        69.3482
+        40.8928,
+        69.34100000000001
       ],
       [
-        40.896,
-        69.3482
+        40.8918,
+        69.34100000000001
       ]
     ]
   },
@@ -2187,20 +892,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773223",
     "polygonCoordinates": [
       [
-        40.896,
-        69.3486
+        40.8918,
+        69.3414
       ],
       [
-        40.897,
-        69.3486
+        40.8928,
+        69.3414
       ],
       [
-        40.897,
-        69.35000000000001
+        40.8928,
+        69.3428
       ],
       [
-        40.896,
-        69.35000000000001
+        40.8918,
+        69.3428
       ]
     ]
   },
@@ -2222,20 +927,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773228",
     "polygonCoordinates": [
       [
-        40.896,
-        69.3504
+        40.8918,
+        69.3432
       ],
       [
-        40.897,
-        69.3504
+        40.8928,
+        69.3432
       ],
       [
-        40.897,
-        69.3518
+        40.8928,
+        69.3446
       ],
       [
-        40.896,
-        69.3518
+        40.8918,
+        69.3446
       ]
     ]
   },
@@ -2257,20 +962,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773235",
     "polygonCoordinates": [
       [
-        40.896,
-        69.3522
+        40.8918,
+        69.345
       ],
       [
-        40.897,
-        69.3522
+        40.8928,
+        69.345
       ],
       [
-        40.897,
-        69.3536
+        40.8928,
+        69.3464
       ],
       [
-        40.896,
-        69.3536
+        40.8918,
+        69.3464
       ]
     ]
   },
@@ -2292,20 +997,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773245",
     "polygonCoordinates": [
       [
-        40.896,
-        69.354
+        40.8918,
+        69.3468
       ],
       [
-        40.897,
-        69.354
+        40.8928,
+        69.3468
       ],
       [
-        40.897,
-        69.3554
+        40.8928,
+        69.3482
       ],
       [
-        40.896,
-        69.3554
+        40.8918,
+        69.3482
       ]
     ]
   },
@@ -2327,20 +1032,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773252",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.336
+        40.8918,
+        69.3486
       ],
       [
-        40.8984,
-        69.336
+        40.8928,
+        69.3486
       ],
       [
-        40.8984,
-        69.3374
+        40.8928,
+        69.35000000000001
       ],
       [
-        40.897400000000005,
-        69.3374
+        40.8918,
+        69.35000000000001
       ]
     ]
   },
@@ -2362,20 +1067,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773259",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.3378
+        40.8918,
+        69.3504
       ],
       [
-        40.8984,
-        69.3378
+        40.8928,
+        69.3504
       ],
       [
-        40.8984,
-        69.3392
+        40.8928,
+        69.3518
       ],
       [
-        40.897400000000005,
-        69.3392
+        40.8918,
+        69.3518
       ]
     ]
   },
@@ -2397,20 +1102,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773225",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.3396
+        40.8918,
+        69.3522
       ],
       [
-        40.8984,
-        69.3396
+        40.8928,
+        69.3522
       ],
       [
-        40.8984,
-        69.34100000000001
+        40.8928,
+        69.3536
       ],
       [
-        40.897400000000005,
-        69.34100000000001
+        40.8918,
+        69.3536
       ]
     ]
   },
@@ -2432,20 +1137,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773232",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.3414
+        40.8918,
+        69.354
       ],
       [
-        40.8984,
-        69.3414
+        40.8928,
+        69.354
       ],
       [
-        40.8984,
-        69.3428
+        40.8928,
+        69.3554
       ],
       [
-        40.897400000000005,
-        69.3428
+        40.8918,
+        69.3554
       ]
     ]
   },
@@ -2467,20 +1172,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773240",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.3432
+        40.8932,
+        69.336
       ],
       [
-        40.8984,
-        69.3432
+        40.8942,
+        69.336
       ],
       [
-        40.8984,
-        69.3446
+        40.8942,
+        69.3374
       ],
       [
-        40.897400000000005,
-        69.3446
+        40.8932,
+        69.3374
       ]
     ]
   },
@@ -2502,20 +1207,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773255",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.345
+        40.8932,
+        69.3378
       ],
       [
-        40.8984,
-        69.345
+        40.8942,
+        69.3378
       ],
       [
-        40.8984,
-        69.3464
+        40.8942,
+        69.3392
       ],
       [
-        40.897400000000005,
-        69.3464
+        40.8932,
+        69.3392
       ]
     ]
   },
@@ -2537,20 +1242,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26767188",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.3468
+        40.8932,
+        69.3396
       ],
       [
-        40.8984,
-        69.3468
+        40.8942,
+        69.3396
       ],
       [
-        40.8984,
-        69.3482
+        40.8942,
+        69.34100000000001
       ],
       [
-        40.897400000000005,
-        69.3482
+        40.8932,
+        69.34100000000001
       ]
     ]
   },
@@ -2572,20 +1277,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773234",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.3486
+        40.8932,
+        69.3414
       ],
       [
-        40.8984,
-        69.3486
+        40.8942,
+        69.3414
       ],
       [
-        40.8984,
-        69.35000000000001
+        40.8942,
+        69.3428
       ],
       [
-        40.897400000000005,
-        69.35000000000001
+        40.8932,
+        69.3428
       ]
     ]
   },
@@ -2607,20 +1312,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773246",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.3504
+        40.8932,
+        69.3432
       ],
       [
-        40.8984,
-        69.3504
+        40.8942,
+        69.3432
       ],
       [
-        40.8984,
-        69.3518
+        40.8942,
+        69.3446
       ],
       [
-        40.897400000000005,
-        69.3518
+        40.8932,
+        69.3446
       ]
     ]
   },
@@ -2642,20 +1347,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773253",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.3522
+        40.8932,
+        69.345
       ],
       [
-        40.8984,
-        69.3522
+        40.8942,
+        69.345
       ],
       [
-        40.8984,
-        69.3536
+        40.8942,
+        69.3464
       ],
       [
-        40.897400000000005,
-        69.3536
+        40.8932,
+        69.3464
       ]
     ]
   },
@@ -2677,20 +1382,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26772513",
     "polygonCoordinates": [
       [
-        40.897400000000005,
-        69.354
+        40.8932,
+        69.3468
       ],
       [
-        40.8984,
-        69.354
+        40.8942,
+        69.3468
       ],
       [
-        40.8984,
-        69.3554
+        40.8942,
+        69.3482
       ],
       [
-        40.897400000000005,
-        69.3554
+        40.8932,
+        69.3482
       ]
     ]
   },
@@ -2712,20 +1417,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26767186",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.336
+        40.8932,
+        69.3486
       ],
       [
-        40.8998,
-        69.336
+        40.8942,
+        69.3486
       ],
       [
-        40.8998,
-        69.3374
+        40.8942,
+        69.35000000000001
       ],
       [
-        40.8988,
-        69.3374
+        40.8932,
+        69.35000000000001
       ]
     ]
   },
@@ -2747,20 +1452,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773213",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.3378
+        40.8932,
+        69.3504
       ],
       [
-        40.8998,
-        69.3378
+        40.8942,
+        69.3504
       ],
       [
-        40.8998,
-        69.3392
+        40.8942,
+        69.3518
       ],
       [
-        40.8988,
-        69.3392
+        40.8932,
+        69.3518
       ]
     ]
   },
@@ -2782,20 +1487,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773220",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.3396
+        40.8932,
+        69.3522
       ],
       [
-        40.8998,
-        69.3396
+        40.8942,
+        69.3522
       ],
       [
-        40.8998,
-        69.34100000000001
+        40.8942,
+        69.3536
       ],
       [
-        40.8988,
-        69.34100000000001
+        40.8932,
+        69.3536
       ]
     ]
   },
@@ -2817,20 +1522,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26772515",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.3414
+        40.8932,
+        69.354
       ],
       [
-        40.8998,
-        69.3414
+        40.8942,
+        69.354
       ],
       [
-        40.8998,
-        69.3428
+        40.8942,
+        69.3554
       ],
       [
-        40.8988,
-        69.3428
+        40.8932,
+        69.3554
       ]
     ]
   },
@@ -2852,20 +1557,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773215",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.3432
+        40.894600000000004,
+        69.336
       ],
       [
-        40.8998,
-        69.3432
+        40.8956,
+        69.336
       ],
       [
-        40.8998,
-        69.3446
+        40.8956,
+        69.3374
       ],
       [
-        40.8988,
-        69.3446
+        40.894600000000004,
+        69.3374
       ]
     ]
   },
@@ -2887,20 +1592,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773229",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.345
+        40.894600000000004,
+        69.3378
       ],
       [
-        40.8998,
-        69.345
+        40.8956,
+        69.3378
       ],
       [
-        40.8998,
-        69.3464
+        40.8956,
+        69.3392
       ],
       [
-        40.8988,
-        69.3464
+        40.894600000000004,
+        69.3392
       ]
     ]
   },
@@ -2922,20 +1627,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773241",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.3468
+        40.894600000000004,
+        69.3396
       ],
       [
-        40.8998,
-        69.3468
+        40.8956,
+        69.3396
       ],
       [
-        40.8998,
-        69.3482
+        40.8956,
+        69.34100000000001
       ],
       [
-        40.8988,
-        69.3482
+        40.894600000000004,
+        69.34100000000001
       ]
     ]
   },
@@ -2957,20 +1662,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773251",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.3486
+        40.894600000000004,
+        69.3414
       ],
       [
-        40.8998,
-        69.3486
+        40.8956,
+        69.3414
       ],
       [
-        40.8998,
-        69.35000000000001
+        40.8956,
+        69.3428
       ],
       [
-        40.8988,
-        69.35000000000001
+        40.894600000000004,
+        69.3428
       ]
     ]
   },
@@ -2992,20 +1697,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773261",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.3504
+        40.894600000000004,
+        69.3432
       ],
       [
-        40.8998,
-        69.3504
+        40.8956,
+        69.3432
       ],
       [
-        40.8998,
-        69.3518
+        40.8956,
+        69.3446
       ],
       [
-        40.8988,
-        69.3518
+        40.894600000000004,
+        69.3446
       ]
     ]
   },
@@ -3027,20 +1732,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773214",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.3522
+        40.894600000000004,
+        69.345
       ],
       [
-        40.8998,
-        69.3522
+        40.8956,
+        69.345
       ],
       [
-        40.8998,
-        69.3536
+        40.8956,
+        69.3464
       ],
       [
-        40.8988,
-        69.3536
+        40.894600000000004,
+        69.3464
       ]
     ]
   },
@@ -3062,20 +1767,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773221",
     "polygonCoordinates": [
       [
-        40.8988,
-        69.354
+        40.894600000000004,
+        69.3468
       ],
       [
-        40.8998,
-        69.354
+        40.8956,
+        69.3468
       ],
       [
-        40.8998,
-        69.3554
+        40.8956,
+        69.3482
       ],
       [
-        40.8988,
-        69.3554
+        40.894600000000004,
+        69.3482
       ]
     ]
   },
@@ -3097,20 +1802,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773227",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.336
+        40.894600000000004,
+        69.3486
       ],
       [
-        40.9012,
-        69.336
+        40.8956,
+        69.3486
       ],
       [
-        40.9012,
-        69.3374
+        40.8956,
+        69.35000000000001
       ],
       [
-        40.900200000000005,
-        69.3374
+        40.894600000000004,
+        69.35000000000001
       ]
     ]
   },
@@ -3132,20 +1837,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773237",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.3378
+        40.894600000000004,
+        69.3504
       ],
       [
-        40.9012,
-        69.3378
+        40.8956,
+        69.3504
       ],
       [
-        40.9012,
-        69.3392
+        40.8956,
+        69.3518
       ],
       [
-        40.900200000000005,
-        69.3392
+        40.894600000000004,
+        69.3518
       ]
     ]
   },
@@ -3167,20 +1872,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773244",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.3396
+        40.894600000000004,
+        69.3522
       ],
       [
-        40.9012,
-        69.3396
+        40.8956,
+        69.3522
       ],
       [
-        40.9012,
-        69.34100000000001
+        40.8956,
+        69.3536
       ],
       [
-        40.900200000000005,
-        69.34100000000001
+        40.894600000000004,
+        69.3536
       ]
     ]
   },
@@ -3202,20 +1907,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26773257",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.3414
+        40.894600000000004,
+        69.354
       ],
       [
-        40.9012,
-        69.3414
+        40.8956,
+        69.354
       ],
       [
-        40.9012,
-        69.3428
+        40.8956,
+        69.3554
       ],
       [
-        40.900200000000005,
-        69.3428
+        40.894600000000004,
+        69.3554
       ]
     ]
   },
@@ -3237,20 +1942,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26804813",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.3432
+        40.896,
+        69.336
       ],
       [
-        40.9012,
-        69.3432
+        40.897,
+        69.336
       ],
       [
-        40.9012,
-        69.3446
+        40.897,
+        69.3374
       ],
       [
-        40.900200000000005,
-        69.3446
+        40.896,
+        69.3374
       ]
     ]
   },
@@ -3272,20 +1977,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26806880",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.345
+        40.896,
+        69.3378
       ],
       [
-        40.9012,
-        69.345
+        40.897,
+        69.3378
       ],
       [
-        40.9012,
-        69.3464
+        40.897,
+        69.3392
       ],
       [
-        40.900200000000005,
-        69.3464
+        40.896,
+        69.3392
       ]
     ]
   },
@@ -3307,20 +2012,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26813785",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.3468
+        40.896,
+        69.3396
       ],
       [
-        40.9012,
-        69.3468
+        40.897,
+        69.3396
       ],
       [
-        40.9012,
-        69.3482
+        40.897,
+        69.34100000000001
       ],
       [
-        40.900200000000005,
-        69.3482
+        40.896,
+        69.34100000000001
       ]
     ]
   },
@@ -3342,20 +2047,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26806881",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.3486
+        40.896,
+        69.3414
       ],
       [
-        40.9012,
-        69.3486
+        40.897,
+        69.3414
       ],
       [
-        40.9012,
-        69.35000000000001
+        40.897,
+        69.3428
       ],
       [
-        40.900200000000005,
-        69.35000000000001
+        40.896,
+        69.3428
       ]
     ]
   },
@@ -3377,20 +2082,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824242",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.3504
+        40.896,
+        69.3432
       ],
       [
-        40.9012,
-        69.3504
+        40.897,
+        69.3432
       ],
       [
-        40.9012,
-        69.3518
+        40.897,
+        69.3446
       ],
       [
-        40.900200000000005,
-        69.3518
+        40.896,
+        69.3446
       ]
     ]
   },
@@ -3412,20 +2117,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824958",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.3522
+        40.896,
+        69.345
       ],
       [
-        40.9012,
-        69.3522
+        40.897,
+        69.345
       ],
       [
-        40.9012,
-        69.3536
+        40.897,
+        69.3464
       ],
       [
-        40.900200000000005,
-        69.3536
+        40.896,
+        69.3464
       ]
     ]
   },
@@ -3447,20 +2152,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825161",
     "polygonCoordinates": [
       [
-        40.900200000000005,
-        69.354
+        40.896,
+        69.3468
       ],
       [
-        40.9012,
-        69.354
+        40.897,
+        69.3468
       ],
       [
-        40.9012,
-        69.3554
+        40.897,
+        69.3482
       ],
       [
-        40.900200000000005,
-        69.3554
+        40.896,
+        69.3482
       ]
     ]
   },
@@ -3482,20 +2187,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825173",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.336
+        40.896,
+        69.3486
       ],
       [
-        40.9026,
-        69.336
+        40.897,
+        69.3486
       ],
       [
-        40.9026,
-        69.3374
+        40.897,
+        69.35000000000001
       ],
       [
-        40.9016,
-        69.3374
+        40.896,
+        69.35000000000001
       ]
     ]
   },
@@ -3517,20 +2222,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825187",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.3378
+        40.896,
+        69.3504
       ],
       [
-        40.9026,
-        69.3378
+        40.897,
+        69.3504
       ],
       [
-        40.9026,
-        69.3392
+        40.897,
+        69.3518
       ],
       [
-        40.9016,
-        69.3392
+        40.896,
+        69.3518
       ]
     ]
   },
@@ -3552,20 +2257,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26823724",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.3396
+        40.896,
+        69.3522
       ],
       [
-        40.9026,
-        69.3396
+        40.897,
+        69.3522
       ],
       [
-        40.9026,
-        69.34100000000001
+        40.897,
+        69.3536
       ],
       [
-        40.9016,
-        69.34100000000001
+        40.896,
+        69.3536
       ]
     ]
   },
@@ -3587,20 +2292,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824250",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.3414
+        40.896,
+        69.354
       ],
       [
-        40.9026,
-        69.3414
+        40.897,
+        69.354
       ],
       [
-        40.9026,
-        69.3428
+        40.897,
+        69.3554
       ],
       [
-        40.9016,
-        69.3428
+        40.896,
+        69.3554
       ]
     ]
   },
@@ -3622,20 +2327,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825149",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.3432
+        40.897400000000005,
+        69.336
       ],
       [
-        40.9026,
-        69.3432
+        40.8984,
+        69.336
       ],
       [
-        40.9026,
-        69.3446
+        40.8984,
+        69.3374
       ],
       [
-        40.9016,
-        69.3446
+        40.897400000000005,
+        69.3374
       ]
     ]
   },
@@ -3657,20 +2362,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825159",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.345
+        40.897400000000005,
+        69.3378
       ],
       [
-        40.9026,
-        69.345
+        40.8984,
+        69.3378
       ],
       [
-        40.9026,
-        69.3464
+        40.8984,
+        69.3392
       ],
       [
-        40.9016,
-        69.3464
+        40.897400000000005,
+        69.3392
       ]
     ]
   },
@@ -3692,20 +2397,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825168",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.3468
+        40.897400000000005,
+        69.3396
       ],
       [
-        40.9026,
-        69.3468
+        40.8984,
+        69.3396
       ],
       [
-        40.9026,
-        69.3482
+        40.8984,
+        69.34100000000001
       ],
       [
-        40.9016,
-        69.3482
+        40.897400000000005,
+        69.34100000000001
       ]
     ]
   },
@@ -3727,20 +2432,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825176",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.3486
+        40.897400000000005,
+        69.3414
       ],
       [
-        40.9026,
-        69.3486
+        40.8984,
+        69.3414
       ],
       [
-        40.9026,
-        69.35000000000001
+        40.8984,
+        69.3428
       ],
       [
-        40.9016,
-        69.35000000000001
+        40.897400000000005,
+        69.3428
       ]
     ]
   },
@@ -3762,20 +2467,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825180",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.3504
+        40.897400000000005,
+        69.3432
       ],
       [
-        40.9026,
-        69.3504
+        40.8984,
+        69.3432
       ],
       [
-        40.9026,
-        69.3518
+        40.8984,
+        69.3446
       ],
       [
-        40.9016,
-        69.3518
+        40.897400000000005,
+        69.3446
       ]
     ]
   },
@@ -3797,20 +2502,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26823166",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.3522
+        40.897400000000005,
+        69.345
       ],
       [
-        40.9026,
-        69.3522
+        40.8984,
+        69.345
       ],
       [
-        40.9026,
-        69.3536
+        40.8984,
+        69.3464
       ],
       [
-        40.9016,
-        69.3536
+        40.897400000000005,
+        69.3464
       ]
     ]
   },
@@ -3822,7 +2527,7 @@
     "industry": "Agro",
     "status": "E-auksion",
     "jobs": 14,
-    "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80",
+    "image": "https://media.e-auksion.uz/i/80d2a1281918b6c9c8a22ae5e3b860eb_S.jpg",
     "infrastructure": {
       "gas": "Mavjud emas",
       "power": "40 кВт",
@@ -3832,20 +2537,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824244",
     "polygonCoordinates": [
       [
-        40.9016,
-        69.354
+        40.897400000000005,
+        69.3468
       ],
       [
-        40.9026,
-        69.354
+        40.8984,
+        69.3468
       ],
       [
-        40.9026,
-        69.3554
+        40.8984,
+        69.3482
       ],
       [
-        40.9016,
-        69.3554
+        40.897400000000005,
+        69.3482
       ]
     ]
   },
@@ -3867,20 +2572,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824251",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.336
+        40.897400000000005,
+        69.3486
       ],
       [
-        40.904,
-        69.336
+        40.8984,
+        69.3486
       ],
       [
-        40.904,
-        69.3374
+        40.8984,
+        69.35000000000001
       ],
       [
-        40.903000000000006,
-        69.3374
+        40.897400000000005,
+        69.35000000000001
       ]
     ]
   },
@@ -3902,20 +2607,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824257",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.3378
+        40.897400000000005,
+        69.3504
       ],
       [
-        40.904,
-        69.3378
+        40.8984,
+        69.3504
       ],
       [
-        40.904,
-        69.3392
+        40.8984,
+        69.3518
       ],
       [
-        40.903000000000006,
-        69.3392
+        40.897400000000005,
+        69.3518
       ]
     ]
   },
@@ -3937,20 +2642,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824245",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.3396
+        40.897400000000005,
+        69.3522
       ],
       [
-        40.904,
-        69.3396
+        40.8984,
+        69.3522
       ],
       [
-        40.904,
-        69.34100000000001
+        40.8984,
+        69.3536
       ],
       [
-        40.903000000000006,
-        69.34100000000001
+        40.897400000000005,
+        69.3536
       ]
     ]
   },
@@ -3972,20 +2677,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824253",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.3414
+        40.897400000000005,
+        69.354
       ],
       [
-        40.904,
-        69.3414
+        40.8984,
+        69.354
       ],
       [
-        40.904,
-        69.3428
+        40.8984,
+        69.3554
       ],
       [
-        40.903000000000006,
-        69.3428
+        40.897400000000005,
+        69.3554
       ]
     ]
   },
@@ -4007,20 +2712,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824445",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.3432
+        40.8988,
+        69.336
       ],
       [
-        40.904,
-        69.3432
+        40.8998,
+        69.336
       ],
       [
-        40.904,
-        69.3446
+        40.8998,
+        69.3374
       ],
       [
-        40.903000000000006,
-        69.3446
+        40.8988,
+        69.3374
       ]
     ]
   },
@@ -4042,20 +2747,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824340",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.345
+        40.8988,
+        69.3378
       ],
       [
-        40.904,
-        69.345
+        40.8998,
+        69.3378
       ],
       [
-        40.904,
-        69.3464
+        40.8998,
+        69.3392
       ],
       [
-        40.903000000000006,
-        69.3464
+        40.8988,
+        69.3392
       ]
     ]
   },
@@ -4077,20 +2782,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825153",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.3468
+        40.8988,
+        69.3396
       ],
       [
-        40.904,
-        69.3468
+        40.8998,
+        69.3396
       ],
       [
-        40.904,
-        69.3482
+        40.8998,
+        69.34100000000001
       ],
       [
-        40.903000000000006,
-        69.3482
+        40.8988,
+        69.34100000000001
       ]
     ]
   },
@@ -4112,20 +2817,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825164",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.3486
+        40.8988,
+        69.3414
       ],
       [
-        40.904,
-        69.3486
+        40.8998,
+        69.3414
       ],
       [
-        40.904,
-        69.35000000000001
+        40.8998,
+        69.3428
       ],
       [
-        40.903000000000006,
-        69.35000000000001
+        40.8988,
+        69.3428
       ]
     ]
   },
@@ -4147,20 +2852,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825175",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.3504
+        40.8988,
+        69.3432
       ],
       [
-        40.904,
-        69.3504
+        40.8998,
+        69.3432
       ],
       [
-        40.904,
-        69.3518
+        40.8998,
+        69.3446
       ],
       [
-        40.903000000000006,
-        69.3518
+        40.8988,
+        69.3446
       ]
     ]
   },
@@ -4172,7 +2877,7 @@
     "industry": "Agro",
     "status": "E-auksion",
     "jobs": 14,
-    "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80",
+    "image": "https://media.e-auksion.uz/i/bcc25902ef61deaed4018553a15a914f_S.jpg",
     "infrastructure": {
       "gas": "Mavjud emas",
       "power": "40 кВт",
@@ -4182,20 +2887,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825179",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.3522
+        40.8988,
+        69.345
       ],
       [
-        40.904,
-        69.3522
+        40.8998,
+        69.345
       ],
       [
-        40.904,
-        69.3536
+        40.8998,
+        69.3464
       ],
       [
-        40.903000000000006,
-        69.3536
+        40.8988,
+        69.3464
       ]
     ]
   },
@@ -4217,20 +2922,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825148",
     "polygonCoordinates": [
       [
-        40.903000000000006,
-        69.354
+        40.8988,
+        69.3468
       ],
       [
-        40.904,
-        69.354
+        40.8998,
+        69.3468
       ],
       [
-        40.904,
-        69.3554
+        40.8998,
+        69.3482
       ],
       [
-        40.903000000000006,
-        69.3554
+        40.8988,
+        69.3482
       ]
     ]
   },
@@ -4252,20 +2957,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825156",
     "polygonCoordinates": [
       [
-        40.9044,
-        69.336
+        40.8988,
+        69.3486
       ],
       [
-        40.9054,
-        69.336
+        40.8998,
+        69.3486
       ],
       [
-        40.9054,
-        69.3374
+        40.8998,
+        69.35000000000001
       ],
       [
-        40.9044,
-        69.3374
+        40.8988,
+        69.35000000000001
       ]
     ]
   },
@@ -4287,20 +2992,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825165",
     "polygonCoordinates": [
       [
-        40.9044,
-        69.3378
+        40.8988,
+        69.3504
       ],
       [
-        40.9054,
-        69.3378
+        40.8998,
+        69.3504
       ],
       [
-        40.9054,
-        69.3392
+        40.8998,
+        69.3518
       ],
       [
-        40.9044,
-        69.3392
+        40.8988,
+        69.3518
       ]
     ]
   },
@@ -4322,20 +3027,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825171",
     "polygonCoordinates": [
       [
-        40.9044,
-        69.3396
+        40.8988,
+        69.3522
       ],
       [
-        40.9054,
-        69.3396
+        40.8998,
+        69.3522
       ],
       [
-        40.9054,
-        69.34100000000001
+        40.8998,
+        69.3536
       ],
       [
-        40.9044,
-        69.34100000000001
+        40.8988,
+        69.3536
       ]
     ]
   },
@@ -4357,20 +3062,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825182",
     "polygonCoordinates": [
       [
-        40.9044,
-        69.3414
+        40.8988,
+        69.354
       ],
       [
-        40.9054,
-        69.3414
+        40.8998,
+        69.354
       ],
       [
-        40.9054,
-        69.3428
+        40.8998,
+        69.3554
       ],
       [
-        40.9044,
-        69.3428
+        40.8988,
+        69.3554
       ]
     ]
   },
@@ -4392,20 +3097,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26823725",
     "polygonCoordinates": [
       [
-        40.9044,
-        69.3432
+        40.900200000000005,
+        69.336
       ],
       [
-        40.9054,
-        69.3432
+        40.9012,
+        69.336
       ],
       [
-        40.9054,
-        69.3446
+        40.9012,
+        69.3374
       ],
       [
-        40.9044,
-        69.3446
+        40.900200000000005,
+        69.3374
       ]
     ]
   },
@@ -4427,20 +3132,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824241",
     "polygonCoordinates": [
       [
-        40.9044,
-        69.345
+        40.900200000000005,
+        69.3378
       ],
       [
-        40.9054,
-        69.345
+        40.9012,
+        69.3378
       ],
       [
-        40.9054,
-        69.3464
+        40.9012,
+        69.3392
       ],
       [
-        40.9044,
-        69.3464
+        40.900200000000005,
+        69.3392
       ]
     ]
   },
@@ -4462,20 +3167,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824249",
     "polygonCoordinates": [
       [
-        40.9044,
-        69.3468
+        40.900200000000005,
+        69.3396
       ],
       [
-        40.9054,
-        69.3468
+        40.9012,
+        69.3396
       ],
       [
-        40.9054,
-        69.3482
+        40.9012,
+        69.34100000000001
       ],
       [
-        40.9044,
-        69.3482
+        40.900200000000005,
+        69.34100000000001
       ]
     ]
   },
@@ -4497,20 +3202,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824256",
     "polygonCoordinates": [
       [
-        40.9044,
-        69.3486
+        40.900200000000005,
+        69.3414
       ],
       [
-        40.9054,
-        69.3486
+        40.9012,
+        69.3414
       ],
       [
-        40.9054,
-        69.35000000000001
+        40.9012,
+        69.3428
       ],
       [
-        40.9044,
-        69.35000000000001
+        40.900200000000005,
+        69.3428
       ]
     ]
   },
@@ -4532,20 +3237,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824262",
     "polygonCoordinates": [
       [
-        40.9044,
-        69.3504
+        40.900200000000005,
+        69.3432
       ],
       [
-        40.9054,
-        69.3504
+        40.9012,
+        69.3432
       ],
       [
-        40.9054,
-        69.3518
+        40.9012,
+        69.3446
       ],
       [
-        40.9044,
-        69.3518
+        40.900200000000005,
+        69.3446
       ]
     ]
   },
@@ -4567,20 +3272,20 @@
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825147",
     "polygonCoordinates": [
       [
-        40.9044,
-        69.3522
+        40.900200000000005,
+        69.345
       ],
       [
-        40.9054,
-        69.3522
+        40.9012,
+        69.345
       ],
       [
-        40.9054,
-        69.3536
+        40.9012,
+        69.3464
       ],
       [
-        40.9044,
-        69.3536
+        40.900200000000005,
+        69.3464
       ]
     ]
   },
@@ -4600,6 +3305,1301 @@
       "road": "Asfalt"
     },
     "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825155",
+    "polygonCoordinates": [
+      [
+        40.900200000000005,
+        69.3468
+      ],
+      [
+        40.9012,
+        69.3468
+      ],
+      [
+        40.9012,
+        69.3482
+      ],
+      [
+        40.900200000000005,
+        69.3482
+      ]
+    ]
+  },
+  {
+    "id": 26825162,
+    "name": "KA1727250014/83-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014831,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/3c8e358855e7a16393f172c3aea1fb19_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825162",
+    "polygonCoordinates": [
+      [
+        40.900200000000005,
+        69.3486
+      ],
+      [
+        40.9012,
+        69.3486
+      ],
+      [
+        40.9012,
+        69.35000000000001
+      ],
+      [
+        40.900200000000005,
+        69.35000000000001
+      ]
+    ]
+  },
+  {
+    "id": 26825186,
+    "name": "KA1727250014/18-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014181,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/b4de621a61c7caf5ff3e5e4ecc2f5925_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825186",
+    "polygonCoordinates": [
+      [
+        40.900200000000005,
+        69.3504
+      ],
+      [
+        40.9012,
+        69.3504
+      ],
+      [
+        40.9012,
+        69.3518
+      ],
+      [
+        40.900200000000005,
+        69.3518
+      ]
+    ]
+  },
+  {
+    "id": 26823726,
+    "name": "KA1727250021/1-2 yer uchastkasi",
+    "area": 0.65,
+    "budget": 172725002112,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/4357c144f04460912db1f52a8d5b6877_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26823726",
+    "polygonCoordinates": [
+      [
+        40.900200000000005,
+        69.3522
+      ],
+      [
+        40.9012,
+        69.3522
+      ],
+      [
+        40.9012,
+        69.3536
+      ],
+      [
+        40.900200000000005,
+        69.3536
+      ]
+    ]
+  },
+  {
+    "id": 26823729,
+    "name": "KA1727250022/33-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250022331,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/a90a3c701f0aaf67b8741fcc1e456497_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26823729",
+    "polygonCoordinates": [
+      [
+        40.900200000000005,
+        69.354
+      ],
+      [
+        40.9012,
+        69.354
+      ],
+      [
+        40.9012,
+        69.3554
+      ],
+      [
+        40.900200000000005,
+        69.3554
+      ]
+    ]
+  },
+  {
+    "id": 26824246,
+    "name": "KA1727250021/49-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250021491,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/48ea64062895f724bd99182aa0e58fdf_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824246",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.336
+      ],
+      [
+        40.9026,
+        69.336
+      ],
+      [
+        40.9026,
+        69.3374
+      ],
+      [
+        40.9016,
+        69.3374
+      ]
+    ]
+  },
+  {
+    "id": 26824959,
+    "name": "KA1727250022/46-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250022461,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/dad0fb722d26a2119208860fac02f9bf_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824959",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.3378
+      ],
+      [
+        40.9026,
+        69.3378
+      ],
+      [
+        40.9026,
+        69.3392
+      ],
+      [
+        40.9016,
+        69.3392
+      ]
+    ]
+  },
+  {
+    "id": 26825152,
+    "name": "KA1727250014/93-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014931,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/4e20d3ebfe9a1784851a925e5a26dc69_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825152",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.3396
+      ],
+      [
+        40.9026,
+        69.3396
+      ],
+      [
+        40.9026,
+        69.34100000000001
+      ],
+      [
+        40.9016,
+        69.34100000000001
+      ]
+    ]
+  },
+  {
+    "id": 26825163,
+    "name": "KA1727250014/84-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014841,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/e7025f25f423ee52db897fdacfa76fc4_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825163",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.3414
+      ],
+      [
+        40.9026,
+        69.3414
+      ],
+      [
+        40.9026,
+        69.3428
+      ],
+      [
+        40.9016,
+        69.3428
+      ]
+    ]
+  },
+  {
+    "id": 26825170,
+    "name": "KA1727250014/75-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014751,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/b120632d5417ac61a7e6a5c1e7cd066d_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825170",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.3432
+      ],
+      [
+        40.9026,
+        69.3432
+      ],
+      [
+        40.9026,
+        69.3446
+      ],
+      [
+        40.9016,
+        69.3446
+      ]
+    ]
+  },
+  {
+    "id": 26825181,
+    "name": "KA1727250014/26-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014261,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/3b32d978f04b79ac703afba0aeea0dd9_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825181",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.345
+      ],
+      [
+        40.9026,
+        69.345
+      ],
+      [
+        40.9026,
+        69.3464
+      ],
+      [
+        40.9016,
+        69.3464
+      ]
+    ]
+  },
+  {
+    "id": 26823165,
+    "name": "KA1727250021/28-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250021281,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/b65cae31635dd281a66605fb524624ec_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26823165",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.3468
+      ],
+      [
+        40.9026,
+        69.3468
+      ],
+      [
+        40.9026,
+        69.3482
+      ],
+      [
+        40.9016,
+        69.3482
+      ]
+    ]
+  },
+  {
+    "id": 26823168,
+    "name": "KA1727250014/11-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014111,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/9b55bfdc5bdf10e78c386cb01f3af05a_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26823168",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.3486
+      ],
+      [
+        40.9026,
+        69.3486
+      ],
+      [
+        40.9026,
+        69.35000000000001
+      ],
+      [
+        40.9016,
+        69.35000000000001
+      ]
+    ]
+  },
+  {
+    "id": 26825150,
+    "name": "KA1727250014/94-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014941,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/d6b02ab202fc98e432635acfce110cf8_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825150",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.3504
+      ],
+      [
+        40.9026,
+        69.3504
+      ],
+      [
+        40.9026,
+        69.3518
+      ],
+      [
+        40.9016,
+        69.3518
+      ]
+    ]
+  },
+  {
+    "id": 26825151,
+    "name": "KA1727250014/96-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014961,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/c473fb6e165690b64719c61f5e50d114_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825151",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.3522
+      ],
+      [
+        40.9026,
+        69.3522
+      ],
+      [
+        40.9026,
+        69.3536
+      ],
+      [
+        40.9016,
+        69.3536
+      ]
+    ]
+  },
+  {
+    "id": 26825154,
+    "name": "KA1727250014/92-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014921,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/8bf91d1a34c5246626f4ccc927bc2f9c_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825154",
+    "polygonCoordinates": [
+      [
+        40.9016,
+        69.354
+      ],
+      [
+        40.9026,
+        69.354
+      ],
+      [
+        40.9026,
+        69.3554
+      ],
+      [
+        40.9016,
+        69.3554
+      ]
+    ]
+  },
+  {
+    "id": 26825157,
+    "name": "KA1727250014/89-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014891,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/cf88cf7d73b6ca9ba622138226313f9c_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825157",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.336
+      ],
+      [
+        40.904,
+        69.336
+      ],
+      [
+        40.904,
+        69.3374
+      ],
+      [
+        40.903000000000006,
+        69.3374
+      ]
+    ]
+  },
+  {
+    "id": 26825158,
+    "name": "KA1727250014/87-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014871,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/58a22173c2138e352363a9f9b937ad47_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825158",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.3378
+      ],
+      [
+        40.904,
+        69.3378
+      ],
+      [
+        40.904,
+        69.3392
+      ],
+      [
+        40.903000000000006,
+        69.3392
+      ]
+    ]
+  },
+  {
+    "id": 26825160,
+    "name": "KA1727250014/82-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014821,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/3c01bcad9babc45f9549ac74b87bd1d6_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825160",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.3396
+      ],
+      [
+        40.904,
+        69.3396
+      ],
+      [
+        40.904,
+        69.34100000000001
+      ],
+      [
+        40.903000000000006,
+        69.34100000000001
+      ]
+    ]
+  },
+  {
+    "id": 26825167,
+    "name": "KA1727250014/79-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014791,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/69e6b7650edac48962551c82c753f612_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825167",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.3414
+      ],
+      [
+        40.904,
+        69.3414
+      ],
+      [
+        40.904,
+        69.3428
+      ],
+      [
+        40.903000000000006,
+        69.3428
+      ]
+    ]
+  },
+  {
+    "id": 26825166,
+    "name": "KA1727250014/81-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014811,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/dfbc5b1d6ae8f23d12d2e232c9c4975f_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825166",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.3432
+      ],
+      [
+        40.904,
+        69.3432
+      ],
+      [
+        40.904,
+        69.3446
+      ],
+      [
+        40.903000000000006,
+        69.3446
+      ]
+    ]
+  },
+  {
+    "id": 26825169,
+    "name": "KA1727250014/77-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014771,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/b9ed66c18cc05f35b15e952aaabf1da7_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825169",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.345
+      ],
+      [
+        40.904,
+        69.345
+      ],
+      [
+        40.904,
+        69.3464
+      ],
+      [
+        40.903000000000006,
+        69.3464
+      ]
+    ]
+  },
+  {
+    "id": 26825172,
+    "name": "KA1727250014/73-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014731,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/80708d4e34db9a4a719b663559bff415_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825172",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.3468
+      ],
+      [
+        40.904,
+        69.3468
+      ],
+      [
+        40.904,
+        69.3482
+      ],
+      [
+        40.903000000000006,
+        69.3482
+      ]
+    ]
+  },
+  {
+    "id": 26825174,
+    "name": "KA1727250014/48-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014481,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/577372363cf722d2ce7aaefb65c4b623_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825174",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.3486
+      ],
+      [
+        40.904,
+        69.3486
+      ],
+      [
+        40.904,
+        69.35000000000001
+      ],
+      [
+        40.903000000000006,
+        69.35000000000001
+      ]
+    ]
+  },
+  {
+    "id": 26825177,
+    "name": "KA1727250014/28-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014281,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/be0d538e7c4bae2d3e91229d9b052f6a_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825177",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.3504
+      ],
+      [
+        40.904,
+        69.3504
+      ],
+      [
+        40.904,
+        69.3518
+      ],
+      [
+        40.903000000000006,
+        69.3518
+      ]
+    ]
+  },
+  {
+    "id": 26825178,
+    "name": "KA1727250014/27-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014271,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/95adc1ed68f6e08a52c611b95fac4cd6_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825178",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.3522
+      ],
+      [
+        40.904,
+        69.3522
+      ],
+      [
+        40.904,
+        69.3536
+      ],
+      [
+        40.903000000000006,
+        69.3536
+      ]
+    ]
+  },
+  {
+    "id": 26825183,
+    "name": "KA1727250014/19-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014191,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/b515af03ca7e3f6929c6e7647627f796_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825183",
+    "polygonCoordinates": [
+      [
+        40.903000000000006,
+        69.354
+      ],
+      [
+        40.904,
+        69.354
+      ],
+      [
+        40.904,
+        69.3554
+      ],
+      [
+        40.903000000000006,
+        69.3554
+      ]
+    ]
+  },
+  {
+    "id": 26825184,
+    "name": "KA1727250014/21-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014211,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/708267b04d06f81487347ca6d5231b26_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825184",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.336
+      ],
+      [
+        40.9054,
+        69.336
+      ],
+      [
+        40.9054,
+        69.3374
+      ],
+      [
+        40.9044,
+        69.3374
+      ]
+    ]
+  },
+  {
+    "id": 26825185,
+    "name": "KA1727250014/22-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014221,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/45f54420cb7eef81783a8aa870ce90a0_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825185",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.3378
+      ],
+      [
+        40.9054,
+        69.3378
+      ],
+      [
+        40.9054,
+        69.3392
+      ],
+      [
+        40.9044,
+        69.3392
+      ]
+    ]
+  },
+  {
+    "id": 26825188,
+    "name": "KA1727250014/16-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014161,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/a9be137a181042f4fd4e4162d23e80f4_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26825188",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.3396
+      ],
+      [
+        40.9054,
+        69.3396
+      ],
+      [
+        40.9054,
+        69.34100000000001
+      ],
+      [
+        40.9044,
+        69.34100000000001
+      ]
+    ]
+  },
+  {
+    "id": 26824243,
+    "name": "KA1727250026/33-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250026331,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/221ea8795906913972a727ac654d6d3a_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824243",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.3414
+      ],
+      [
+        40.9054,
+        69.3414
+      ],
+      [
+        40.9054,
+        69.3428
+      ],
+      [
+        40.9044,
+        69.3428
+      ]
+    ]
+  },
+  {
+    "id": 26824247,
+    "name": "KA1727250021/47-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250021471,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/3f73e61757e483c5eed8cd75399f437c_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824247",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.3432
+      ],
+      [
+        40.9054,
+        69.3432
+      ],
+      [
+        40.9054,
+        69.3446
+      ],
+      [
+        40.9044,
+        69.3446
+      ]
+    ]
+  },
+  {
+    "id": 26824248,
+    "name": "KA1727250021/50-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250021501,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/4fc58a533906a173df46d33ac5f83843_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824248",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.345
+      ],
+      [
+        40.9054,
+        69.345
+      ],
+      [
+        40.9054,
+        69.3464
+      ],
+      [
+        40.9044,
+        69.3464
+      ]
+    ]
+  },
+  {
+    "id": 26824252,
+    "name": "KA1727250014/20-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014201,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/7ea16826b4fa49a99aa4784e1fa5cf06_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824252",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.3468
+      ],
+      [
+        40.9054,
+        69.3468
+      ],
+      [
+        40.9054,
+        69.3482
+      ],
+      [
+        40.9044,
+        69.3482
+      ]
+    ]
+  },
+  {
+    "id": 26824254,
+    "name": "KA1727250014/13-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 1727250014131,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/0438f4cd9348a614eb54e1a02cd8ba86_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824254",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.3486
+      ],
+      [
+        40.9054,
+        69.3486
+      ],
+      [
+        40.9054,
+        69.35000000000001
+      ],
+      [
+        40.9044,
+        69.35000000000001
+      ]
+    ]
+  },
+  {
+    "id": 26824255,
+    "name": "KA1727250028/3-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 172725002831,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/98dd5617cd703a75bcff163df8191bd3_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824255",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.3504
+      ],
+      [
+        40.9054,
+        69.3504
+      ],
+      [
+        40.9054,
+        69.3518
+      ],
+      [
+        40.9044,
+        69.3518
+      ]
+    ]
+  },
+  {
+    "id": 26824258,
+    "name": "KA1727250015/6-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 172725001561,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/06ffa95fa660105d17bcfa0196e14e02_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824258",
+    "polygonCoordinates": [
+      [
+        40.9044,
+        69.3522
+      ],
+      [
+        40.9054,
+        69.3522
+      ],
+      [
+        40.9054,
+        69.3536
+      ],
+      [
+        40.9044,
+        69.3536
+      ]
+    ]
+  },
+  {
+    "id": 26824261,
+    "name": "KA1727250028/2-1 yer uchastkasi",
+    "area": 0.65,
+    "budget": 172725002821,
+    "industry": "Agro",
+    "status": "E-auksion",
+    "jobs": 14,
+    "image": "https://media.e-auksion.uz/i/d7ceea1a1d210c85a86bc7c6dcc56085_S.jpg",
+    "infrastructure": {
+      "gas": "Mavjud emas",
+      "power": "40 кВт",
+      "water": "Mavjud emas",
+      "road": "Asfalt"
+    },
+    "auksionUrl": "https://e-auksion.uz/lot-view?lot_id=26824261",
     "polygonCoordinates": [
       [
         40.9044,
