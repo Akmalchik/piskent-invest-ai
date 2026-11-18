@@ -1,4 +1,5 @@
 import type { PlotRecord } from '@/lib/plotTypes';
+import { quarantineHistoricalAuctionFields } from '@/lib/auctionDataIntegrity';
 import { NextResponse } from 'next/server';
 import { getSupabaseAdminClient, getSupabaseClient } from '@/lib/supabase';
 import fs from 'fs';
@@ -127,9 +128,11 @@ function readLocalPlots() {
 }
 
 // Reading must remain available even when Supabase is paused or misconfigured.
-export async function GET() {
+export async function GET(request: Request) {
+    const wantsOriginal = new URL(request.url).searchParams.get('adminRaw') === '1';
+    const adminRaw = wantsOriginal && await verifyAdminSession();
     try {
-        if (plotsCache && plotsCache.expiresAt > Date.now()) {
+        if (!adminRaw && plotsCache && plotsCache.expiresAt > Date.now()) {
             return jsonWithCache(plotsCache.data, plotsCache.source);
         }
 
@@ -143,20 +146,26 @@ export async function GET() {
 
         if (!plots || plots.length === 0) {
             const localPlots = readLocalPlots();
-            rememberPlots(localPlots, 'local-fallback');
-            return jsonWithCache(localPlots, 'local-fallback');
+            if (adminRaw) return jsonWithCache(localPlots, 'local-fallback');
+            const publicPlots = localPlots.map(quarantineHistoricalAuctionFields);
+            rememberPlots(publicPlots, 'local-fallback');
+            return jsonWithCache(publicPlots, 'local-fallback');
         }
 
         const normalizedPlots = (plots || []).map(normalizePlot);
-        rememberPlots(normalizedPlots);
-        return jsonWithCache(normalizedPlots);
+        if (adminRaw) return jsonWithCache(normalizedPlots);
+        const publicPlots = normalizedPlots.map(quarantineHistoricalAuctionFields);
+        rememberPlots(publicPlots);
+        return jsonWithCache(publicPlots);
     } catch (error) {
         console.error('Supabase plots read failed, using local fallback:', error);
 
         try {
             const localPlots = readLocalPlots();
-            rememberPlots(localPlots, 'local-fallback');
-            return jsonWithCache(localPlots, 'local-fallback');
+            if (adminRaw) return jsonWithCache(localPlots, 'local-fallback');
+            const publicPlots = localPlots.map(quarantineHistoricalAuctionFields);
+            rememberPlots(publicPlots, 'local-fallback');
+            return jsonWithCache(publicPlots, 'local-fallback');
         } catch (fallbackError) {
             const message = fallbackError instanceof Error ? fallbackError.message : 'Unknown fallback error';
             return NextResponse.json(
