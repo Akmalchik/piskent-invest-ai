@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, LayersControl, LayerGroup, CircleMarker, Marker, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, LayersControl, LayerGroup, CircleMarker, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import PlotCard from './PlotCard';
 import type { PlotRecord, MapViewport } from '@/lib/plotTypes';
 import L from 'leaflet';
@@ -150,6 +150,8 @@ export default function MyInvestmentMap({
     const [dataNotice, setDataNotice] = useState<string | null>(null);
     const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
     const [propertyTypeFilter, setPropertyTypeFilter] = useState('all');
+    const [showBanks, setShowBanks] = useState(true);
+    const [showGovernment, setShowGovernment] = useState(true);
 
     useEffect(() => {
         let isCancelled = false;
@@ -261,6 +263,31 @@ export default function MyInvestmentMap({
     };
 
     const t = localDict[lang as keyof typeof localDict] || localDict['uz'];
+    // Public points of interest are kept independent of investment plots.
+    // Coordinates are from OpenStreetMap, viewed via Mapcarta (Nov 2026).
+    const places = [
+        { id: 'xalq', category: 'bank', name: 'Xalq banki', address: 'Amir Temur ko‘chasi, 173', coords: [40.89607, 69.35043] as [number, number] },
+        { id: 'agro', category: 'bank', name: 'Agrobank', address: 'Mustaqillik ko‘chasi, 1', coords: [40.89871, 69.35277] as [number, number] },
+        { id: 'hokimlik', category: 'government', name: 'Piskent tumani hokimligi', address: 'Amir Temur ko‘chasi, 138', coords: [40.89715, 69.35148] as [number, number] },
+    ] as const;
+    const poiText = ({
+        uz: { title: '🏦 Banklar va tashkilotlar', banks: 'Banklar', gov: 'Hokimlik', address: 'Manzil', note: 'Xarita ma’lumotlari asosida' },
+        ru: { title: '🏦 Банки и учреждения', banks: 'Банки', gov: 'Хокимият', address: 'Адрес', note: 'По картографическим данным' },
+        en: { title: '🏦 Banks and offices', banks: 'Banks', gov: 'District administration', address: 'Address', note: 'Based on map data' },
+        zh: { title: '🏦 银行和政府机构', banks: '银行', gov: '区政府', address: '地址', note: '基于地图数据' },
+    })[lang as 'uz' | 'ru' | 'en' | 'zh'] || { title: '🏦 Banklar va tashkilotlar', banks: 'Banklar', gov: 'Hokimlik', address: 'Manzil', note: 'Xarita ma’lumotlari asosida' };
+    const poiSwitches = (
+        <div className="flex flex-col gap-2 text-xs text-slate-200">
+            <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={showBanks} onChange={e => setShowBanks(e.target.checked)} className="accent-cyan-500" />
+                <span>🏦 {poiText.banks}</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={showGovernment} onChange={e => setShowGovernment(e.target.checked)} className="accent-cyan-500" />
+                <span>🏛️ {poiText.gov}</span>
+            </label>
+        </div>
+    );
 
     return (
         <div className="w-full h-full relative">
@@ -309,6 +336,32 @@ export default function MyInvestmentMap({
                         onSelectPlot(null);
                     }}
                 />
+
+                {/* Investment-oriented POI layers; hidden while editing plots. */}
+                {!isAdminMode && places.filter(place =>
+                    place.category === 'bank' ? showBanks : showGovernment
+                ).map(place => (
+                    <CircleMarker
+                        key={place.id}
+                        center={place.coords}
+                        radius={9}
+                        bubblingMouseEvents={false}
+                        pathOptions={{
+                            color: '#ffffff',
+                            weight: 2,
+                            fillColor: place.category === 'bank' ? '#2563eb' : '#16a34a',
+                            fillOpacity: 0.95
+                        }}
+                    >
+                        <Popup>
+                            <div className="min-w-[150px]">
+                                <strong>{place.category === 'bank' ? '🏦' : '🏛️'} {place.name}</strong>
+                                <div>{poiText.address}: {place.address}</div>
+                                <small>{poiText.note}</small>
+                            </div>
+                        </Popup>
+                    </CircleMarker>
+                ))}
 
                 {/* Отрисовка объектов как точек с постоянным размером в пикселях */}
                 {filteredPlots.map((plot: PlotRecord) => {
@@ -410,6 +463,11 @@ export default function MyInvestmentMap({
                             </div>
 
                             <div className="bg-[#091120]/95 backdrop-blur-md p-3 md:p-4 rounded-xl border border-slate-700/70 shadow-lg shadow-black/20 flex-shrink-0">
+                                <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">{poiText.title}</h3>
+                                {poiSwitches}
+                            </div>
+
+                            <div className="bg-[#091120]/95 backdrop-blur-md p-3 md:p-4 rounded-xl border border-slate-700/70 shadow-lg shadow-black/20 flex-shrink-0">
                                 <h3 className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">{t.infraTitle}</h3>
                                 <div className="space-y-2">
                                     {[
@@ -503,6 +561,12 @@ export default function MyInvestmentMap({
                                         <option value="Agro">🌾 {t.agro}</option>
                                         <option value="Logistics">📦 {t.logistika}</option>
                                     </select>
+                                </div>
+
+                                <div className="border-t border-slate-800/50" />
+                                <div>
+                                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">{poiText.title}</h3>
+                                    {poiSwitches}
                                 </div>
 
                                 <div className="border-t border-slate-800/50" />
