@@ -268,6 +268,7 @@ export default function MyInvestmentMap({
     const places = [
         { id: 'xalq', category: 'bank', name: 'Xalq banki', address: 'Amir Temur ko‘chasi, 173', coords: [40.89607, 69.35043] as [number, number] },
         { id: 'agro', category: 'bank', name: 'Agrobank', address: 'Mustaqillik ko‘chasi, 1', coords: [40.89871, 69.35277] as [number, number] },
+        { id: 'mkbank', category: 'bank', name: 'MKBANK (Mikrokreditbank)', address: 'Piskent, Toshkent viloyati', coords: [40.8982582, 69.3529847] as [number, number] },
         { id: 'hokimlik', category: 'government', name: 'Piskent tumani hokimligi', address: 'Amir Temur ko‘chasi, 138', coords: [40.89715, 69.35148] as [number, number] },
     ] as const;
     const poiText = ({
