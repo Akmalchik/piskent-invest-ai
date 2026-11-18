@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, LayerGroup, CircleMarker, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import PlotCard from './PlotCard';
 import type { PlotRecord, MapViewport } from '@/lib/plotTypes';
+import { plotCenter as getPlotCenter, visibleMapPlot } from '@/lib/publicPlotVisibility';
 import L from 'leaflet';
 import { useSearchParams } from 'next/navigation';
 
@@ -71,49 +72,10 @@ function BankClusterMarker({ center, count }: { center: [number, number]; count:
     );
 }
 
-function toLatLng(value: unknown): [number, number] | null {
-    if (!Array.isArray(value) || value.length < 2) return null;
-
-    const lat = Number(value[0]);
-    const lng = Number(value[1]);
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-    return [lat, lng];
-}
-
-function getPlotCenter(plot: PlotRecord): [number, number] | null {
-    const lat = Number(plot.lat);
-    const lng = Number(plot.lng);
-
-    if (Number.isFinite(lat) && Number.isFinite(lng)) {
-        return [lat, lng];
-    }
-
-    const rawCoordinates = plot.polygonCoordinates || plot.polygon_coords;
-    if (!Array.isArray(rawCoordinates) || rawCoordinates.length === 0) return null;
-
-    const firstPoint = toLatLng(rawCoordinates);
-    if (firstPoint) return firstPoint;
-
-    const points = rawCoordinates
-        .map((point: unknown) => toLatLng(point))
-        .filter(Boolean) as [number, number][];
-
-    if (points.length === 0) return null;
-    if (points.length === 1) return points[0];
-
-    const totals = points.reduce(
-        (acc, point) => [acc[0] + point[0], acc[1] + point[1]],
-        [0, 0]
-    );
-
-    return [totals[0] / points.length, totals[1] / points.length];
-}
-
-const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80";
+// Never show a stock photo as a photograph of a real plot.
 
 function getPlotImage(plot: PlotRecord) {
-    return plot.image || plot.image_url || plot.photo_url || DEFAULT_IMAGE;
+    return plot.image || plot.image_url || plot.photo_url || null;
 }
 
 function withPlotImage(plot: PlotRecord) {
@@ -231,8 +193,16 @@ export default function MyInvestmentMap({
         };
     }, []);
 
+    // Deep links open the exact mapped property, not merely the approximate viewport.
+    useEffect(() => {
+        if (!plotIdFromUrl || !plots.length) return;
+        const found = plots.find(plot => String(plot.id) === plotIdFromUrl && visibleMapPlot(plot));
+        if (found) onSelectPlot(withPlotImage(found));
+    }, [plotIdFromUrl, plots, onSelectPlot]);
+
     // ОБЪЕДИНЕННЫЙ ФИЛЬТР
     const filteredPlots = plots.filter(plot => {
+        if (!visibleMapPlot(plot)) return false;
         const matchesStatus = statusFilter === 'Barchasi' || plot.status === statusFilter;
         const plotPropertyType = normalizePropertyType(plot.property_type || plot.propertyType);
         const matchesPropertyType = propertyTypeFilter === 'all' || plotPropertyType === propertyTypeFilter;
@@ -358,7 +328,7 @@ export default function MyInvestmentMap({
                 )}
                 <MapZoomObserver onZoomChange={setMapZoom} />
                 {/* 2. Контроллер для ссылок (летит к нужному лоту) */}
-                <MapController viewport={viewport} plotId={plotIdFromUrl} plots={plots} />
+                <MapController viewport={viewport} plotId={plotIdFromUrl} plots={plots.filter(visibleMapPlot)} />
                 {/* 3. Контроллер для кликов админа */}
                 <MapClickHandler
                     isAdminMode={isAdminMode}

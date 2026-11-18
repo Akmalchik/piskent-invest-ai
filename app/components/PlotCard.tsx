@@ -25,7 +25,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
             scoreTitle: "AI Investment Score",
             scoreHigh: "Sanoat va ishlab chiqarish uchun juda yuqori jozibadorlik",
             scoreMid: "O'rtacha jozibadorlik, infratuzilmani rivojlantirish tavsiya etiladi",
-            noPhoto: "Foto yuklanmoqda...",
+            noPhoto: "Rasm mavjud emas",
             loading: "Yuklanmoqda...",
             noData: "Ma'lumot kiritilmagan",
             noAuctionLink: "Havola hozircha yo'q",
@@ -49,7 +49,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
             scoreTitle: "Инвестиционный ИИ-Рейтинг",
             scoreHigh: "Очень высокая привлекательность для запуска производства",
             scoreMid: "Средняя привлекательность, рекомендуется развитие сетей",
-            noPhoto: "Фото лота обрабатывается...",
+            noPhoto: "Фото отсутствует",
             loading: "Загрузка...",
             noData: "Данные не указаны",
             noAuctionLink: "Ссылка пока не добавлена",
@@ -73,7 +73,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
             scoreTitle: "AI Investment Score",
             scoreHigh: "Excellent investment appeal for manufacturing launch",
             scoreMid: "Moderate appeal, infrastructure development recommended",
-            noPhoto: "Loading lot image...",
+            noPhoto: "No property photo",
             loading: "Loading...",
             noData: "No data entered",
             noAuctionLink: "No auction link yet",
@@ -97,7 +97,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
             scoreTitle: "AI 投资综合评估指数",
             scoreHigh: "该土地非常适合启动大型现代工业与生产项目",
             scoreMid: "投资吸引力中等，建议进一步完善配套基础设施",
-            noPhoto: "正在获取拍卖会现场图片...",
+            noPhoto: "暂无实景照片",
             loading: "加载中...",
             noData: "暂无数据",
             noAuctionLink: "暂无拍卖链接",
@@ -183,10 +183,10 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
         ? [{ label: d.buildingArea, value: formatBuildingArea(plot.building_area_m2 ?? plot.buildingAreaM2) }]
         : propertyType === 'land_building'
             ? [
-                { label: d.landArea, value: `${plot.area || 0} ${landAreaUnit}` },
+                { label: d.landArea, value: plot.area === null || plot.area === undefined || plot.area === '' ? d.noData : `${plot.area} ${landAreaUnit}` },
                 { label: d.buildingArea, value: formatBuildingArea(plot.building_area_m2 ?? plot.buildingAreaM2) },
             ]
-            : [{ label: d.landArea, value: `${plot.area || 0} ${landAreaUnit}` }];
+            : [{ label: d.landArea, value: plot.area === null || plot.area === undefined || plot.area === '' ? d.noData : `${plot.area} ${landAreaUnit}` }];
     const ownershipType = plot.ownership_type || plot.ownershipType;
 
     const normalizeValue = (value: unknown) => String(value || '').trim().toLowerCase().replace(/’/g, "'");
@@ -267,23 +267,21 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
                 {/* СТРОКА С ЖИВОЙ ФОТОГРАФИЕЙ С САЙТА E-AUKSION               */}
                 {/* ========================================================= */}
                 <div className="w-full h-44 bg-[#050a14] rounded-xl border border-slate-700/60 overflow-hidden mb-4 relative flex items-center justify-center">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-slate-500">
+                        <span className="text-2xl" aria-hidden="true">🏭</span>
+                        <span className="text-[10px] font-semibold uppercase">{d.noPhoto}</span>
+                    </div>
                     {plot.image ? (
                         <img
                             src={plot.image}
                             alt={plot.name}
-                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                             onError={(e) => {
-                                // Защитный предохранитель: подставляет сочную картинку хаба, если сервер Е-Аукциона заблокировал хотлинк
-                                (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80";
-                                (e.target as HTMLImageElement).onerror = null;
+                                // Do not misrepresent a stock photo as the actual property.
+                                (e.target as HTMLImageElement).style.display = 'none';
                             }}
                         />
-                    ) : (
-                        <div className="text-center text-slate-500 p-4">
-                            <span className="text-2xl block mb-1">🏭</span>
-                            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">{d.noPhoto}</span>
-                        </div>
-                    )}
+                    ) : null}
                     <div className="absolute top-3 left-3 bg-emerald-900/90 border border-emerald-600/40 text-emerald-100 text-[9px] font-bold uppercase px-2 py-1 rounded-md tracking-wider">
                         {formatStatus(plot.status)}
                     </div>
@@ -297,7 +295,11 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
                 {/* ========================================================= */}
                 {/* АНАЛИТИЧЕСКИЙ БЛОК: AI INVESTMENT SCORE (МУЛЬТИЯЗЫЧНЫЙ)    */}
                 {/* ========================================================= */}
-                {(() => {
+                {plot.dataQuality === 'needs_verification' ? (
+                    <div className="mb-4 rounded-lg border border-amber-600/30 bg-amber-900/10 p-3 text-xs text-amber-200">
+                        {lang === 'ru' ? 'Характеристики объекта требуют проверки' : lang === 'en' ? 'Property details require verification' : lang === 'zh' ? '项目资料待核实' : 'Obyekt ma’lumotlari tekshirilmoqda'}
+                    </div>
+                ) : (() => {
                     let score = 50;
                     if (Number(plot.area) > 2) score += 15;
                     if (Number(plot.area) > 10) score += 10;
@@ -352,7 +354,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
                 {/* Инфраструктура */}
                 <h3 className="text-[10px] font-bold text-slate-400 uppercase mb-2.5 tracking-wider">{d.infraTitle}</h3>
                 <div className="space-y-1.5">
-                    {plot.infrastructure ? (
+                    {plot.infrastructure && Object.keys(plot.infrastructure).length > 0 ? (
                         Object.entries(plot.infrastructure).map(([key, value]: [string, unknown]) => {
                             // Переводим названия сетей на лету
                             let label = key;
