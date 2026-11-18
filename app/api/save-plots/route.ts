@@ -1,4 +1,5 @@
 import type { PlotRecord } from '@/lib/plotTypes';
+import { quarantineHistoricalAuctionFields } from '@/lib/auctionDataIntegrity';
 import { NextResponse } from 'next/server';
 import { getSupabaseAdminClient, getSupabaseClient } from '@/lib/supabase';
 import fs from 'fs';
@@ -123,7 +124,7 @@ function readLocalPlots() {
         throw new Error('Local plots fallback must contain an array');
     }
 
-    return parsedData.map(normalizePlot);
+    return parsedData.map(normalizePlot).map(quarantineHistoricalAuctionFields);
 }
 
 // Reading must remain available even when Supabase is paused or misconfigured.
@@ -147,7 +148,7 @@ export async function GET() {
             return jsonWithCache(localPlots, 'local-fallback');
         }
 
-        const normalizedPlots = (plots || []).map(normalizePlot);
+        const normalizedPlots = (plots || []).map(normalizePlot).map(quarantineHistoricalAuctionFields);
         rememberPlots(normalizedPlots);
         return jsonWithCache(normalizedPlots);
     } catch (error) {
