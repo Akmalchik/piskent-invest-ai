@@ -104,7 +104,7 @@ function Photo({ plot, missing }: { plot: PlotRecord; missing: string }) {
   const [broken, setBroken] = useState(false);
   useEffect(() => setBroken(false), [url]);
   return (
-    <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+    <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-50 via-slate-50 to-slate-100">
       {url && !broken ? (
         // External E-auksion/Supabase images may be hosted on unconfigured domains.
         // eslint-disable-next-line @next/next/no-img-element
@@ -166,8 +166,8 @@ export default function CatalogPage() {
   const mapUrl = (id: PlotRecord['id']) => `/?tab=map&plotId=${encodeURIComponent(String(id))}&lang=${lang}`;
 
   return (
-    <main className="min-h-screen bg-[#f7f9fb] text-[#172b42]">
-      <header className="sticky top-0 z-30 border-b border-[#e6eaf0] bg-white/95 backdrop-blur">
+    <main className="min-h-screen bg-[#f8faf9] text-slate-900">
+      <header className="sticky top-0 z-30 border-b border-emerald-100 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8">
           <a href={`/${navSuffix}`} className="text-base font-extrabold tracking-tight">
             PISKENT <span className="text-emerald-700">INVEST AI</span>
@@ -176,7 +176,7 @@ export default function CatalogPage() {
           <nav className="flex flex-wrap items-center gap-2" aria-label="Primary">
             <a href={`/${navSuffix}`} className="rounded-lg px-3 py-2 text-xs font-semibold hover:bg-slate-100">{d.home}</a>
             <a href={`/?tab=map&lang=${lang}`} className="rounded-lg px-3 py-2 text-xs font-semibold hover:bg-slate-100">{d.map}</a>
-            <div className="ml-1 flex rounded-lg border border-slate-200 bg-slate-50 p-0.5" aria-label="Language">
+            <div className="ml-1 flex rounded-lg border border-emerald-100 bg-emerald-50/50 p-0.5" aria-label="Language">
               {(['uz','ru','en','zh'] as Lang[]).map(language => (
                 <button type="button" key={language}
                   aria-pressed={lang === language}
@@ -184,7 +184,7 @@ export default function CatalogPage() {
                     setLang(language);
                     window.history.replaceState(null, '', `/catalog?lang=${language}`);
                   }}
-                  className={`rounded-md px-2 py-1.5 text-[10px] font-bold uppercase ${lang === language ? 'bg-[#17334f] text-white' : 'text-slate-500 hover:text-slate-900'}`}>{language}</button>
+                  className={`rounded-md px-2 py-1.5 text-[10px] font-bold uppercase ${lang === language ? 'bg-emerald-700 text-white' : 'text-slate-500 hover:text-slate-900'}`}>{language}</button>
               ))}
             </div>
           </nav>
@@ -200,12 +200,12 @@ export default function CatalogPage() {
             <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">{d.title}</h1>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">{d.intro}</p>
           </div>
-          <div className="min-w-[154px] rounded-xl border border-slate-200 bg-white px-5 py-4">
+          <div className="min-w-[154px] rounded-xl border border-emerald-100 bg-white px-5 py-4">
             <span className="text-xs font-medium text-slate-500">{d.total}</span>
             <div className="text-3xl font-bold tabular-nums">{items.length}</div>
           </div>
         </div>
-        <div className="mb-6 rounded-lg border-l-2 border-emerald-600 bg-white px-4 py-3 text-xs leading-relaxed text-slate-600">
+        <div className="mb-6 rounded-lg border-l-2 border-emerald-600 bg-emerald-50/50 px-4 py-3 text-xs leading-relaxed text-slate-600">
           {d.notice}
         </div>
         {notice === 'fallback' && <p role="status" className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900">{d.fallback}</p>}
@@ -214,7 +214,7 @@ export default function CatalogPage() {
           {(['all','land','building','land_building'] as Category[]).map(value => (
             <button key={value} type="button" aria-pressed={category === value}
               onClick={() => setCategory(value)}
-              className={`rounded-lg border px-4 py-2.5 text-xs font-bold transition ${category === value ? 'border-[#17334f] bg-[#17334f] text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-400'}`}>{d[value]}</button>
+              className={`rounded-lg border px-4 py-2.5 text-xs font-bold transition ${category === value ? 'border-emerald-700 bg-emerald-700 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-400'}`}>{d[value]}</button>
           ))}
           <input aria-label={d.search} placeholder={d.search} value={query} onChange={e => setQuery(e.target.value)}
             className="ml-auto min-w-[220px] flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs outline-none focus:border-emerald-600 sm:max-w-[340px]" />
@@ -231,7 +231,7 @@ export default function CatalogPage() {
                 const source = plot.auksionUrl || plot.auksion_url || plot.auction_url;
                 const verifiedSource = typeof source === 'string' && /^https:\/\/(?:[a-z0-9-]+\.)?e-auksion\.uz(?:\/|$)/i.test(source);
                 return (
-                  <article key={String(plot.id)} className="group flex overflow-hidden flex-col rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-lg">
+                  <article key={String(plot.id)} className="group flex overflow-hidden flex-col rounded-xl border border-emerald-100 bg-white shadow-sm transition-shadow hover:shadow-lg">
                     <Photo plot={plot} missing={d.photoMissing} />
                     <div className="flex flex-1 flex-col p-5">
                       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
@@ -247,7 +247,7 @@ export default function CatalogPage() {
                           <p className="font-bold">{kind === 'building' ? formatArea(plot.building_area_m2, 'm²', d.unknown) : plot.status || d.unknown}</p></div>
                       </div>
                       <div className="mt-auto flex flex-wrap gap-2 pt-5">
-                        <a href={mapUrl(plot.id)} className="flex-1 rounded-lg bg-[#17334f] px-3 py-2.5 text-center text-xs font-bold text-white transition-colors hover:bg-emerald-800">{d.viewMap}</a>
+                        <a href={mapUrl(plot.id)} className="flex-1 rounded-lg bg-emerald-700 px-3 py-2.5 text-center text-xs font-bold text-white transition-colors hover:bg-emerald-800">{d.viewMap}</a>
                         {verifiedSource
                           ? <a href={source} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-200 px-3 py-2.5 text-center text-xs font-bold hover:border-emerald-500">{d.seeSource} ↗</a>
                           : null}
