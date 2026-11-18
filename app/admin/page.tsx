@@ -163,7 +163,7 @@ export default function AdminPage() {
         }
 
         // Запрашиваем данные из нашей новой онлайн-базы через API-роут
-        fetch('/api/save-plots')
+        fetch('/api/save-plots?adminRaw=1')
             .then(res => {
                 if (!res.ok) throw new Error(`Ошибка сервера: ${res.status}`);
                 return res.json();
