@@ -2,6 +2,7 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
+const { assessInvestmentCandidate } = require('./lib/investmentEligibility.cjs');
 
 const TARGET_FILE = path.join(__dirname, 'data', 'auction-candidates.json');
 const BASE_URL = 'https://e-auksion.uz';
@@ -61,7 +62,17 @@ async function scrapePiskentAuctionCandidates() {
                     budget: null,
                     jobs: null,
                     infrastructure: null,
-                    polygonCoordinates: null
+                    polygonCoordinates: null,
+                    propertyType: 'land',
+                    areaHectares: null,
+                    areaVerified: false,
+                    // Candidate remains in review until the official area/source is verified.
+                    screening: assessInvestmentCandidate({
+                        name: item.name,
+                        propertyType: 'land',
+                        areaHectares: null,
+                        areaVerified: false
+                    })
                 });
             }
         }
