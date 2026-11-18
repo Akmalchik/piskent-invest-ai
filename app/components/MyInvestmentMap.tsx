@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, LayersControl, LayerGroup, CircleMarker, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, LayerGroup, CircleMarker, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import PlotCard from './PlotCard';
 import type { PlotRecord, MapViewport } from '@/lib/plotTypes';
 import L from 'leaflet';
@@ -152,6 +152,7 @@ export default function MyInvestmentMap({
     const [propertyTypeFilter, setPropertyTypeFilter] = useState('all');
     const [showBanks, setShowBanks] = useState(true);
     const [showGovernment, setShowGovernment] = useState(true);
+    const [baseMap, setBaseMap] = useState<'light' | 'satellite'>('light');
 
     useEffect(() => {
         let isCancelled = false;
@@ -300,32 +301,29 @@ export default function MyInvestmentMap({
 
             <MapContainer center={defaultCenter} zoom={defaultZoom} className="h-full w-full z-0" zoomControl={false}>
 
-                <LayersControl>
-                    <LayersControl.BaseLayer checked name="Clean map / Oddiy xarita">
+                {baseMap === 'light' ? (
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        maxZoom={19}
+                    />
+                ) : (
+                    <LayerGroup>
                         <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution='Tiles &copy; Esri'
+                            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                             maxZoom={19}
-                            className="dark-map-tiles"
                         />
-                    </LayersControl.BaseLayer>
-                    <LayersControl.BaseLayer name="Satellite hybrid / Sun’iy yo‘ldosh">
-                        <LayerGroup>
-                            <TileLayer
-                                attribution='Tiles &copy; Esri'
-                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                            />
-                            <TileLayer
-                                attribution='Tiles &copy; Esri'
-                                url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
-                            />
-                            <TileLayer
-                                attribution='Tiles &copy; Esri'
-                                url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
-                            />
-                        </LayerGroup>
-                    </LayersControl.BaseLayer>
-                </LayersControl>
+                        <TileLayer
+                            attribution='Tiles &copy; Esri'
+                            url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
+                        />
+                        <TileLayer
+                            attribution='Tiles &copy; Esri'
+                            url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+                        />
+                    </LayerGroup>
+                )}
                 {/* 2. Контроллер для ссылок (летит к нужному лоту) */}
                 <MapController viewport={viewport} plotId={plotIdFromUrl} plots={plots} />
                 {/* 3. Контроллер для кликов админа */}
@@ -342,26 +340,27 @@ export default function MyInvestmentMap({
                 {!isAdminMode && places.filter(place =>
                     place.category === 'bank' ? showBanks : showGovernment
                 ).map(place => (
-                    <CircleMarker
+                    <Marker
                         key={place.id}
-                        center={place.coords}
-                        radius={9}
-                        bubblingMouseEvents={false}
-                        pathOptions={{
-                            color: '#ffffff',
-                            weight: 2,
-                            fillColor: place.category === 'bank' ? '#2563eb' : '#16a34a',
-                            fillOpacity: 0.95
-                        }}
+                        position={place.coords}
+                        icon={L.divIcon({
+                            className: 'poi-map-icon',
+                            html: place.category === 'bank'
+                                ? '<div class="poi-pin poi-pin-bank"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h18L12 4 3 10Z"/><path d="M5 10v9m5-9v9m4-9v9m5-9v9M3 20h18"/></svg><span>BANK</span></div>'
+                                : '<div class="poi-pin poi-pin-government"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h.01M15 10h.01M9 14h.01M15 14h.01M10 21v-4h4v4"/></svg></div>',
+                            iconSize: place.category === 'bank' ? [56, 54] : [46, 48],
+                            iconAnchor: place.category === 'bank' ? [28, 52] : [23, 46],
+                            popupAnchor: [0, -46],
+                        })}
                     >
-                        <Popup>
-                            <div className="min-w-[150px]">
-                                <strong>{place.category === 'bank' ? '🏦' : '🏛️'} {place.name}</strong>
-                                <div>{poiText.address}: {place.address}</div>
-                                <small>{poiText.note}</small>
+                        <Popup closeButton={false}>
+                            <div className="poi-popup">
+                                <div className="poi-popup-label">{place.category === 'bank' ? poiText.banks : poiText.gov}</div>
+                                <strong>{place.name}</strong>
+                                <div>{place.address}</div>
                             </div>
                         </Popup>
-                    </CircleMarker>
+                    </Marker>
                 ))}
 
                 {/* Отрисовка объектов как точек с постоянным размером в пикселях */}
@@ -396,6 +395,24 @@ export default function MyInvestmentMap({
                     <Marker position={adminMarkerCoords} />
                 )}
             </MapContainer>
+
+            {/* Custom basemap selector, independent from filter panel and Leaflet controls. */}
+            <div className="absolute left-3 top-3 z-[1000] flex overflow-hidden rounded-xl border border-slate-200 bg-white/95 p-1 shadow-lg backdrop-blur md:left-4 md:top-4" role="group" aria-label="Map style">
+                {([
+                    { value: 'light', label: ({ uz: 'Xarita', ru: 'Карта', en: 'Map', zh: '地图' })[lang as 'uz' | 'ru' | 'en' | 'zh'] || 'Xarita' },
+                    { value: 'satellite', label: ({ uz: 'Sun’iy yo‘ldosh', ru: 'Спутник', en: 'Satellite', zh: '卫星' })[lang as 'uz' | 'ru' | 'en' | 'zh'] || 'Sun’iy yo‘ldosh' },
+                ] as const).map(option => (
+                    <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setBaseMap(option.value)}
+                        aria-pressed={baseMap === option.value}
+                        className={`rounded-lg px-3 py-2 text-[11px] font-semibold transition-colors ${baseMap === option.value ? 'bg-[#0b2545] text-white' : 'text-slate-700 hover:bg-slate-100'}`}
+                    >
+                        {option.label}
+                    </button>
+                ))}
+            </div>
 
             {/* Интерфейс фильтров */}
             {!isAdminMode && !selectedPlot && (
