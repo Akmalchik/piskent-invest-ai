@@ -23,3 +23,13 @@
 - Verify each auction lot with its official detail page, including status, current price, and area; verify infrastructure and geolocation against authorized district technical data.
 - Do not bulk-upsert `auction-candidates.json` into the production database. Manual confirmation and provenance fields should precede future automated imports.
 - No historical JSON rows, manual fallback records, or Supabase rows were deleted as part of this change.
+
+## Editorial criterion for investment-scale candidates
+
+- Proposed minimum for **new land plot candidates**: **1.0 ha**, measured from an official source. This is a configurable editorial threshold, **not** a statutory rule or automatic proof of investor suitability.
+- Verified new land plots **below** 1.0 ha are excluded from the incoming candidate review queue unless a strategic exception has been explicitly approved with a recorded official source.
+- Verified new land plots **at or above** 1.0 ha advance to **human review**, not automatic publication. Project relevance, ownership, availability, cadastral boundaries, access, and utility availability still need verification.
+- Missing/unverified area means **review required**, never an invented 0.65 ha or automatic rejection.
+- Existing manually entered plots, buildings, industrial facilities, and mixed land/building investment objects are **not automatically removed** by this size policy.
+- Likely kiosks, food stalls and similar micro-retail projects are flagged for an editor; names alone are not enough to reject an investment opportunity.
+- The policy is implemented in `lib/investmentEligibility.cjs` and invoked for incoming parser candidates. It never runs a database mutation.
