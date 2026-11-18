@@ -362,7 +362,7 @@ export default function Home() {
               </button>
               <a href={`/catalog?lang=${lang}`} className="flex w-full items-center gap-3 rounded-lg border border-transparent px-4 py-3 text-xs font-semibold text-emerald-300 transition-colors hover:border-emerald-800/40 hover:bg-emerald-950/30">
                 <span aria-hidden="true">▦</span>
-                {lang === 'ru' ? 'Каталог 20 объектов' : lang === 'en' ? '20 investment candidates' : lang === 'zh' ? '20个投资项目' : '20 ta obyekt katalogi'}
+                {lang === 'ru' ? 'Каталог объектов' : lang === 'en' ? 'Property catalog' : lang === 'zh' ? '项目目录' : 'Obyektlar katalogi'}
               </a>
               <button onClick={() => handleTabChange('about')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold transition-colors ${activeTab === 'about' ? 'bg-cyan-950/60 text-cyan-300 border-cyan-700/50' : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200'}`}>
                 {localLabels.aboutTab}
@@ -407,7 +407,7 @@ export default function Home() {
                 {heroLabels.mapButton}
               </button>
               <a href={`/catalog?lang=${lang}`} className="rounded-lg px-3 py-2 text-[10px] font-semibold text-emerald-300 transition-colors hover:bg-slate-800/60">
-                {lang === 'ru' ? '20 объектов' : lang === 'en' ? '20 opportunities' : lang === 'zh' ? '20个项目' : '20 ta obyekt'}
+                {lang === 'ru' ? 'Каталог' : lang === 'en' ? 'Catalog' : lang === 'zh' ? '目录' : 'Katalog'}
               </a>
               <button onClick={() => handleTabChange('ai')} className="rounded-lg px-3 py-2 text-[10px] font-semibold text-slate-400 transition-colors hover:bg-slate-800/60 hover:text-cyan-200">
                 {heroLabels.aiButton}
@@ -454,7 +454,7 @@ export default function Home() {
 
                       <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                         <a href={`/catalog?lang=${lang}`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-emerald-600/70 bg-emerald-950/40 px-4 py-3 text-xs font-bold text-emerald-200 hover:bg-emerald-900/50">
-                          {lang === 'ru' ? 'Каталог 20 объектов' : lang === 'en' ? '20 investment candidates' : lang === 'zh' ? '20个投资项目' : '20 ta obyekt katalogi'} ↗
+                          {lang === 'ru' ? 'Каталог объектов' : lang === 'en' ? 'Property catalog' : lang === 'zh' ? '项目目录' : 'Obyektlar katalogi'} ↗
                         </a>
                         <button
                           onClick={() => handleTabChange('map')}
