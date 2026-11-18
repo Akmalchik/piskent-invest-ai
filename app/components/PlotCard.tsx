@@ -171,6 +171,14 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
     };
     const propertyType = normalizePropertyType(plot.property_type || plot.propertyType);
     const landAreaUnit = lang === 'ru' ? 'га' : lang === 'uz' ? 'ga' : 'ha';
+    const verifiedArea = plot.area !== null && plot.area !== undefined && plot.area !== '';
+    const areaLabel = verifiedArea ? `${plot.area} ${landAreaUnit}` : d.noData;
+    const verificationMessage = ({
+        uz: 'Ushbu lotning ayrim avtomatik ma’lumotlari tekshirilmoqda. Xarita joylashuvi va texnik ko‘rsatkichlarni rasmiy manbadan tasdiqlang.',
+        ru: 'Часть автоматических данных лота проверяется. Местоположение и технические характеристики требуют подтверждения по официальному источнику.',
+        en: 'Some automatically collected lot details are unverified. Confirm the location and specifications with the official source.',
+        zh: '该地块部分自动采集的信息尚未核实。请向官方来源确认位置和技术参数。',
+    })[lang as 'uz' | 'ru' | 'en' | 'zh'] || 'Ma’lumotlar tekshirilmoqda.';
     const formatBuildingArea = (value: unknown) => {
         if (value === undefined || value === null || value === '') return d.noData;
 
@@ -183,7 +191,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
         ? [{ label: d.buildingArea, value: formatBuildingArea(plot.building_area_m2 ?? plot.buildingAreaM2) }]
         : propertyType === 'land_building'
             ? [
-                { label: d.landArea, value: `${plot.area || 0} ${landAreaUnit}` },
+                { label: d.landArea, value: areaLabel },
                 { label: d.buildingArea, value: formatBuildingArea(plot.building_area_m2 ?? plot.buildingAreaM2) },
             ]
             : [{ label: d.landArea, value: `${plot.area || 0} ${landAreaUnit}` }];
@@ -263,6 +271,13 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
                     <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-white text-sm bg-slate-800/60 border border-slate-700 rounded-lg transition-colors flex-shrink-0">✕</button>
                 </div>
 
+                {plot.dataQuality === 'needs_verification' && (
+                    <div className="mb-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200" role="status">
+                        <strong className="block mb-1">{lang === 'ru' ? 'Требуется проверка данных' : lang === 'en' ? 'Verification required' : lang === 'zh' ? '需要核实' : 'Ma’lumotlar tekshirilmoqda'}</strong>
+                        {verificationMessage}
+                    </div>
+                )}
+
                 {/* ========================================================= */}
                 {/* СТРОКА С ЖИВОЙ ФОТОГРАФИЕЙ С САЙТА E-AUKSION               */}
                 {/* ========================================================= */}
@@ -297,7 +312,11 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
                 {/* ========================================================= */}
                 {/* АНАЛИТИЧЕСКИЙ БЛОК: AI INVESTMENT SCORE (МУЛЬТИЯЗЫЧНЫЙ)    */}
                 {/* ========================================================= */}
-                {(() => {
+                {plot.dataQuality === 'needs_verification' ? (
+                    <div className="p-3 rounded-lg border border-slate-700/60 bg-slate-800/50 mb-4 text-xs text-slate-300">
+                        {d.scoreTitle}: {d.noData}
+                    </div>
+                ) : (() => {
                     let score = 50;
                     if (Number(plot.area) > 2) score += 15;
                     if (Number(plot.area) > 10) score += 10;
@@ -352,7 +371,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
                 {/* Инфраструктура */}
                 <h3 className="text-[10px] font-bold text-slate-400 uppercase mb-2.5 tracking-wider">{d.infraTitle}</h3>
                 <div className="space-y-1.5">
-                    {plot.infrastructure ? (
+                    {plot.infrastructure && Object.keys(plot.infrastructure).length > 0 ? (
                         Object.entries(plot.infrastructure).map(([key, value]: [string, unknown]) => {
                             // Переводим названия сетей на лету
                             let label = key;

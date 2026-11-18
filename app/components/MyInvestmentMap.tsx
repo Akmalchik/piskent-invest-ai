@@ -82,11 +82,15 @@ function toLatLng(value: unknown): [number, number] | null {
 }
 
 function getPlotCenter(plot: PlotRecord): [number, number] | null {
-    const lat = Number(plot.lat);
-    const lng = Number(plot.lng);
-
-    if (Number.isFinite(lat) && Number.isFinite(lng)) {
-        return [lat, lng];
+    // Avoid Number(null) === 0: missing coordinates must never create a marker.
+    if (plot.lat !== null && plot.lat !== undefined && plot.lat !== ''
+        && plot.lng !== null && plot.lng !== undefined && plot.lng !== '') {
+        const lat = Number(plot.lat);
+        const lng = Number(plot.lng);
+        if (Number.isFinite(lat) && Number.isFinite(lng)
+            && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+            return [lat, lng];
+        }
     }
 
     const rawCoordinates = plot.polygonCoordinates || plot.polygon_coords;
