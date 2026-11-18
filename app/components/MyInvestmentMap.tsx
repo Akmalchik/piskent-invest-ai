@@ -40,6 +40,37 @@ function MapClickHandler({
     return null;
 }
 
+function MapZoomObserver({ onZoomChange }: { onZoomChange: (zoom: number) => void }) {
+    const map = useMapEvents({
+        zoomend() {
+            onZoomChange(map.getZoom());
+        },
+    });
+    useEffect(() => {
+        onZoomChange(map.getZoom());
+    }, [map, onZoomChange]);
+    return null;
+}
+
+// At district overview, multiple nearby banks are represented by one marker.
+function BankClusterMarker({ center, count }: { center: [number, number]; count: number }) {
+    const map = useMap();
+    return (
+        <Marker
+            position={center}
+            icon={L.divIcon({
+                className: 'poi-map-icon',
+                html: `<div class="poi-cluster" aria-label="${count} banks"><span>🏦</span><b>${count}</b></div>`,
+                iconSize: [34, 34],
+                iconAnchor: [17, 17],
+            })}
+            eventHandlers={{
+                click: () => map.flyTo(center, 16, { duration: 0.65 }),
+            }}
+        />
+    );
+}
+
 function toLatLng(value: unknown): [number, number] | null {
     if (!Array.isArray(value) || value.length < 2) return null;
 
@@ -153,6 +184,7 @@ export default function MyInvestmentMap({
     const [showBanks, setShowBanks] = useState(true);
     const [showGovernment, setShowGovernment] = useState(true);
     const [baseMap, setBaseMap] = useState<'light' | 'satellite'>('light');
+    const [mapZoom, setMapZoom] = useState(defaultZoom);
 
     useEffect(() => {
         let isCancelled = false;
@@ -324,6 +356,7 @@ export default function MyInvestmentMap({
                         />
                     </LayerGroup>
                 )}
+                <MapZoomObserver onZoomChange={setMapZoom} />
                 {/* 2. Контроллер для ссылок (летит к нужному лоту) */}
                 <MapController viewport={viewport} plotId={plotIdFromUrl} plots={plots} />
                 {/* 3. Контроллер для кликов админа */}
@@ -337,8 +370,16 @@ export default function MyInvestmentMap({
                 />
 
                 {/* Investment-oriented POI layers; hidden while editing plots. */}
+                {!isAdminMode && showBanks && mapZoom <= 14 && (
+                    <BankClusterMarker
+                        center={[40.89768, 69.35206]}
+                        count={places.filter(place => place.category === 'bank').length}
+                    />
+                )}
                 {!isAdminMode && places.filter(place =>
-                    place.category === 'bank' ? showBanks : showGovernment
+                    place.category === 'bank'
+                        ? showBanks && mapZoom > 14
+                        : showGovernment
                 ).map(place => (
                     <Marker
                         key={place.id}
@@ -346,11 +387,11 @@ export default function MyInvestmentMap({
                         icon={L.divIcon({
                             className: 'poi-map-icon',
                             html: place.category === 'bank'
-                                ? '<div class="poi-pin poi-pin-bank"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h18L12 4 3 10Z"/><path d="M5 10v9m5-9v9m4-9v9m5-9v9M3 20h18"/></svg><span>BANK</span></div>'
-                                : '<div class="poi-pin poi-pin-government"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h.01M15 10h.01M9 14h.01M15 14h.01M10 21v-4h4v4"/></svg></div>',
-                            iconSize: place.category === 'bank' ? [56, 54] : [46, 48],
-                            iconAnchor: place.category === 'bank' ? [28, 52] : [23, 46],
-                            popupAnchor: [0, -46],
+                                ? `<div class="poi-pin poi-pin-bank ${mapZoom >= 17 ? '' : 'poi-pin-compact'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h18L12 4 3 10Z"/><path d="M5 10v9m5-9v9m4-9v9m5-9v9M3 20h18"/></svg>${mapZoom >= 17 ? '<span>BANK</span>' : ''}</div>`
+                                : `<div class="poi-pin poi-pin-government ${mapZoom >= 17 ? '' : 'poi-pin-compact'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h.01M15 10h.01M9 14h.01M15 14h.01M10 21v-4h4v4"/></svg></div>`,
+                            iconSize: mapZoom >= 17 ? (place.category === 'bank' ? [48, 48] : [40, 42]) : [26, 28],
+                            iconAnchor: mapZoom >= 17 ? (place.category === 'bank' ? [24, 46] : [20, 40]) : [13, 26],
+                            popupAnchor: mapZoom >= 17 ? [0, -40] : [0, -23],
                         })}
                     >
                         <Popup closeButton={false}>
