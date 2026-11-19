@@ -58,6 +58,9 @@ The district offers opportunities for investment projects in agriculture, indust
   households: 19074,
   families: 27850,
   mayorName: 'Aripov Muzaffar Akbarovich',
+  mayorPhotoUrl: 'https://api-portal.gov.uz/uploads/361/2025/11/07/817ec886-3397-d189-c6a8-bb7db07b6211_guide_.jpg',
+  leadershipSourceUrl: 'https://gov.uz/oz/piskent/guides',
+  officialAboutUrl: 'https://gov.uz/oz/piskent/pages/about',
   contactDepartment: {
     uz: 'Investitsiyalar, sanoat va savdo bo‘limi',
     ru: 'Отдел инвестиций, промышленности и торговли',
@@ -85,6 +88,13 @@ The district offers opportunities for investment projects in agriculture, indust
     roadsKm: '201 km',
   },
 };
+
+const DISTRICT_ABOUT_COPY = {
+  uz: { heading: 'Piskent: investitsiya imkoniyatlari', description: 'Hudud, iqtisodiy yo‘nalishlar va infratuzilma haqida ma’lumotlar bilan tanishing. Investitsiya obyektlari xaritada alohida ko‘rsatilgan.', map: 'Investitsiya xaritasi', source: 'Rasmiy ma’lumot', portraitSource: 'Hokimlik rahbariyati — rasmiy manba', dataNote: 'Statistika loyihadagi mavjud ma’lumotlarga asoslangan. Raqamlarning hisobot yili hozircha tasdiqlanmagan.' },
+  ru: { heading: 'Пискент: инвестиционные возможности', description: 'Знакомство с районом, приоритетными секторами и инфраструктурой. Инвестиционные объекты представлены на интерактивной карте.', map: 'Инвестиционная карта', source: 'Официальный источник', portraitSource: 'Руководство хокимията — официальный источник', dataNote: 'Статистика приведена из текущих материалов проекта. Отчётный год показателей пока не подтверждён.' },
+  en: { heading: 'Piskent: investment opportunities', description: 'Explore the district, its main sectors and infrastructure. Individual investment properties are shown on the interactive map.', map: 'Investment map', source: 'Official source', portraitSource: 'District leadership — official source', dataNote: 'Statistics are taken from existing project records. The reporting year has not yet been verified.' },
+  zh: { heading: '皮斯肯特：投资机遇', description: '了解本区概况、重点产业及基础设施。具体投资项目可在交互式地图中查看。', map: '投资地图', source: '官方资料来源', portraitSource: '区政府领导信息 — 官方来源', dataNote: '统计数据来自项目现有资料，统计年度尚未核实。' },
+} as const;
 
 // Компонент для красивого плавного набегания цифр (CountUp)
 function AnimatedNumber({ value }: { value: number }) {
@@ -552,29 +562,39 @@ export default function Home() {
 		                  <div className="relative grid gap-5 lg:grid-cols-[1fr_280px] p-5 md:p-8">
 		                    <div>
 		                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.aboutTitle}</span>
+                          <div className="mt-3 text-[11px] font-bold uppercase tracking-[.13em] text-emerald-300">{DISTRICT_ABOUT_COPY[lang].heading}</div>
 		                      <h2 className="mt-3 max-w-3xl text-2xl md:text-4xl font-black text-white tracking-tight">
 		                        {DISTRICT_PASSPORT.districtName[lang]}
 				                      </h2>
 		                      <p className="mt-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
 		                        {t.createdDate}: {DISTRICT_PASSPORT.createdDate[lang]}
 		                      </p>
-				                      <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
+				                      <p className="mt-4 max-w-3xl whitespace-pre-line text-sm leading-7 text-slate-300">
 				                        {DISTRICT_PASSPORT.description[lang]}
 				                      </p>
+                          <p className="mt-4 max-w-2xl border-l-2 border-cyan-500 pl-4 text-sm leading-6 text-slate-200">{DISTRICT_ABOUT_COPY[lang].description}</p>
+                          <div className="mt-5 flex flex-wrap gap-2">
+                            <button type="button" onClick={() => handleTabChange('map')} className="rounded-lg bg-cyan-700 px-4 py-2.5 text-xs font-bold text-white hover:bg-cyan-600">{DISTRICT_ABOUT_COPY[lang].map}</button>
+                            <a href={DISTRICT_PASSPORT.officialAboutUrl} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-600 px-4 py-2.5 text-xs font-bold text-slate-200 hover:border-cyan-500">{DISTRICT_ABOUT_COPY[lang].source} ↗</a>
+                          </div>
 		                    </div>
 		                    <div className="rounded-xl border border-slate-700/60 bg-[#07101e] p-4">
 		                      <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400">{t.mayor}</span>
 		                      <div className="mt-3 flex items-center gap-4 lg:block">
-		                        <div className="h-20 w-20 lg:h-40 lg:w-full rounded-xl bg-slate-800 overflow-hidden flex-shrink-0">
-		                          <div className="h-full w-full flex items-center justify-center text-2xl font-black text-cyan-500 bg-cyan-500/5">M</div>
-		                        </div>
-		                        <p className="text-sm font-bold text-white lg:mt-3">{DISTRICT_PASSPORT.mayorName}</p>
+		                        <div className="relative h-28 w-24 lg:h-56 lg:w-full rounded-xl bg-slate-800 overflow-hidden flex-shrink-0 border border-slate-600/40">
+                              <div className="absolute inset-0 flex items-center justify-center text-2xl font-black text-cyan-500/60 bg-cyan-500/5" aria-hidden="true">M</div>
+                              {/* Source: official Piskent District Administration leadership portal. */}
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={DISTRICT_PASSPORT.mayorPhotoUrl} alt={DISTRICT_PASSPORT.mayorName} loading="lazy" referrerPolicy="no-referrer" className="relative h-full w-full object-cover object-top" onError={(event) => { event.currentTarget.style.display = 'none'; }} />
+                            </div>
+		                        <div className="min-w-0"><p className="text-sm font-bold text-white lg:mt-3">{DISTRICT_PASSPORT.mayorName}</p><a href={DISTRICT_PASSPORT.leadershipSourceUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-[11px] font-semibold leading-5 text-cyan-300 hover:text-cyan-100">{DISTRICT_ABOUT_COPY[lang].portraitSource} ↗</a></div>
 		                      </div>
 		                    </div>
 		                  </div>
 		                </div>
 
-	                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+	                <p className="rounded-lg border border-amber-700/20 bg-amber-950/15 px-4 py-3 text-[11px] leading-5 text-amber-200/90">{DISTRICT_ABOUT_COPY[lang].dataNote}</p>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
 		                  {[
 			                    [t.population, formatPopulation(DISTRICT_PASSPORT.population)],
 			                    [t.workingPopulation, formatPlainNumber(DISTRICT_PASSPORT.laborResources)],
