@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { PlotRecord } from '@/lib/plotTypes';
+import { localizePlotName, localizePlotStatus, localizePlotIndustry, localizePlotInfrastructure, localizePlotOwnership, type PublicLang } from '@/lib/plotLocalization';
 
 export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | null, onClose: () => void, lang: string }) {
     if (!plot) return null;
@@ -108,52 +109,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
 
     const d = cardDict[lang as keyof typeof cardDict] || cardDict['uz'];
 
-    const formatIndustry = (industry: unknown) => {
-        const rawIndustry = String(industry || '').trim();
-        const value = rawIndustry.toLowerCase().replace(/[‘’`]/g, "'");
-        const labels: Record<string, Record<string, string>> = {
-            production: {
-                uz: 'Sanoat / Ishlab chiqarish',
-                ru: 'Промышленность / производство',
-                en: 'Industry / manufacturing',
-                zh: '工业 / 制造业',
-            },
-            agro: {
-                uz: 'Qishloq xo‘jaligi',
-                ru: 'Сельское хозяйство',
-                en: 'Agriculture',
-                zh: '农业',
-            },
-            logistics: {
-                uz: 'Logistika',
-                ru: 'Логистика',
-                en: 'Logistics',
-                zh: '物流',
-            },
-            service: {
-                uz: 'Xizmat ko‘rsatish',
-                ru: 'Сфера услуг',
-                en: 'Services',
-                zh: '服务业',
-            },
-            trade: {
-                uz: 'Savdo va servis',
-                ru: 'Торговля и сервис',
-                en: 'Trade and service',
-                zh: '贸易与服务',
-            },
-        };
-
-        const key =
-            /production|sanoat|ishlab chiqarish/.test(value) ? 'production' :
-                /agro|qishloq|xo'jaligi/.test(value) ? 'agro' :
-                    /logistika|logistics|transport/.test(value) ? 'logistics' :
-                        /xizmat|servis|service/.test(value) ? 'service' :
-                            /savdo|trade/.test(value) ? 'trade' :
-                                '';
-
-        return key ? labels[key][lang] || labels[key].uz : rawIndustry;
-    };
+    const language: PublicLang = lang === 'ru' || lang === 'en' || lang === 'zh' ? lang : 'uz';
     const normalizePropertyType = (value: unknown) => {
         const normalizedValue = String(value || '').trim();
         return ['building', 'land_building'].includes(normalizedValue) ? normalizedValue : 'land';
@@ -170,14 +126,14 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
         return labels[lang]?.[normalizedValue] || labels.uz[normalizedValue];
     };
     const propertyType = normalizePropertyType(plot.property_type || plot.propertyType);
-    const landAreaUnit = lang === 'ru' ? 'га' : lang === 'uz' ? 'ga' : 'ha';
+    const landAreaUnit = lang === 'ru' ? 'га' : lang === 'zh' ? '公顷' : lang === 'uz' ? 'ga' : 'ha';
     const formatBuildingArea = (value: unknown) => {
         if (value === undefined || value === null || value === '') return d.noData;
 
         const numericValue = Number(value);
         if (!Number.isFinite(numericValue)) return d.noData;
 
-        return `${Number.isInteger(numericValue) ? numericValue.toFixed(0) : String(numericValue)} m²`;
+        return `${Number.isInteger(numericValue) ? numericValue.toFixed(0) : String(numericValue)} ${lang === 'zh' ? '平方米' : 'm²'}`;
     };
     const areaRows = propertyType === 'building'
         ? [{ label: d.buildingArea, value: formatBuildingArea(plot.building_area_m2 ?? plot.buildingAreaM2) }]
@@ -189,77 +145,13 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
             : [{ label: d.landArea, value: plot.area === null || plot.area === undefined || plot.area === '' ? d.noData : `${plot.area} ${landAreaUnit}` }];
     const ownershipType = plot.ownership_type || plot.ownershipType;
 
-    const normalizeValue = (value: unknown) => String(value || '').trim().toLowerCase().replace(/’/g, "'");
-    const formatStatus = (status: unknown) => {
-        const value = normalizeValue(status);
-        const labels: Record<string, Record<string, string>> = {
-            uz: { mavjud: 'Mavjud', band: 'Band', 'e-auksion': 'E-Auksion' },
-            ru: { mavjud: 'Свободен', band: 'Занят', 'e-auksion': 'E-Auksion' },
-            en: { mavjud: 'Available', band: 'Occupied', 'e-auksion': 'E-Auction' },
-            zh: { mavjud: '可用', band: '已 занято', 'e-auksion': '电子拍卖' },
-        };
-
-        return labels[lang]?.[value] || labels.uz[value] || String(status || 'E-Auksion');
-    };
-    const formatOwnershipType = (type: unknown) => {
-        const value = normalizeValue(type);
-        const key = value.includes('davlat') ? 'davlat' : value.includes('auksion') ? 'e-auksion' : value.includes('xususiy') ? 'xususiy' : '';
-        const labels: Record<string, Record<string, string>> = {
-            uz: { davlat: 'Davlat obyekti', 'e-auksion': 'E-Auksion', xususiy: 'Xususiy obyekt' },
-            ru: { davlat: 'Государственный объект', 'e-auksion': 'E-Auksion', xususiy: 'Частный объект' },
-            en: { davlat: 'State-owned property', 'e-auksion': 'E-Auction', xususiy: 'Private property' },
-            zh: { davlat: '国有资产', 'e-auksion': '电子拍卖', xususiy: '私有资产' },
-        };
-
-        return key ? labels[lang]?.[key] || labels.uz[key] : String(type || '');
-    };
-    const formatInfrastructureValue = (value: unknown) => {
-        const normalized = normalizeValue(value);
-        const labels: Record<string, Record<string, string>> = {
-            uz: {
-                mavjud: 'Mavjud',
-                'mavjud emas': 'Mavjud emas',
-                aniqlanmoqda: 'Aniqlanmoqda',
-                asfalt: 'Asfalt',
-                "shag'al": "Shag'al",
-                "tuproq yo'l": "Tuproq yo'l",
-            },
-            ru: {
-                mavjud: 'Доступно',
-                'mavjud emas': 'Недоступно',
-                aniqlanmoqda: 'Уточняется',
-                asfalt: 'Асфальт',
-                "shag'al": 'Щебень',
-                "tuproq yo'l": 'Грунтовая дорога',
-            },
-            en: {
-                mavjud: 'Available',
-                'mavjud emas': 'Not available',
-                aniqlanmoqda: 'Being clarified',
-                asfalt: 'Asphalt',
-                "shag'al": 'Gravel',
-                "tuproq yo'l": 'Dirt road',
-            },
-            zh: {
-                mavjud: '可用',
-                'mavjud emas': '不可用',
-                aniqlanmoqda: '确认中',
-                asfalt: '沥青路',
-                "shag'al": '碎石路',
-                "tuproq yo'l": '土路',
-            },
-        };
-
-        return labels[lang]?.[normalized] || labels.uz[normalized] || String(value || '');
-    };
-
     return (
         <div className="p-4 md:p-6 text-white h-full flex flex-col justify-between select-none">
             <div className="overflow-y-auto pr-1">
 
                 {/* Шапка карточки */}
                 <div className="flex justify-between items-start mb-4 gap-2">
-                    <h2 className="text-sm md:text-base font-bold text-slate-100 tracking-wide leading-snug">{plot.name}</h2>
+                    <h2 className="text-sm md:text-base font-bold text-slate-100 tracking-wide leading-snug">{localizePlotName(plot.name, language)}</h2>
                     <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-white text-sm bg-slate-800/60 border border-slate-700 rounded-lg transition-colors flex-shrink-0">✕</button>
                 </div>
 
@@ -274,7 +166,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
                     {plot.image ? (
                         <img
                             src={plot.image}
-                            alt={plot.name}
+                            alt={localizePlotName(plot.name, language)}
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                             onError={(e) => {
                                 // Do not misrepresent a stock photo as the actual property.
@@ -283,11 +175,11 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
                         />
                     ) : null}
                     <div className="absolute top-3 left-3 bg-emerald-900/90 border border-emerald-600/40 text-emerald-100 text-[9px] font-bold uppercase px-2 py-1 rounded-md tracking-wider">
-                        {formatStatus(plot.status)}
+                        {localizePlotStatus(plot.status, language) || d.noData}
                     </div>
                     {ownershipType && (
                         <div className="absolute top-3 right-3 bg-slate-950/90 border border-slate-600/60 text-slate-100 text-[9px] font-bold px-2 py-1 rounded-md">
-                            {formatOwnershipType(ownershipType)}
+                            {localizePlotOwnership(ownershipType, language)}
                         </div>
                     )}
                 </div>
@@ -344,7 +236,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
                 {/* Сфера бизнеса */}
                 <div className="bg-[#0a1324] p-3 rounded-lg border border-slate-700/50 mb-3">
                     <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">{d.industry}</span>
-                    <span className="text-xs md:text-sm font-bold text-cyan-400">{formatIndustry(plot.industry)}</span>
+                    <span className="text-xs md:text-sm font-bold text-cyan-400">{localizePlotIndustry(plot.industry, language) || d.noData}</span>
                 </div>
                 <div className="bg-[#0a1324] p-3 rounded-lg border border-slate-700/50 mb-5">
                     <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">{d.objectType}</span>
@@ -363,7 +255,7 @@ export default function PlotCard({ plot, onClose, lang }: { plot: PlotRecord | n
                             if (key === 'water') label = d.water;
                             if (key === 'road') label = d.road;
 
-                            const valDisplay = formatInfrastructureValue(value);
+                            const valDisplay = localizePlotInfrastructure(value, language) || d.noData;
 
                             return (
                                 <div key={key} className="flex justify-between items-center text-xs bg-[#0a1324] px-3 py-2 rounded-lg border border-slate-700/40">
