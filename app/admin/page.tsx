@@ -474,9 +474,12 @@ export default function AdminPage() {
                             <h1 className="text-base font-black text-white uppercase tracking-wider">Piskent Invest AI</h1>
                             <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mt-0.5">Админ-панель отдела инвестиций</p>
                         </div>
+                        <div className="flex flex-wrap gap-2">
+                            <Link href="/admin/audit" className="px-3 py-1.5 bg-emerald-900/60 hover:bg-emerald-800 rounded-xl text-[11px] font-bold text-emerald-200 transition-all">Аудит базы ↗</Link>
                         <Link href="/" className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-[11px] font-bold text-slate-300 transition-all">
                             ◀ На сайт инвестора
                         </Link>
+                        </div>
                     </div>
 
                     {successMessage && (
