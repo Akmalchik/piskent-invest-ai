@@ -84,7 +84,7 @@ export function localizePlotInfrastructure(value: unknown, lang: PublicLang): st
 export function localizePlotOwnership(value: unknown, lang: PublicLang): string {
   const norm=normalize(value);
   const key=norm.includes('davlat')?'davlat':norm.includes('xususiy')?'xususiy':norm.includes('auksion')?'e-auksion':norm;
-  return translate(key,lang,ownership) || String(value??'');
+  return ownership[key]?.[lang] || String(value??'').trim();
 }
 export function localizePlotNameForSearch(plot: PlotRecord): string {
   return (['uz','ru','en','zh'] as const).map(lang=>localizePlotName(plot.name,lang)).join(' ');
