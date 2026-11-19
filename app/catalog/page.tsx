@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { PlotRecord } from '@/lib/plotTypes';
 import { visibleMapPlot } from '@/lib/publicPlotVisibility';
+import { localizePlotName, localizePlotNameForSearch, localizePlotStatus, localizePlotIndustry } from '@/lib/plotLocalization';
 
 type Lang = 'uz' | 'ru' | 'en' | 'zh';
 type Category = 'all' | 'land' | 'building' | 'land_building';
@@ -159,9 +160,9 @@ export default function CatalogPage() {
     const term = query.trim().toLowerCase();
     return items.filter(plot =>
       (category === 'all' || categoryOf(plot) === category) &&
-      (!term || [plot.name, String(plot.id), plot.industry || ''].some(value => value.toLowerCase().includes(term)))
+      (!term || [localizePlotNameForSearch(plot), String(plot.id), plot.industry || '', localizePlotIndustry(plot.industry, lang)].some(value => value.toLowerCase().includes(term)))
     );
-  }, [items, category, query]);
+  }, [items, category, query, lang]);
   const navSuffix = `?lang=${lang}`;
   const mapUrl = (id: PlotRecord['id']) => `/?tab=map&plotId=${encodeURIComponent(String(id))}&lang=${lang}`;
 
@@ -232,19 +233,19 @@ export default function CatalogPage() {
                 const verifiedSource = typeof source === 'string' && /^https:\/\/(?:[a-z0-9-]+\.)?e-auksion\.uz(?:\/|$)/i.test(source);
                 return (
                   <article key={String(plot.id)} className="group flex overflow-hidden flex-col rounded-xl border border-slate-700/70 bg-[#0a1324] shadow-lg shadow-black/10 transition-all hover:border-cyan-700/70 hover:shadow-cyan-950/20">
-                    <Photo plot={plot} missing={d.photoMissing} />
+                    <Photo plot={{...plot, name: localizePlotName(plot.name, lang)}} missing={d.photoMissing} />
                     <div className="flex flex-1 flex-col p-5">
                       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                         <span className="rounded bg-cyan-950/70 border border-cyan-700/40 px-2 py-1 text-[10px] font-bold uppercase text-cyan-200">{d[kind]}</span>
                         {plot.dataQuality === 'needs_verification' &&
                           <span className="rounded bg-amber-950/30 border border-amber-700/40 px-2 py-1 text-[10px] font-semibold text-amber-200">{d.verification}</span>}
                       </div>
-                      <h2 className="mb-3 text-base font-bold leading-snug">{plot.name}</h2>
+                      <h2 className="mb-3 text-base font-bold leading-snug">{localizePlotName(plot.name, lang)}</h2>
                       <div className="grid grid-cols-2 gap-3 text-xs">
                         <div><p className="mb-1 text-slate-400">{d.area}</p>
-                          <p className="font-bold">{formatArea(plot.area, lang === 'ru' ? 'га' : 'ha', d.unknown)}</p></div>
+                          <p className="font-bold">{formatArea(plot.area, lang === 'ru' ? 'га' : lang === 'zh' ? '公顷' : lang === 'uz' ? 'ga' : 'ha', d.unknown)}</p></div>
                         <div><p className="mb-1 text-slate-400">{kind === 'building' ? d.buildingArea : d.status}</p>
-                          <p className="font-bold">{kind === 'building' ? formatArea(plot.building_area_m2, 'm²', d.unknown) : plot.status || d.unknown}</p></div>
+                          <p className="font-bold">{kind === 'building' ? formatArea(plot.building_area_m2, 'm²', d.unknown) : (localizePlotStatus(plot.status, lang) || d.unknown)}</p></div>
                       </div>
                       <div className="mt-auto flex flex-wrap gap-2 pt-5">
                         <a href={mapUrl(plot.id)} className="flex-1 rounded-lg bg-cyan-700 px-3 py-2.5 text-center text-xs font-bold text-white transition-colors hover:bg-cyan-600">{d.viewMap}</a>
