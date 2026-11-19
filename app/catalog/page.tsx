@@ -104,14 +104,14 @@ function Photo({ plot, missing }: { plot: PlotRecord; missing: string }) {
   const [broken, setBroken] = useState(false);
   useEffect(() => setBroken(false), [url]);
   return (
-    <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-50 via-slate-50 to-slate-100">
+    <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-gradient-to-br from-[#101f35] via-[#0a1324] to-[#07101e]">
       {url && !broken ? (
         // External E-auksion/Supabase images may be hosted on unconfigured domains.
         // eslint-disable-next-line @next/next/no-img-element
         <img src={url} alt={plot.name} loading="lazy" onError={() => setBroken(true)}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
       ) : (
-        <div className="flex flex-col items-center gap-2 text-center text-slate-400">
+        <div className="flex flex-col items-center gap-2 text-center text-slate-500">
           <svg aria-hidden="true" width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
           </svg>
@@ -166,17 +166,17 @@ export default function CatalogPage() {
   const mapUrl = (id: PlotRecord['id']) => `/?tab=map&plotId=${encodeURIComponent(String(id))}&lang=${lang}`;
 
   return (
-    <main className="min-h-screen bg-[#f8faf9] text-slate-900">
-      <header className="sticky top-0 z-30 border-b border-emerald-100 bg-white/95 backdrop-blur">
+    <main className="min-h-screen bg-[#050a14] text-slate-100">
+      <header className="sticky top-0 z-30 border-b border-slate-700/60 bg-[#091120]/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8">
           <a href={`/${navSuffix}`} className="text-base font-extrabold tracking-tight">
-            PISKENT <span className="text-emerald-700">INVEST AI</span>
-            <span className="mt-0.5 block text-[10px] font-medium tracking-normal text-slate-500">{d.subtitle}</span>
+            PISKENT <span className="text-cyan-400">INVEST AI</span>
+            <span className="mt-0.5 block text-[10px] font-medium tracking-normal text-slate-400">{d.subtitle}</span>
           </a>
           <nav className="flex flex-wrap items-center gap-2" aria-label="Primary">
-            <a href={`/${navSuffix}`} className="rounded-lg px-3 py-2 text-xs font-semibold hover:bg-slate-100">{d.home}</a>
-            <a href={`/?tab=map&lang=${lang}`} className="rounded-lg px-3 py-2 text-xs font-semibold hover:bg-slate-100">{d.map}</a>
-            <div className="ml-1 flex rounded-lg border border-emerald-100 bg-emerald-50/50 p-0.5" aria-label="Language">
+            <a href={`/${navSuffix}`} className="rounded-lg px-3 py-2 text-xs font-semibold hover:bg-slate-800/60 hover:text-cyan-200">{d.home}</a>
+            <a href={`/?tab=map&lang=${lang}`} className="rounded-lg px-3 py-2 text-xs font-semibold hover:bg-slate-800/60 hover:text-cyan-200">{d.map}</a>
+            <div className="ml-1 flex rounded-lg border border-slate-700 bg-[#050a14] p-0.5" aria-label="Language">
               {(['uz','ru','en','zh'] as Lang[]).map(language => (
                 <button type="button" key={language}
                   aria-pressed={lang === language}
@@ -184,7 +184,7 @@ export default function CatalogPage() {
                     setLang(language);
                     window.history.replaceState(null, '', `/catalog?lang=${language}`);
                   }}
-                  className={`rounded-md px-2 py-1.5 text-[10px] font-bold uppercase ${lang === language ? 'bg-emerald-700 text-white' : 'text-slate-500 hover:text-slate-900'}`}>{language}</button>
+                  className={`rounded-md px-2 py-1.5 text-[10px] font-bold uppercase ${lang === language ? 'bg-cyan-800 text-cyan-50' : 'text-slate-400 hover:text-slate-200'}`}>{language}</button>
               ))}
             </div>
           </nav>
@@ -194,50 +194,50 @@ export default function CatalogPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 md:py-12">
         <div className="mb-7 flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-2xl">
-            <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[.16em] text-emerald-700">
-              <span className="h-px w-7 bg-emerald-600" />{d.eyebrow}
+            <div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[.16em] text-cyan-300">
+              <span className="h-px w-7 bg-cyan-500" />{d.eyebrow}
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">{d.title}</h1>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">{d.intro}</p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-300">{d.intro}</p>
           </div>
-          <div className="min-w-[154px] rounded-xl border border-emerald-100 bg-white px-5 py-4">
-            <span className="text-xs font-medium text-slate-500">{d.total}</span>
+          <div className="min-w-[154px] rounded-xl border border-slate-700/60 bg-[#0a1324] px-5 py-4">
+            <span className="text-xs font-medium text-slate-400">{d.total}</span>
             <div className="text-3xl font-bold tabular-nums">{items.length}</div>
           </div>
         </div>
-        <div className="mb-6 rounded-lg border-l-2 border-emerald-600 bg-emerald-50/50 px-4 py-3 text-xs leading-relaxed text-slate-600">
+        <div className="mb-6 rounded-lg border-l-2 border-cyan-500 bg-[#0a1324] px-4 py-3 text-xs leading-relaxed text-slate-300">
           {d.notice}
         </div>
-        {notice === 'fallback' && <p role="status" className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900">{d.fallback}</p>}
+        {notice === 'fallback' && <p role="status" className="mb-5 rounded-lg border border-amber-700/40 bg-amber-950/30 px-4 py-3 text-xs text-amber-200">{d.fallback}</p>}
 
         <div className="mb-5 flex flex-wrap items-center gap-2">
           {(['all','land','building','land_building'] as Category[]).map(value => (
             <button key={value} type="button" aria-pressed={category === value}
               onClick={() => setCategory(value)}
-              className={`rounded-lg border px-4 py-2.5 text-xs font-bold transition ${category === value ? 'border-emerald-700 bg-emerald-700 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-400'}`}>{d[value]}</button>
+              className={`rounded-lg border px-4 py-2.5 text-xs font-bold transition ${category === value ? 'border-cyan-700 bg-cyan-950/60 text-cyan-200' : 'border-slate-700 bg-[#0a1324] text-slate-300 hover:border-cyan-600 hover:text-cyan-200'}`}>{d[value]}</button>
           ))}
           <input aria-label={d.search} placeholder={d.search} value={query} onChange={e => setQuery(e.target.value)}
-            className="ml-auto min-w-[220px] flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs outline-none focus:border-emerald-600 sm:max-w-[340px]" />
+            className="ml-auto min-w-[220px] flex-1 rounded-lg border border-slate-700 bg-[#0a1324] px-4 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-500 sm:max-w-[340px]" />
         </div>
 
-        {loading ? <p role="status" className="rounded-xl border border-slate-200 bg-white p-9 text-center text-sm text-slate-500">{d.loading}</p>
-          : error ? <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-9 text-center text-sm text-rose-800">{d.failed}</p>
-          : filtered.length === 0 ? <p className="rounded-xl border border-slate-200 bg-white p-9 text-center text-sm text-slate-500">{d.empty}</p>
+        {loading ? <p role="status" className="rounded-xl border border-slate-700 bg-[#0a1324] p-9 text-center text-sm text-slate-400">{d.loading}</p>
+          : error ? <p role="alert" className="rounded-xl border border-rose-800/50 bg-rose-950/30 p-9 text-center text-sm text-rose-200">{d.failed}</p>
+          : filtered.length === 0 ? <p className="rounded-xl border border-slate-700 bg-[#0a1324] p-9 text-center text-sm text-slate-400">{d.empty}</p>
           : <>
-            <p className="mb-3 text-xs text-slate-500">{filtered.length} {d.found}</p>
+            <p className="mb-3 text-xs text-slate-400">{filtered.length} {d.found}</p>
             <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3" aria-label={d.title}>
               {filtered.map(plot => {
                 const kind = categoryOf(plot);
                 const source = plot.auksionUrl || plot.auksion_url || plot.auction_url;
                 const verifiedSource = typeof source === 'string' && /^https:\/\/(?:[a-z0-9-]+\.)?e-auksion\.uz(?:\/|$)/i.test(source);
                 return (
-                  <article key={String(plot.id)} className="group flex overflow-hidden flex-col rounded-xl border border-emerald-100 bg-white shadow-sm transition-shadow hover:shadow-lg">
+                  <article key={String(plot.id)} className="group flex overflow-hidden flex-col rounded-xl border border-slate-700/70 bg-[#0a1324] shadow-lg shadow-black/10 transition-all hover:border-cyan-700/70 hover:shadow-cyan-950/20">
                     <Photo plot={plot} missing={d.photoMissing} />
                     <div className="flex flex-1 flex-col p-5">
                       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                        <span className="rounded bg-emerald-50 px-2 py-1 text-[10px] font-bold uppercase text-emerald-800">{d[kind]}</span>
+                        <span className="rounded bg-cyan-950/70 border border-cyan-700/40 px-2 py-1 text-[10px] font-bold uppercase text-cyan-200">{d[kind]}</span>
                         {plot.dataQuality === 'needs_verification' &&
-                          <span className="rounded bg-amber-50 px-2 py-1 text-[10px] font-semibold text-amber-800">{d.verification}</span>}
+                          <span className="rounded bg-amber-950/30 border border-amber-700/40 px-2 py-1 text-[10px] font-semibold text-amber-200">{d.verification}</span>}
                       </div>
                       <h2 className="mb-3 text-base font-bold leading-snug">{plot.name}</h2>
                       <div className="grid grid-cols-2 gap-3 text-xs">
@@ -247,9 +247,9 @@ export default function CatalogPage() {
                           <p className="font-bold">{kind === 'building' ? formatArea(plot.building_area_m2, 'm²', d.unknown) : plot.status || d.unknown}</p></div>
                       </div>
                       <div className="mt-auto flex flex-wrap gap-2 pt-5">
-                        <a href={mapUrl(plot.id)} className="flex-1 rounded-lg bg-emerald-700 px-3 py-2.5 text-center text-xs font-bold text-white transition-colors hover:bg-emerald-800">{d.viewMap}</a>
+                        <a href={mapUrl(plot.id)} className="flex-1 rounded-lg bg-cyan-700 px-3 py-2.5 text-center text-xs font-bold text-white transition-colors hover:bg-cyan-600">{d.viewMap}</a>
                         {verifiedSource
-                          ? <a href={source} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-200 px-3 py-2.5 text-center text-xs font-bold hover:border-emerald-500">{d.seeSource} ↗</a>
+                          ? <a href={source} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-600 px-3 py-2.5 text-center text-xs font-bold text-slate-200 hover:border-cyan-500 hover:text-cyan-200">{d.seeSource} ↗</a>
                           : null}
                       </div>
                     </div>
