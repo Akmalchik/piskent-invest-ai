@@ -90,10 +90,10 @@ The district offers opportunities for investment projects in agriculture, indust
 };
 
 const DISTRICT_ABOUT_COPY = {
-  uz: { heading: 'Piskent: investitsiya imkoniyatlari', description: 'Hudud, iqtisodiy yo‘nalishlar va infratuzilma haqida ma’lumotlar bilan tanishing. Investitsiya obyektlari xaritada alohida ko‘rsatilgan.', map: 'Investitsiya xaritasi', source: 'Rasmiy ma’lumot', portraitSource: 'Hokimlik rahbariyati — rasmiy manba', dataNote: 'Statistika loyihadagi mavjud ma’lumotlarga asoslangan. Raqamlarning hisobot yili hozircha tasdiqlanmagan.' },
-  ru: { heading: 'Пискент: инвестиционные возможности', description: 'Знакомство с районом, приоритетными секторами и инфраструктурой. Инвестиционные объекты представлены на интерактивной карте.', map: 'Инвестиционная карта', source: 'Официальный источник', portraitSource: 'Руководство хокимията — официальный источник', dataNote: 'Статистика приведена из текущих материалов проекта. Отчётный год показателей пока не подтверждён.' },
-  en: { heading: 'Piskent: investment opportunities', description: 'Explore the district, its main sectors and infrastructure. Individual investment properties are shown on the interactive map.', map: 'Investment map', source: 'Official source', portraitSource: 'District leadership — official source', dataNote: 'Statistics are taken from existing project records. The reporting year has not yet been verified.' },
-  zh: { heading: '皮斯肯特：投资机遇', description: '了解本区概况、重点产业及基础设施。具体投资项目可在交互式地图中查看。', map: '投资地图', source: '官方资料来源', portraitSource: '区政府领导信息 — 官方来源', dataNote: '统计数据来自项目现有资料，统计年度尚未核实。' },
+  uz: { heading: 'Piskent: investitsiya imkoniyatlari', description: 'Hudud, iqtisodiy yo‘nalishlar va infratuzilma haqida ma’lumotlar bilan tanishing. Investitsiya obyektlari xaritada alohida ko‘rsatilgan.', map: 'Investitsiya xaritasi', industry: 'Sanoat salohiyati', source: 'Rasmiy ma’lumot', portraitSource: 'Hokimlik rahbariyati — rasmiy manba', dataNote: 'Statistika loyihadagi mavjud ma’lumotlarga asoslangan. Raqamlarning hisobot yili hozircha tasdiqlanmagan.' },
+  ru: { heading: 'Пискент: инвестиционные возможности', description: 'Знакомство с районом, приоритетными секторами и инфраструктурой. Инвестиционные объекты представлены на интерактивной карте.', map: 'Инвестиционная карта', industry: 'Промышленный потенциал', source: 'Официальный источник', portraitSource: 'Руководство хокимията — официальный источник', dataNote: 'Статистика приведена из текущих материалов проекта. Отчётный год показателей пока не подтверждён.' },
+  en: { heading: 'Piskent: investment opportunities', description: 'Explore the district, its main sectors and infrastructure. Individual investment properties are shown on the interactive map.', map: 'Investment map', industry: 'Industrial potential', source: 'Official source', portraitSource: 'District leadership — official source', dataNote: 'Statistics are taken from existing project records. The reporting year has not yet been verified.' },
+  zh: { heading: '皮斯肯特：投资机遇', description: '了解本区概况、重点产业及基础设施。具体投资项目可在交互式地图中查看。', map: '投资地图', industry: '工业发展潜力', source: '官方资料来源', portraitSource: '区政府领导信息 — 官方来源', dataNote: '统计数据来自项目现有资料，统计年度尚未核实。' },
 } as const;
 
 // Компонент для красивого плавного набегания цифр (CountUp)
@@ -575,6 +575,7 @@ export default function Home() {
                           <p className="mt-4 max-w-2xl border-l-2 border-cyan-500 pl-4 text-sm leading-6 text-slate-200">{DISTRICT_ABOUT_COPY[lang].description}</p>
                           <div className="mt-5 flex flex-wrap gap-2">
                             <button type="button" onClick={() => handleTabChange('map')} className="rounded-lg bg-cyan-700 px-4 py-2.5 text-xs font-bold text-white hover:bg-cyan-600">{DISTRICT_ABOUT_COPY[lang].map}</button>
+                            <a href={`/industry?lang=${lang}`} className="rounded-lg border border-cyan-700/60 bg-cyan-950/40 px-4 py-2.5 text-xs font-bold text-cyan-200 hover:bg-cyan-900/60">{DISTRICT_ABOUT_COPY[lang].industry} ↗</a>
                             <a href={DISTRICT_PASSPORT.officialAboutUrl} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-slate-600 px-4 py-2.5 text-xs font-bold text-slate-200 hover:border-cyan-500">{DISTRICT_ABOUT_COPY[lang].source} ↗</a>
                           </div>
 		                    </div>
