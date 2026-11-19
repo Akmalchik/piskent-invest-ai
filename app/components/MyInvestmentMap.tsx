@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, LayerGroup, CircleMarker, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import PlotCard from './PlotCard';
+import { localizePlotStatus, type PublicLang } from '@/lib/plotLocalization';
 import type { PlotRecord, MapViewport } from '@/lib/plotTypes';
 import { plotCenter as getPlotCenter, visibleMapPlot } from '@/lib/publicPlotVisibility';
 import L from 'leaflet';
@@ -367,7 +368,7 @@ export default function MyInvestmentMap({
                         <Popup closeButton={false}>
                             <div className="poi-popup">
                                 <div className="poi-popup-label">{place.category === 'bank' ? poiText.banks : poiText.gov}</div>
-                                <strong>{place.name}</strong>
+                                <strong>{place.id === 'hokimlik' ? ({ uz: 'Piskent tumani hokimligi', ru: 'Хокимият Пискентского района', en: 'Piskent District Administration', zh: '皮斯肯特区政府' })[(['ru','en','zh'].includes(lang) ? lang : 'uz') as PublicLang] : place.name}</strong>
                                 <div>{place.address}</div>
                             </div>
                         </Popup>
@@ -452,7 +453,7 @@ export default function MyInvestmentMap({
                                                 onClick={() => setStatusFilter(id)}
                                                 className={`py-1 rounded-md text-[9px] font-bold border text-center transition-colors ${statusFilter === id ? 'bg-cyan-800 text-cyan-50 border-cyan-700' : 'bg-[#050a14]/70 text-slate-400 border-slate-700/70'}`}
                                             >
-                                                {t.statusLabels[id as keyof typeof t.statusLabels] || id}
+                                                {id === 'Barchasi' ? t.statusLabels.Barchasi : localizePlotStatus(id, (['ru','en','zh'].includes(lang) ? lang : 'uz') as PublicLang)}
                                             </button>
                                         ))}
                                     </div>
@@ -554,7 +555,7 @@ export default function MyInvestmentMap({
                                                 onClick={() => setStatusFilter(id)}
                                                 className={`py-2 rounded-md text-[9px] font-bold border text-center transition-colors ${statusFilter === id ? 'bg-cyan-800 text-cyan-50 border-cyan-700' : 'bg-[#050a14]/70 text-slate-400 border-slate-700/70'}`}
                                             >
-                                                {t.statusLabels[id as keyof typeof t.statusLabels] || id}
+                                                {id === 'Barchasi' ? t.statusLabels.Barchasi : localizePlotStatus(id, (['ru','en','zh'].includes(lang) ? lang : 'uz') as PublicLang)}
                                             </button>
                                         ))}
                                     </div>
