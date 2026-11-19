@@ -16,6 +16,12 @@ const names: Record<string, Localized> = {
   "ferma": { uz:"Ferma", ru:"Ферма", en:"Farm", zh:"农场" },
   "kollej bino va inshoati": { uz:"Kollej bino va inshootlari", ru:"Здания и сооружения колледжа", en:"College buildings and facilities", zh:"学院建筑及配套设施" },
   "g'isht ishlab chiqarish zavodi": { uz:"G‘isht ishlab chiqarish zavodi", ru:"Кирпичный завод", en:"Brick manufacturing plant", zh:"砖厂" },
+  "piskent tuman mustaqillik mfy sobiq kollej binosi": {
+    uz:"Piskent tumani Mustaqillik MFY sobiq kollej binosi",
+    ru:"Бывшее здание колледжа, СГМ «Мустакиллик», Пискентский район",
+    en:"Former college building, Mustaqillik mahalla, Piskent district",
+    zh:"皮斯肯特区穆斯塔基利克社区原学院建筑"
+  },
 };
 const states: Record<string, Localized> = {
   mavjud: { uz:"Mavjud",ru:"Доступен",en:"Available",zh:"可用" },
